@@ -1,22 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserRepository } from '../user/providers/user.repository';
-import { AuthRepository } from './providers/auth.repository';
 import { PasswordHelper } from 'src/core/helpers/password.helper';
 import { UserRoleService } from '../user_role/user_role.service';
 import { RoleRepository } from '../role/providers/role.repository';
 import { IResponse } from 'src/core/interfaces/response.interface';
+import { AuthHelper } from 'src/core/helpers/auth.helper';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepo: UserRepository,
     private readonly roleRepo: RoleRepository,
-    private readonly authRepo: AuthRepository,
     private readonly userRoleService: UserRoleService,
     private readonly passwordHelper: PasswordHelper,
+    private readonly authHelper: AuthHelper,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<IResponse> {
@@ -32,7 +31,7 @@ export class AuthService {
     if (!role) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }
-    const newUser = await this.authRepo.register({
+    const newUser = await this.userRepo.register({
       firstName,
       lastName,
       email,
@@ -46,29 +45,44 @@ export class AuthService {
     });
 
     return {
-      status: HttpStatus.CREATED,
+      statusCode: HttpStatus.CREATED,
       message: 'User registered successfully',
       data: newUser,
     };
   }
 
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async login(loginAuthDto: LoginAuthDto): Promise<IResponse> {
+    try {
+      const { email, password } = loginAuthDto;
+      const user = await this.userRepo.findByEmail(email);
+      if (!user) {
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      }
+      const isCorrectPassword = await this.passwordHelper.comparePassword(
+        password,
+        user.password,
+      );
+      if (!isCorrectPassword) {
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      }
+      if (user.isVerified === false) {
+        throw new HttpException('User not verified', HttpStatus.UNAUTHORIZED);
+      }
+      const token = await this.authHelper.generateJwtToken({
+        id: user.id,
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User logged in successfully',
+        data: {
+          token,
+        },
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

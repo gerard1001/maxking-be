@@ -3,10 +3,15 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../model/user.model';
 import { Role } from '../../role/model/role.model';
 import { USER_MODEL } from 'src/core/constants';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class UserRepository {
   constructor(@Inject(USER_MODEL) private readonly userModel: typeof User) {}
+
+  async register(createUserDto: CreateUserDto): Promise<User> {
+    return await this.userModel.create(createUserDto);
+  }
 
   async findAll(): Promise<User[]> {
     return await this.userModel.findAll({

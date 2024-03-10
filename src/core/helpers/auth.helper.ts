@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthHelper {
   constructor(private readonly jwtService: JwtService) {}
 
-  async generateJwt(payload: any): Promise<string> {
+  async generateJwtToken(payload: any): Promise<string> {
     try {
       return await this.jwtService.signAsync(payload);
     } catch (error) {
@@ -13,7 +13,7 @@ export class AuthHelper {
     }
   }
 
-  async decodeToken(token: string): Promise<any> {
+  async decodeJwtToken(token: string): Promise<any> {
     try {
       return this.jwtService.decode(token);
     } catch (error) {

@@ -5,15 +5,17 @@ import { UserModule } from '../user/user.module';
 import { PasswordHelper } from 'src/core/helpers/password.helper';
 import { RoleModule } from '../role/role.module';
 import { UserRoleModule } from '../user_role/user_role.module';
-import { AuthRepository } from './providers/auth.repository';
+import { AuthHelper } from 'src/core/helpers/auth.helper';
+import { JwtDynamicModule } from 'src/core/jwt/jwt.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     forwardRef(() => RoleModule),
     forwardRef(() => UserRoleModule),
+    JwtDynamicModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, PasswordHelper],
+  providers: [AuthService, PasswordHelper, AuthHelper],
 })
 export class AuthModule {}

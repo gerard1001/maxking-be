@@ -13,7 +13,7 @@ export class UserService {
     try {
       const users = await this.userRepo.findAll();
       return {
-        status: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: 'Users retrieved successfully',
         data: users,
       };
@@ -29,7 +29,7 @@ export class UserService {
     try {
       const user = await this.userRepo.findById(id);
       return {
-        status: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: 'User retrieved successfully',
         data: user,
       };
@@ -67,7 +67,7 @@ export class UserService {
     try {
       const count = await this.userRepo.deleteOne(id);
       return {
-        status: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: 'User deleted successfully',
         data: { count },
       };
@@ -83,7 +83,7 @@ export class UserService {
     try {
       const count = await this.userRepo.deleteMultiple(deleteUsersDto.ids);
       return {
-        status: HttpStatus.OK,
+        statusCode: HttpStatus.OK,
         message: 'User(s) deleted successfully',
         data: { count },
       };

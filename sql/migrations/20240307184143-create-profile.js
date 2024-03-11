@@ -35,6 +35,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      picture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       country: {
         type: Sequelize.STRING,
         allowNull: true,

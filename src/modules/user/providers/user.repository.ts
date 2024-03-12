@@ -26,8 +26,8 @@ export class UserRepository {
     });
   }
 
-  findById(id: string) {
-    return this.userModel.findByPk(id, {
+  async findById(id: string) {
+    return await this.userModel.findByPk(id, {
       include: [
         {
           model: Role,

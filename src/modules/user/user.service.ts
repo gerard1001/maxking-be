@@ -28,6 +28,9 @@ export class UserService {
   async findById(id: string): Promise<IResponse> {
     try {
       const user = await this.userRepo.findById(id);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
       return {
         statusCode: HttpStatus.OK,
         message: 'User retrieved successfully',

@@ -11,7 +11,7 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      userId: {
+      authorId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
@@ -21,17 +21,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-      },
-      categoryId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        references: {
-          model: 'ArticleCategories',
-          key: 'id',
-          as: 'category',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
       },
       coverImage: {
         type: Sequelize.STRING,
@@ -52,7 +41,7 @@ module.exports = {
           min: 1,
         },
       },
-      content: {
+      body: {
         type: Sequelize.TEXT,
         allowNull: false,
       },

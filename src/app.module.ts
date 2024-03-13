@@ -11,9 +11,15 @@ import { ArticleModule } from './modules/article/article.module';
 import { TagModule } from './modules/tag/tag.module';
 import { ArticleTagModule } from './modules/article_tag/article_tag.module';
 import { UserArticleModule } from './modules/user_article/user_article.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from 'config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     DatabaseModule,
     ProfileModule,
     AuthModule,

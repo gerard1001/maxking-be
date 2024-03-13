@@ -17,5 +17,6 @@ import { JwtDynamicModule } from 'src/core/jwt/jwt.module';
   ],
   controllers: [AuthController],
   providers: [AuthService, PasswordHelper, AuthHelper],
+  exports: [AuthHelper],
 })
 export class AuthModule {}

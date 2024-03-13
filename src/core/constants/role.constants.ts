@@ -5,8 +5,3 @@ export enum ENUM_ROLE_TYPE {
   MENTOR = 'MENTOR',
   CLIENT = 'CLIENT',
 }
-export enum ENUM_ORDER_STATUS_TYPE {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-}

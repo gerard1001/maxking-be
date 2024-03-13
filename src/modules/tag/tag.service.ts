@@ -11,14 +11,14 @@ export class TagService {
   async create(createTagDto: CreateTagDto): Promise<IResponse> {
     try {
       const { name } = createTagDto;
-      const tagExists = await this.tagRepo.findByName(name);
+      const tagExists = await this.tagRepo.findByName(name.trim());
       if (tagExists) {
         throw new HttpException(
           `Tag: ${name} already exists`,
           HttpStatus.CONFLICT,
         );
       }
-      const tag = await this.tagRepo.create(createTagDto);
+      const tag = await this.tagRepo.create({ name: name.trim() });
       return {
         statusCode: HttpStatus.OK,
         message: 'Tag added successfully',

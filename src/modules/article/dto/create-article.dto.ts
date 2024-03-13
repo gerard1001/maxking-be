@@ -10,6 +10,10 @@ import {
 
 export class CreateArticleDto {
   @IsString()
+  @IsOptional()
+  readonly coverImage?: string;
+
+  @IsString()
   @IsDefined()
   @IsNotEmpty()
   readonly title: string;
@@ -28,5 +32,12 @@ export class CreateArticleDto {
   @IsString({ each: true })
   @ArrayMinSize(1)
   @ArrayMaxSize(3)
-  readonly tags: string[];
+  readonly tags?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  readonly newTags?: string[];
 }

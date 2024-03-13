@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UserSavedArticles', {
+    await queryInterface.createTable('UserArticles', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -14,24 +14,10 @@ module.exports = {
       userId: {
         type: Sequelize.UUID,
         allowNull: false,
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'favoritedBy',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       articleId: {
         type: Sequelize.UUID,
         allowNull: false,
-        references: {
-          model: 'Articles',
-          key: 'id',
-          as: 'favorites',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +31,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserSavedArticles');
+    await queryInterface.dropTable('UserArticles');
   },
 };

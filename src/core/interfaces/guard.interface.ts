@@ -1,8 +1,4 @@
 export interface IGuardMetadata {
-  accOwner: {
-    checkAccOwner: boolean;
-    allowAnyRole: boolean;
-    accOwnerRoles: string[];
-  };
+  checkAccOwner: boolean;
   roles: string[];
 }

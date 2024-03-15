@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ArticleTagService } from './article_tag.service';
 import { CreateArticleTagDto } from './dto/create-article_tag.dto';
 import { UpdateArticleTagDto } from './dto/update-article_tag.dto';
@@ -8,27 +16,31 @@ export class ArticleTagController {
   constructor(private readonly articleTagService: ArticleTagService) {}
 
   @Post()
-  create(@Body() createArticleTagDto: CreateArticleTagDto) {
-    return this.articleTagService.create(createArticleTagDto);
+  async create(@Body() createArticleTagDto: CreateArticleTagDto) {
+    return await this.articleTagService.create(createArticleTagDto);
   }
 
   @Get()
-  findAll() {
-    return this.articleTagService.findAll();
+  async findAll() {
+    return await this.articleTagService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleTagService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleTagDto: UpdateArticleTagDto) {
-    return this.articleTagService.update(+id, updateArticleTagDto);
+  async findOne(@Param('id') id: string) {
+    return await this.articleTagService.findById(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleTagService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.articleTagService.deleteOne(id);
+  }
+
+  @Delete()
+  async deleteByArticleAndTagId(
+    @Body() deleteArticleTagDto: CreateArticleTagDto,
+  ) {
+    return await this.articleTagService.deleteByArticleAndTagId(
+      deleteArticleTagDto,
+    );
   }
 }

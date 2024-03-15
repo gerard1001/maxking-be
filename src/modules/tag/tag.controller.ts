@@ -27,11 +27,7 @@ export class TagController {
   @Post()
   @UseGuards(AuthGuard, RoleGuard)
   @SetMetadata('metadata', {
-    accOwner: {
-      checkAccOwner: false,
-      allowAnyRole: false,
-      accOwnerRoles: [],
-    },
+    checkAccOwner: false,
     roles: [
       ENUM_ROLE_TYPE.SUPER_ADMIN,
       ENUM_ROLE_TYPE.ADMIN,

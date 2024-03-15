@@ -5,9 +5,14 @@ import { TagRepository } from './providers/tag.repository';
 import { tagProviders } from 'src/database/providers/entities.providers';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
+import { ArticleModule } from '../article/article.module';
 
 @Module({
-  imports: [forwardRef(() => AuthModule), forwardRef(() => UserModule)],
+  imports: [
+    forwardRef(() => AuthModule),
+    forwardRef(() => UserModule),
+    forwardRef(() => ArticleModule),
+  ],
   controllers: [TagController],
   providers: [TagService, TagRepository, ...tagProviders],
   exports: [TagService, TagRepository, ...tagProviders],

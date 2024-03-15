@@ -23,6 +23,7 @@ import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
 import { createArticleValidation } from 'src/core/validations/article.validation';
+import { DeleteArticlesDto } from './dto/delete-article.dto';
 
 @Controller('article')
 export class ArticleController {
@@ -31,11 +32,7 @@ export class ArticleController {
   @Post()
   @UseGuards(AuthGuard, RoleGuard)
   @SetMetadata('metadata', {
-    accOwner: {
-      checkAccOwner: false,
-      allowAnyRole: false,
-      accOwnerRoles: [],
-    },
+    checkAccOwner: false,
     roles: [
       ENUM_ROLE_TYPE.SUPER_ADMIN,
       ENUM_ROLE_TYPE.ADMIN,
@@ -64,12 +61,28 @@ export class ArticleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articleService.update(+id, updateArticleDto);
+  @UseGuards(AuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: true,
+    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
+  })
+  @UseInterceptors(FileInterceptor('coverImage', multerOptions))
+  update(
+    @Param('id') id: string,
+    @Body() updateArticleDto: UpdateArticleDto,
+    @UploadedFile() coverImage: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    return this.articleService.update(id, updateArticleDto, coverImage, req);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleService.remove(+id);
+  deleteOne(@Param('id') id: string): Promise<any> {
+    return this.articleService.deleteOne(id);
+  }
+
+  @Delete()
+  deleteMultiple(@Body() deleteArticlesDto: DeleteArticlesDto): Promise<any> {
+    return this.articleService.deleteMultiple(deleteArticlesDto);
   }
 }

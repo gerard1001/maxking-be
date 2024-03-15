@@ -2,8 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ARTICLE_TAG_MODEL } from 'src/core/constants';
 import { ArticleTag } from '../model/article_tag.model';
 import { CreateArticleTagDto } from '../dto/create-article_tag.dto';
-import { Tag } from 'src/modules/tag/model/tag.model';
-import { Article } from 'src/modules/article/model/article.model';
 
 @Injectable()
 export class ArticleTagRepository {

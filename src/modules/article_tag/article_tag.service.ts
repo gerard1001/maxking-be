@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArticleTagDto } from './dto/create-article_tag.dto';
-import { UpdateArticleTagDto } from './dto/update-article_tag.dto';
 import { ArticleTagRepository } from './providers/article_tag.repository';
 import { TagRepository } from '../tag/providers/tag.repository';
 import { ArticleRepository } from '../article/providers/article.repository';

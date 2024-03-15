@@ -1,34 +1,44 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { UserArticleService } from './user_article.service';
 import { CreateUserArticleDto } from './dto/create-user_article.dto';
-import { UpdateUserArticleDto } from './dto/update-user_article.dto';
 
 @Controller('user-article')
 export class UserArticleController {
   constructor(private readonly userArticleService: UserArticleService) {}
 
   @Post()
-  create(@Body() createUserArticleDto: CreateUserArticleDto) {
-    return this.userArticleService.create(createUserArticleDto);
+  async create(@Body() createUserArticleDto: CreateUserArticleDto) {
+    return await this.userArticleService.create(createUserArticleDto);
   }
 
   @Get()
-  findAll() {
-    return this.userArticleService.findAll();
+  async findAll() {
+    return await this.userArticleService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userArticleService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.userArticleService.findById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserArticleDto: UpdateUserArticleDto) {
-    return this.userArticleService.update(+id, updateUserArticleDto);
+  @Get('user/:userId/article/:articleId')
+  async findByUserIdAndArticleId(
+    @Param('userId') userId: string,
+    @Param('articleId') articleId: string,
+  ) {
+    return await this.userArticleService.findByUserIdAndArticleId(
+      userId,
+      articleId,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userArticleService.remove(+id);
+  async deleteOne(@Param('id') id: string) {
+    return await this.userArticleService.deleteOne(id);
+  }
+
+  @Delete()
+  async deleteMultiple(@Body() ids: string[]) {
+    return await this.userArticleService.deleteMultiple(ids);
   }
 }

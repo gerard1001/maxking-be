@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ArticleTagService } from './article_tag.service';
 import { CreateArticleTagDto } from './dto/create-article_tag.dto';
-import { UpdateArticleTagDto } from './dto/update-article_tag.dto';
 
 @Controller('article-tag')
 export class ArticleTagController {

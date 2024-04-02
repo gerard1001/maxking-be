@@ -3,7 +3,8 @@ import { CreateArticleTagDto } from './dto/create-article_tag.dto';
 import { ArticleTagRepository } from './providers/article_tag.repository';
 import { TagRepository } from '../tag/providers/tag.repository';
 import { ArticleRepository } from '../article/providers/article.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { ArticleTag } from './model/article_tag.model';
 
 @Injectable()
 export class ArticleTagService {
@@ -13,7 +14,9 @@ export class ArticleTagService {
     private readonly tagRepo: TagRepository,
   ) {}
 
-  async create(createArticleTagDto: CreateArticleTagDto): Promise<IResponse> {
+  async create(
+    createArticleTagDto: CreateArticleTagDto,
+  ): Promise<IResponse<ArticleTag>> {
     try {
       const { articleId, tagId } = createArticleTagDto;
       const article = await this.articleRepo.findById(articleId);
@@ -41,7 +44,7 @@ export class ArticleTagService {
     }
   }
 
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<IResponse<ArticleTag[]>> {
     try {
       const articleTags = await this.articleTagRepo.findAll();
       return {
@@ -57,7 +60,7 @@ export class ArticleTagService {
     }
   }
 
-  async findById(id: string): Promise<IResponse> {
+  async findById(id: string): Promise<IResponse<ArticleTag>> {
     try {
       const articleTag = await this.articleTagRepo.findById(id);
       if (!articleTag) {
@@ -76,7 +79,7 @@ export class ArticleTagService {
     }
   }
 
-  async findByArticleId(articleId: string): Promise<IResponse> {
+  async findByArticleId(articleId: string): Promise<IResponse<ArticleTag[]>> {
     try {
       const article = await this.articleRepo.findById(articleId);
       if (!article) {
@@ -96,7 +99,7 @@ export class ArticleTagService {
     }
   }
 
-  async findByTagId(tagId: string): Promise<IResponse> {
+  async findByTagId(tagId: string): Promise<IResponse<ArticleTag[]>> {
     try {
       const tag = await this.tagRepo.findById(tagId);
       if (!tag) {
@@ -116,7 +119,7 @@ export class ArticleTagService {
     }
   }
 
-  async deleteOne(id: string): Promise<IResponse> {
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const articleTag = await this.articleTagRepo.findById(id);
       if (!articleTag) {
@@ -138,7 +141,7 @@ export class ArticleTagService {
 
   async deleteByArticleAndTagId(
     deleteArticleTagDto: CreateArticleTagDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<ICount>> {
     try {
       const { articleId, tagId } = deleteArticleTagDto;
       const article = await this.articleRepo.findById(articleId);

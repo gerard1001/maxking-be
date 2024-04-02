@@ -4,6 +4,7 @@ import { User } from '../model/user.model';
 import { Role } from '../../role/model/role.model';
 import { USER_MODEL } from 'src/core/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { Profile } from 'src/modules/profile/model/profile.model';
 
 @Injectable()
 export class UserRepository {
@@ -35,6 +36,7 @@ export class UserRepository {
           attributes: ['id', 'type'],
           through: { attributes: [] },
         },
+        { model: Profile, as: 'profile' },
       ],
     });
   }

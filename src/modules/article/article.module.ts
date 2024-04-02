@@ -8,6 +8,7 @@ import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
 import { ArticleRepository } from './providers/article.repository';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
+import { CommentModule } from '../comment/comment.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from '../user/user.module';
     forwardRef(() => CloudinaryModule),
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
+    forwardRef(() => CommentModule),
   ],
   controllers: [ArticleController],
   providers: [ArticleService, ArticleRepository, ...articleProviders],

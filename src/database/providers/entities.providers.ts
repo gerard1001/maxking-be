@@ -1,6 +1,8 @@
 import {
   ARTICLE_MODEL,
   ARTICLE_TAG_MODEL,
+  COMMENT_MODEL,
+  PROFILE_MODEL,
   ROLE_MODEL,
   TAG_MODEL,
   USER_ARTICLE_MODEL,
@@ -9,6 +11,7 @@ import {
 } from 'src/core/constants';
 import { Article } from 'src/modules/article/model/article.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
+import { Comment } from 'src/modules/comment/model/comment.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
@@ -18,6 +21,13 @@ import { UserRole } from 'src/modules/user_role/models/user_role.model';
 export const userProviders = [
   {
     provide: USER_MODEL,
+    useValue: User,
+  },
+];
+
+export const profileProviders = [
+  {
+    provide: PROFILE_MODEL,
     useValue: User,
   },
 ];
@@ -61,5 +71,12 @@ export const articleTagProviders = [
   {
     provide: ARTICLE_TAG_MODEL,
     useValue: ArticleTag,
+  },
+];
+
+export const commentProviders = [
+  {
+    provide: COMMENT_MODEL,
+    useValue: Comment,
   },
 ];

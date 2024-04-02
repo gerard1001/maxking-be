@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ArticleRepository } from './providers/article.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { TagRepository } from '../tag/providers/tag.repository';
 import { ArticleTagRepository } from '../article_tag/providers/article_tag.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
 import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.functions';
 import { DeleteArticlesDto } from './dto/delete-article.dto';
+import { Article } from './model/article.model';
 
 @Injectable()
 export class ArticleService {
@@ -24,7 +25,7 @@ export class ArticleService {
     createArticleDto: CreateArticleDto,
     coverImage: Express.Multer.File,
     req: Request,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<Article>> {
     try {
       const {
         title,
@@ -138,7 +139,7 @@ export class ArticleService {
     }
   }
 
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<IResponse<Article[]>> {
     try {
       const articles = await this.articleRepo.findAll();
       return {
@@ -154,7 +155,7 @@ export class ArticleService {
     }
   }
 
-  async findOne(id: string): Promise<IResponse> {
+  async findOne(id: string): Promise<IResponse<Article>> {
     try {
       const article = await this.articleRepo.findById(id);
       return {
@@ -175,7 +176,7 @@ export class ArticleService {
     updateArticleDto: UpdateArticleDto,
     coverImage: Express.Multer.File,
     req: Request,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<Article>> {
     try {
       const article = await this.articleRepo.findById(id);
       if (!article) {
@@ -310,7 +311,7 @@ export class ArticleService {
     }
   }
 
-  async deleteOne(id: string): Promise<IResponse> {
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const count = await this.articleRepo.deleteOne(id);
       return {
@@ -328,7 +329,7 @@ export class ArticleService {
 
   async deleteMultiple(
     deleteArticlesDto: DeleteArticlesDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<ICount>> {
     try {
       const count = await this.articleRepo.deleteMultiple(
         deleteArticlesDto.ids,

@@ -24,6 +24,8 @@ import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
 import { createArticleValidation } from 'src/core/validations/article.validation';
 import { DeleteArticlesDto } from './dto/delete-article.dto';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { Article } from './model/article.model';
 
 @Controller('article')
 export class ArticleController {
@@ -46,17 +48,17 @@ export class ArticleController {
     @Body() createArticleDto: CreateArticleDto,
     @UploadedFile() coverImage: Express.Multer.File,
     @Req() req: Request,
-  ) {
+  ): Promise<IResponse<Article>> {
     return this.articleService.create(createArticleDto, coverImage, req);
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<IResponse<Article[]>> {
     return await this.articleService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<IResponse<Article>> {
     return await this.articleService.findOne(id);
   }
 
@@ -72,17 +74,19 @@ export class ArticleController {
     @Body() updateArticleDto: UpdateArticleDto,
     @UploadedFile() coverImage: Express.Multer.File,
     @Req() req: Request,
-  ) {
+  ): Promise<IResponse<Article>> {
     return this.articleService.update(id, updateArticleDto, coverImage, req);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string): Promise<any> {
+  deleteOne(@Param('id') id: string): Promise<IResponse<ICount>> {
     return this.articleService.deleteOne(id);
   }
 
   @Delete()
-  deleteMultiple(@Body() deleteArticlesDto: DeleteArticlesDto): Promise<any> {
+  deleteMultiple(
+    @Body() deleteArticlesDto: DeleteArticlesDto,
+  ): Promise<IResponse<ICount>> {
     return this.articleService.deleteMultiple(deleteArticlesDto);
   }
 }

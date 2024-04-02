@@ -25,35 +25,47 @@ module.exports = {
       phoneNumber: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       gender: {
         type: Sequelize.ENUM,
         values: ['MALE', 'FEMALE', 'OTHER'],
         allowNull: true,
+        defaultValue: null,
       },
       birthDate: {
         type: Sequelize.DATE,
         allowNull: true,
+        defaultValue: null,
+        validate: {
+          isDate: true,
+          isBefore: new Date(),
+        },
       },
       picture: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       country: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       city: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       address1: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       address2: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue: null,
       },
       createdAt: {
         allowNull: false,

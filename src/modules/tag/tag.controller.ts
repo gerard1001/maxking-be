@@ -18,7 +18,8 @@ import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
 import { createTagValidation } from 'src/core/validations/tag.validation';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { Tag } from './model/tag.model';
 
 @Controller('tag')
 export class TagController {
@@ -35,27 +36,30 @@ export class TagController {
     ],
   })
   @UsePipes(new ValidationPipe(createTagValidation))
-  async create(@Body() createTagDto: CreateTagDto): Promise<IResponse> {
+  async create(@Body() createTagDto: CreateTagDto): Promise<IResponse<Tag>> {
     return await this.tagService.create(createTagDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<IResponse<Tag[]>> {
     return this.tagService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<IResponse<Tag>> {
     return this.tagService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTagDto: UpdateTagDto,
+  ): Promise<IResponse<Tag>> {
     return this.tagService.update(id, updateTagDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<IResponse<ICount>> {
     return this.tagService.deleteOne(id);
   }
 }

@@ -8,16 +8,18 @@ import {
 import { Reflector } from '@nestjs/core';
 import { UserRepository } from 'src/modules/user/providers/user.repository';
 import { IGuardMetadata } from '../interfaces/guard.interface';
-import { ENUM_ROLE_TYPE } from '../constants/role.constants';
 import { compareRoles } from '../functions/algorithms.functions';
 import { log } from 'console';
 import { ArticleRepository } from 'src/modules/article/providers/article.repository';
+import { CommentRepository } from 'src/modules/comment/providers/comment.repository';
+import { Comment } from 'src/modules/comment/model/comment.model';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly articleRepository: ArticleRepository,
+    private readonly commentRepository: CommentRepository,
     private readonly reflector: Reflector,
   ) {}
 
@@ -37,20 +39,38 @@ export class RoleGuard implements CanActivate {
         HttpStatus.NOT_FOUND,
       );
     }
-    const articleUserId = (
-      await this.articleRepository.findById(request.params.id)
-    ).authorId;
+    const articleUserId = await this.articleRepository
+      .findById(request.params.id)
+      .then((res) => res.authorId)
+      .catch((_) => {
+        return null;
+      });
+    const commentUserId = await this.commentRepository
+      .findById(request.params.id)
+      .then((res) => {
+        return res.userId;
+      })
+      .catch((_) => {
+        return null;
+      });
+    console.log(request.user);
+    console.log(commentUserId);
+
     const route = request.route.path.split('/')[1];
 
     let paramUser = '';
 
-    switch (route) {
-      case 'article':
-        paramUser = articleUserId;
-        break;
-      default:
-        paramUser = request.params.id;
-    }
+    if (accOwner)
+      switch (route) {
+        case 'article':
+          paramUser = articleUserId;
+          break;
+        case 'comment':
+          paramUser = commentUserId;
+          break;
+        default:
+          paramUser = request.params.id;
+      }
 
     log(paramUser);
 
@@ -61,7 +81,7 @@ export class RoleGuard implements CanActivate {
       );
     }
     if (roles?.length === 0 && accOwner) {
-      if (request?.user?.id === request?.params?.id) {
+      if (request?.user?.id === paramUser) {
         return true;
       } else {
         throw new HttpException(
@@ -72,7 +92,7 @@ export class RoleGuard implements CanActivate {
     }
     if (roles?.length > 0 && accOwner) {
       if (
-        request?.user?.id === request?.params?.id ||
+        request.user.id === paramUser ||
         compareRoles(
           roles,
           user.roles.map((role) => role.type),
@@ -101,81 +121,5 @@ export class RoleGuard implements CanActivate {
         );
       }
     }
-    /* if (roles.length > 0) {
-      if (
-        compareRoles(
-          roles,
-          user.roles.map((role) => role.type),
-        )
-      ) {
-        return true;
-      }
-      if (accOwner.checkAccOwner) {
-        if (
-          accOwner.checkAccOwner &&
-          !accOwner.allowAnyRole &&
-          accOwner.accOwnerRoles.length === 0
-        ) {
-          throw new HttpException(
-            'There is no account ownership for this action.',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        if (request.user.id === request.params.id && accOwner.allowAnyRole) {
-          return true;
-        }
-        if (request.user.id === request.params.id && !accOwner.allowAnyRole) {
-          if (accOwner.accOwnerRoles.length === 0) {
-            throw new HttpException(
-              "You have to specify the user's allowed roles",
-              HttpStatus.BAD_REQUEST,
-            );
-          }
-          if (
-            compareRoles(
-              accOwner.accOwnerRoles,
-              user.roles.map((role) => role.type),
-            )
-          ) {
-            return true;
-          } else {
-            const lastRole =
-              accOwner.accOwnerRoles[accOwner.accOwnerRoles.length - 1];
-            const rolesString = accOwner.accOwnerRoles.slice(0, -1).join(', ');
-
-            throw new HttpException(
-              `This action can be performed by account owner who is: ${
-                accOwner.accOwnerRoles.length === 1
-                  ? `${roles[0]}`
-                  : `${rolesString} or ${lastRole}`
-              }.`,
-              HttpStatus.UNAUTHORIZED,
-            );
-          }
-        } else {
-          const lastRole = roles[roles.length - 1];
-          const rolesString = roles.slice(0, -1).join(', ');
-
-          throw new HttpException(
-            `This action can be performed by account owner${
-              roles.length === 1
-                ? ` or ${roles[0]}`
-                : `, ${rolesString} or ${lastRole}`
-            }.`,
-            HttpStatus.UNAUTHORIZED,
-          );
-        }
-      } else {
-        const lastRole = roles[roles.length - 1];
-        const rolesString = roles.slice(0, -1).join(', ');
-
-        throw new HttpException(
-          `This action can be performed by ${
-            roles.length === 1 ? `${roles[0]}` : `${rolesString} or ${lastRole}`
-          }.`,
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
-    } */
   }
 }

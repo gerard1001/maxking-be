@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { TagRepository } from './providers/tag.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { Tag } from './model/tag.model';
 
 @Injectable()
 export class TagService {
   constructor(private readonly tagRepo: TagRepository) {}
 
-  async create(createTagDto: CreateTagDto): Promise<IResponse> {
+  async create(createTagDto: CreateTagDto): Promise<IResponse<Tag>> {
     try {
       const { name } = createTagDto;
       const tagExists = await this.tagRepo.findByName(name.trim());
@@ -32,7 +33,7 @@ export class TagService {
     }
   }
 
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<IResponse<Tag[]>> {
     try {
       const tags = await this.tagRepo.findAll();
       return {
@@ -48,7 +49,7 @@ export class TagService {
     }
   }
 
-  async findById(id: string): Promise<IResponse> {
+  async findById(id: string): Promise<IResponse<Tag>> {
     try {
       const tag = await this.tagRepo.findById(id);
       if (!tag) {
@@ -67,7 +68,7 @@ export class TagService {
     }
   }
 
-  async findByName(name: string): Promise<IResponse> {
+  async findByName(name: string): Promise<IResponse<Tag>> {
     try {
       const tag = await this.tagRepo.findByName(name);
       if (!tag) {
@@ -86,7 +87,10 @@ export class TagService {
     }
   }
 
-  async update(id: string, updateTagDto: UpdateTagDto): Promise<IResponse> {
+  async update(
+    id: string,
+    updateTagDto: UpdateTagDto,
+  ): Promise<IResponse<Tag>> {
     try {
       const { name } = updateTagDto;
       const nameTag = await this.tagRepo.findByName(name);
@@ -104,7 +108,7 @@ export class TagService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Tag updated successfully',
-        data: newTag,
+        data: newTag[1][0],
       };
     } catch (error) {
       throw new HttpException(
@@ -114,7 +118,7 @@ export class TagService {
     }
   }
 
-  async deleteOne(id: string): Promise<IResponse> {
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const count = await this.tagRepo.deleteOne(id);
       return {

@@ -2,14 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.model';
 import { UserRepository } from './providers/user.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { DeleteUsersDto } from './dto/delete-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepo: UserRepository) {}
 
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<IResponse<User[]>> {
     try {
       const users = await this.userRepo.findAll();
       return {
@@ -25,7 +25,7 @@ export class UserService {
     }
   }
 
-  async findById(id: string): Promise<IResponse> {
+  async findById(id: string): Promise<IResponse<User>> {
     try {
       const user = await this.userRepo.findById(id);
       if (!user) {
@@ -66,7 +66,7 @@ export class UserService {
     }
   }
 
-  async deleteOne(id: string): Promise<IResponse> {
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const count = await this.userRepo.deleteOne(id);
       return {
@@ -82,7 +82,9 @@ export class UserService {
     }
   }
 
-  async deleteMultiple(deleteUsersDto: DeleteUsersDto): Promise<IResponse> {
+  async deleteMultiple(
+    deleteUsersDto: DeleteUsersDto,
+  ): Promise<IResponse<ICount>> {
     try {
       const count = await this.userRepo.deleteMultiple(deleteUsersDto.ids);
       return {

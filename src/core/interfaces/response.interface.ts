@@ -1,5 +1,13 @@
-export interface IResponse {
+export interface IResponse<T> {
   statusCode: number;
   message: string;
-  data?: any;
+  data?: T;
+}
+
+export interface ICount {
+  count: number;
+}
+
+export interface IToken {
+  token: string;
 }

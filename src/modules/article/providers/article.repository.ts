@@ -3,6 +3,8 @@ import { ARTICLE_MODEL } from 'src/core/constants';
 import { Article } from '../model/article.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
+import { Profile } from 'src/modules/profile/model/profile.model';
+import { Comment } from 'src/modules/comment/model/comment.model';
 
 @Injectable()
 export class ArticleRepository {
@@ -15,7 +17,35 @@ export class ArticleRepository {
   }
 
   async findAll(): Promise<Article[]> {
-    return await this.articleModel.findAll();
+    return await this.articleModel.findAll({
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          // attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async findById(id: string) {
@@ -31,6 +61,25 @@ export class ArticleRepository {
           model: User,
           as: 'author',
           attributes: ['id', 'firstName', 'lastName', 'email'],
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'writer',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
+            },
+          ],
         },
       ],
     });

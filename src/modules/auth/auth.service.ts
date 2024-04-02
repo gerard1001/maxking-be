@@ -5,8 +5,9 @@ import { UserRepository } from '../user/providers/user.repository';
 import { PasswordHelper } from 'src/core/helpers/password.helper';
 import { UserRoleService } from '../user_role/user_role.service';
 import { RoleRepository } from '../role/providers/role.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { IResponse, IToken } from 'src/core/interfaces/response.interface';
 import { AuthHelper } from 'src/core/helpers/auth.helper';
+import { User } from '../user/model/user.model';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<IResponse> {
+  async register(createUserDto: CreateUserDto): Promise<IResponse<User>> {
     const { firstName, lastName, email, password } = createUserDto;
     const user = await this.userRepo.findByEmail(email);
     if (user) {
@@ -51,7 +52,7 @@ export class AuthService {
     };
   }
 
-  async login(loginAuthDto: LoginAuthDto): Promise<IResponse> {
+  async login(loginAuthDto: LoginAuthDto): Promise<IResponse<IToken>> {
     try {
       const { email, password } = loginAuthDto;
       const user = await this.userRepo.findByEmail(email);

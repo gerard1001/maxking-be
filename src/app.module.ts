@@ -12,6 +12,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { ArticleTagModule } from './modules/article_tag/article_tag.module';
 import { UserArticleModule } from './modules/user_article/user_article.module';
 import { ConfigModule } from '@nestjs/config';
+import { CommentModule } from './modules/comment/comment.module';
 import configuration from 'config/configuration';
 
 @Module({
@@ -30,6 +31,7 @@ import configuration from 'config/configuration';
     TagModule,
     ArticleTagModule,
     UserArticleModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

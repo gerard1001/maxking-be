@@ -1,34 +1,69 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Req,
+  UploadedFile,
+  UseInterceptors,
+  UseGuards,
+  SetMetadata,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
+import { multerOptions } from 'src/core/upload/multer.config';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { RoleGuard } from 'src/core/guards/role.guard';
+import { AuthGuard } from 'src/core/guards/auth.guard';
+import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { Profile } from './model/profile.model';
+import { IResponse } from 'src/core/interfaces/response.interface';
 
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.profileService.findAll();
+  @UseInterceptors(FileInterceptor('picture', multerOptions))
+  async create(
+    @Body() createProfileDto: CreateProfileDto,
+    @UploadedFile() picture: Express.Multer.File,
+    @Req() req: Request,
+  ): Promise<IResponse<Profile>> {
+    return await this.profileService.create(createProfileDto, picture, req);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
+  @UseGuards(AuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: true,
+    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
+  })
+  async findById(@Param('id') id: string): Promise<IResponse<Profile>> {
+    return await this.profileService.findById(id);
+  }
+
+  @Get('user/:id')
+  @UseGuards(AuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: true,
+    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
+  })
+  async findByUserId(@Param('id') id: string): Promise<IResponse<Profile>> {
+    return await this.profileService.findByUserId(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(+id, updateProfileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+  @UseInterceptors(FileInterceptor('picture', multerOptions))
+  async update(
+    @Param('id') id: string,
+    @Body() updateProfileDto: UpdateProfileDto,
+    @UploadedFile() picture: Express.Multer.File,
+    @Req() req: Request,
+  ): Promise<IResponse<Profile>> {
+    return await this.profileService.update(id, updateProfileDto, picture, req);
   }
 }

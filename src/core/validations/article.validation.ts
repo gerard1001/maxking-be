@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export const createArticleValidation = Joi.object({
-  title: Joi.string().required().trim().max(20),
+  title: Joi.string().required().trim().max(100).min(4),
   description: Joi.string().empty('').trim(),
   body: Joi.string().required(),
   tags: Joi.array().items(Joi.string().uuid()),

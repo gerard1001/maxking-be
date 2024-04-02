@@ -27,8 +27,14 @@ export class TagRepository {
     });
   }
 
-  async update(id: string, updateTagDto: UpdateTagDto) {
-    return await this.tagModel.update(updateTagDto, { where: { id } });
+  async update(
+    id: string,
+    updateTagDto: UpdateTagDto,
+  ): Promise<[number, Tag[]]> {
+    return await this.tagModel.update(updateTagDto, {
+      where: { id },
+      returning: true,
+    });
   }
 
   async deleteOne(id: string): Promise<number> {

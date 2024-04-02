@@ -6,12 +6,14 @@ import { tagProviders } from 'src/database/providers/entities.providers';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { ArticleModule } from '../article/article.module';
+import { CommentModule } from '../comment/comment.module';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
     forwardRef(() => ArticleModule),
+    forwardRef(() => CommentModule),
   ],
   controllers: [TagController],
   providers: [TagService, TagRepository, ...tagProviders],

@@ -3,11 +3,14 @@ import {
   Column,
   DataType,
   HasMany,
+  HasOne,
   IsEmail,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Article } from 'src/modules/article/model/article.model';
+import { Comment } from 'src/modules/comment/model/comment.model';
+import { Profile } from 'src/modules/profile/model/profile.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { UserRole } from 'src/modules/user_role/models/user_role.model';
@@ -30,6 +33,9 @@ export class User extends Model<User> {
   @Column(DataType.BOOLEAN)
   isVerified: boolean;
 
+  @HasOne(() => Profile)
+  profile: Profile;
+
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
 
@@ -38,4 +44,7 @@ export class User extends Model<User> {
 
   @HasMany(() => Article)
   articles: Article[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
 }

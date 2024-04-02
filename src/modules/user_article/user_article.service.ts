@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserArticleDto } from './dto/create-user_article.dto';
 import { UserArticleRepository } from './providers/user_article.repository';
-import { IResponse } from 'src/core/interfaces/response.interface';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { ArticleRepository } from '../article/providers/article.repository';
 import { UserRepository } from '../user/providers/user.repository';
+import { UserArticle } from './model/user_article.model';
 
 @Injectable()
 export class UserArticleService {
@@ -13,7 +14,9 @@ export class UserArticleService {
     private readonly articlRepo: ArticleRepository,
   ) {}
 
-  async create(createUserArticleDto: CreateUserArticleDto): Promise<IResponse> {
+  async create(
+    createUserArticleDto: CreateUserArticleDto,
+  ): Promise<IResponse<UserArticle>> {
     try {
       const { userId, articleId } = createUserArticleDto;
       const user = await this.userRepo.findById(userId);
@@ -42,7 +45,7 @@ export class UserArticleService {
     }
   }
 
-  async findAll(): Promise<IResponse> {
+  async findAll(): Promise<IResponse<UserArticle[]>> {
     try {
       const userArticles = await this.userArticleRepo.findAll();
       return {
@@ -58,7 +61,7 @@ export class UserArticleService {
     }
   }
 
-  async findById(id: string): Promise<IResponse> {
+  async findById(id: string): Promise<IResponse<UserArticle>> {
     try {
       const userArticle = await this.userArticleRepo.findById(id);
       if (!userArticle) {
@@ -80,7 +83,7 @@ export class UserArticleService {
   async findByUserIdAndArticleId(
     userId: string,
     articleId: string,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<UserArticle>> {
     try {
       const userArticle = await this.userArticleRepo.findByUserIdAndArticleId(
         userId,
@@ -102,13 +105,13 @@ export class UserArticleService {
     }
   }
 
-  async deleteOne(id: string): Promise<IResponse> {
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
-      const deleted = await this.userArticleRepo.deleteOne(id);
+      const count = await this.userArticleRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,
         message: 'User article deleted successfully',
-        data: { deleted },
+        data: { count },
       };
     } catch (error) {
       throw new HttpException(
@@ -118,7 +121,7 @@ export class UserArticleService {
     }
   }
 
-  async deleteMultiple(ids: string[]): Promise<IResponse> {
+  async deleteMultiple(ids: string[]): Promise<IResponse<ICount>> {
     try {
       for (const id of ids) {
         const userArticle = await this.userArticleRepo.findById(id);
@@ -129,11 +132,11 @@ export class UserArticleService {
           );
         }
       }
-      const deleted = await this.userArticleRepo.deleteMultiple(ids);
+      const count = await this.userArticleRepo.deleteMultiple(ids);
       return {
         statusCode: HttpStatus.OK,
         message: 'User articles deleted successfully',
-        data: { deleted },
+        data: { count },
       };
     } catch (error) {
       throw new HttpException(

@@ -8,6 +8,8 @@ import { Article } from 'src/modules/article/model/article.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
+import { Profile } from 'src/modules/profile/model/profile.model';
+import { Comment } from 'src/modules/comment/model/comment.model';
 
 export const databaseProviders = [
   {
@@ -30,12 +32,14 @@ export const databaseProviders = [
       const sequelize = new Sequelize(config);
       sequelize.addModels([
         User,
+        Profile,
         Role,
         UserRole,
         Article,
         UserArticle,
         Tag,
         ArticleTag,
+        Comment,
       ]);
       await sequelize.sync();
       return sequelize;

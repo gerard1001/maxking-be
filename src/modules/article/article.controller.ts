@@ -26,6 +26,7 @@ import { createArticleValidation } from 'src/core/validations/article.validation
 import { DeleteArticlesDto } from './dto/delete-article.dto';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Article } from './model/article.model';
+import { FeatureArticlesDto } from './dto/feature-article.dto';
 
 @Controller('article')
 export class ArticleController {
@@ -57,6 +58,11 @@ export class ArticleController {
     return await this.articleService.findAll();
   }
 
+  @Get('featured')
+  async findFeatured(): Promise<IResponse<Article[]>> {
+    return await this.articleService.findFeatured();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IResponse<Article>> {
     return await this.articleService.findOne(id);
@@ -76,6 +82,23 @@ export class ArticleController {
     @Req() req: Request,
   ): Promise<IResponse<Article>> {
     return this.articleService.update(id, updateArticleDto, coverImage, req);
+  }
+
+  @Patch('feature/:id')
+  @UseGuards(AuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  updateFeatured(
+    @Param('id') id: string,
+    @Body() featureArticlesDto: FeatureArticlesDto,
+  ): Promise<IResponse<Article>> {
+    return this.articleService.updateFeatured(id, featureArticlesDto);
   }
 
   @Delete(':id')

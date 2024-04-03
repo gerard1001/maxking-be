@@ -4,6 +4,7 @@ import { Comment } from '../model/comment.model';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
+import { Reply } from 'src/modules/reply/model/reply.model';
 
 @Injectable()
 export class CommentRepository {
@@ -31,6 +32,24 @@ export class CommentRepository {
               model: Profile,
               as: 'profile',
               attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Reply,
+          as: 'replies',
+          include: [
+            {
+              model: User,
+              as: 'writer',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
             },
           ],
         },

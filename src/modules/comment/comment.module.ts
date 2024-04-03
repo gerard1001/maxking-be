@@ -6,12 +6,14 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { CommentRepository } from './providers/comment.repository';
 import { commentProviders } from 'src/database/providers/entities.providers';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
     forwardRef(() => ArticleModule),
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
+    forwardRef(() => ReplyModule),
   ],
   controllers: [CommentController],
   providers: [CommentService, CommentRepository, ...commentProviders],

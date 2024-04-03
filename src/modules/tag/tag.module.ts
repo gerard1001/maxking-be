@@ -7,6 +7,7 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { ArticleModule } from '../article/article.module';
 import { CommentModule } from '../comment/comment.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CommentModule } from '../comment/comment.module';
     forwardRef(() => UserModule),
     forwardRef(() => ArticleModule),
     forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
   ],
   controllers: [TagController],
   providers: [TagService, TagRepository, ...tagProviders],

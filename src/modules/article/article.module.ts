@@ -9,6 +9,7 @@ import { ArticleRepository } from './providers/article.repository';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { CommentModule } from '../comment/comment.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommentModule } from '../comment/comment.module';
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
     forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
   ],
   controllers: [ArticleController],
   providers: [ArticleService, ArticleRepository, ...articleProviders],

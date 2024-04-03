@@ -10,6 +10,7 @@ import { Tag } from 'src/modules/tag/model/tag.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Reply } from 'src/modules/reply/model/reply.model';
 
 export const databaseProviders = [
   {
@@ -40,6 +41,7 @@ export const databaseProviders = [
         Tag,
         ArticleTag,
         Comment,
+        Reply,
       ]);
       await sequelize.sync();
       return sequelize;

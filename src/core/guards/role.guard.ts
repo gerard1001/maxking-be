@@ -9,10 +9,9 @@ import { Reflector } from '@nestjs/core';
 import { UserRepository } from 'src/modules/user/providers/user.repository';
 import { IGuardMetadata } from '../interfaces/guard.interface';
 import { compareRoles } from '../functions/algorithms.functions';
-import { log } from 'console';
 import { ArticleRepository } from 'src/modules/article/providers/article.repository';
 import { CommentRepository } from 'src/modules/comment/providers/comment.repository';
-import { Comment } from 'src/modules/comment/model/comment.model';
+import { ReplyRepository } from 'src/modules/reply/providers/reply.repository';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -20,6 +19,7 @@ export class RoleGuard implements CanActivate {
     private readonly userRepository: UserRepository,
     private readonly articleRepository: ArticleRepository,
     private readonly commentRepository: CommentRepository,
+    private readonly replyRepository: ReplyRepository,
     private readonly reflector: Reflector,
   ) {}
 
@@ -53,8 +53,14 @@ export class RoleGuard implements CanActivate {
       .catch((_) => {
         return null;
       });
-    console.log(request.user);
-    console.log(commentUserId);
+    const replyUserId = await this.replyRepository
+      .findById(request.params.id)
+      .then((res) => {
+        return res.userId;
+      })
+      .catch((_) => {
+        return null;
+      });
 
     const route = request.route.path.split('/')[1];
 
@@ -68,11 +74,12 @@ export class RoleGuard implements CanActivate {
         case 'comment':
           paramUser = commentUserId;
           break;
+        case 'reply':
+          paramUser = replyUserId;
+          break;
         default:
           paramUser = request.params.id;
       }
-
-    log(paramUser);
 
     if (roles.length === 0 && !accOwner) {
       throw new HttpException(

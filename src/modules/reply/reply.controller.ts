@@ -10,20 +10,20 @@ import {
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
-import { CommentService } from './comment.service';
+import { ReplyService } from './reply.service';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
-import { Comment } from './model/comment.model';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { Reply } from './model/reply.model';
+import { CreateReplyDto } from './dto/create-reply.dto';
 import { AuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { UpdateReplyDto } from './dto/update-reply.dto';
 
-@Controller('comment')
-export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+@Controller('reply')
+export class ReplyController {
+  constructor(private readonly replyService: ReplyService) {}
 
-  @Post(':articleId')
+  @Post(':commentId')
   @UseGuards(AuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
@@ -35,21 +35,21 @@ export class CommentController {
     ],
   })
   async create(
-    @Body() createCommentDto: CreateCommentDto,
-    @Param('articleId') articleId: string,
+    @Body() createReplyDto: CreateReplyDto,
+    @Param('commentId') commentId: string,
     @Req() req: Request,
-  ): Promise<IResponse<Comment>> {
-    return this.commentService.create(createCommentDto, articleId, req);
+  ): Promise<IResponse<Reply>> {
+    return this.replyService.create(createReplyDto, commentId, req);
   }
 
   @Get()
-  async findAll(): Promise<IResponse<Comment[]>> {
-    return await this.commentService.findAll();
+  async findAll(): Promise<IResponse<Reply[]>> {
+    return await this.replyService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<IResponse<Comment>> {
-    return await this.commentService.findById(id);
+  async findOne(@Param('id') id: string): Promise<IResponse<Reply>> {
+    return await this.replyService.findById(id);
   }
 
   @Patch(':id')
@@ -60,9 +60,9 @@ export class CommentController {
   })
   async update(
     @Param('id') id: string,
-    @Body() updateCommentDto: UpdateCommentDto,
-  ): Promise<IResponse<Comment>> {
-    return await this.commentService.update(id, updateCommentDto);
+    @Body() updateReplyDto: UpdateReplyDto,
+  ): Promise<IResponse<Reply>> {
+    return await this.replyService.update(id, updateReplyDto);
   }
 
   @Delete(':id')
@@ -72,15 +72,16 @@ export class CommentController {
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],
   })
   async remove(@Param('id') id: string): Promise<IResponse<ICount>> {
-    return await this.commentService.deleteOne(id);
+    return await this.replyService.deleteOne(id);
   }
 
   @Delete()
+  @UseGuards(AuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
-    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
+    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],
   })
   async removeMultiple(@Body() ids: string[]): Promise<IResponse<ICount>> {
-    return await this.commentService.deleteMultiple(ids);
+    return await this.replyService.deleteMultiple(ids);
   }
 }

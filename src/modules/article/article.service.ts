@@ -10,6 +10,7 @@ import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service
 import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.functions';
 import { DeleteArticlesDto } from './dto/delete-article.dto';
 import { Article } from './model/article.model';
+import { FeatureArticlesDto } from './dto/feature-article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -155,6 +156,22 @@ export class ArticleService {
     }
   }
 
+  async findFeatured(): Promise<IResponse<Article[]>> {
+    try {
+      const articles = await this.articleRepo.findFeaturedArticles();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Featured articles retrieved successfully',
+        data: articles,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findOne(id: string): Promise<IResponse<Article>> {
     try {
       const article = await this.articleRepo.findById(id);
@@ -234,14 +251,14 @@ export class ArticleService {
       }
       if (newTags?.length > 0) {
         for (const tag of newTags) {
-          const tagExists = await this.tagRepo.findByName(tag.trim());
+          const tagExists = await this.tagRepo.findByName(tag?.trim());
           if (tagExists) {
             throw new HttpException(
-              `Tag: ${tag.trim()} already exists, remove it from the list or change it`,
+              `Tag: ${tag?.trim()} already exists, remove it from the list or change it`,
               HttpStatus.CONFLICT,
             );
           }
-          const newTag = await this.tagRepo.create({ name: tag.trim() });
+          const newTag = await this.tagRepo.create({ name: tag?.trim() });
           createdTags.push(newTag.id);
         }
       }
@@ -274,7 +291,7 @@ export class ArticleService {
       const updatedTags = [...tags, ...createdTags];
 
       const newArticle = await this.articleRepo.update(id, {
-        title: title.trim(),
+        title: title?.trim(),
         description,
         body,
         coverImage: req['file'] ? file?.secure_url : article.coverImage,
@@ -297,6 +314,63 @@ export class ArticleService {
           tagId: tag,
         });
       }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Updated article successfuly',
+        data: newArticle[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateFeatured(
+    id: string,
+    featureArticlesDto: FeatureArticlesDto,
+  ): Promise<IResponse<Article>> {
+    try {
+      const { isFeatured } = featureArticlesDto;
+      const article = await this.articleRepo.findById(id);
+      if (!article) {
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      }
+      if (article.isFeatured === isFeatured) {
+        throw new HttpException(
+          `Article is already ${isFeatured ? 'featured' : 'not featured'}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const featuredArticles = await this.articleRepo.findFeaturedArticles();
+
+      if (isFeatured && featuredArticles.length >= 5) {
+        try {
+          const earlyFeaturedArticle = featuredArticles.reduce((prev, curr) => {
+            if (prev.updatedAt < curr.updatedAt) {
+              return prev;
+            } else {
+              return curr;
+            }
+          });
+
+          await this.articleRepo.update(earlyFeaturedArticle.id, {
+            isFeatured: false,
+          });
+        } catch (error) {
+          throw new HttpException(
+            'You can only feature 5 articles at a time',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+
+      const newArticle = await this.articleRepo.update(id, {
+        isFeatured,
+      });
 
       return {
         statusCode: HttpStatus.OK,

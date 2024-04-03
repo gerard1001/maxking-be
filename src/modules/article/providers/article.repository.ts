@@ -89,6 +89,10 @@ export class ArticleRepository {
     return await this.articleModel.findOne({ where: { title } });
   }
 
+  async findFeaturedArticles(): Promise<Article[]> {
+    return await this.articleModel.findAll({ where: { isFeatured: true } });
+  }
+
   async update(
     id: string,
     updateArticleDto: any,

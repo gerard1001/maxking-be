@@ -8,6 +8,7 @@ import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
 import { AuthModule } from '../auth/auth.module';
 import { ArticleModule } from '../article/article.module';
 import { CommentModule } from '../comment/comment.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CommentModule } from '../comment/comment.module';
     forwardRef(() => AuthModule),
     forwardRef(() => ArticleModule),
     forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
   ],
   controllers: [ProfileController],
   providers: [ProfileService, ProfileRepository, ...profileProviders],

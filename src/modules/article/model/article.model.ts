@@ -27,6 +27,10 @@ export class Article extends Model<Article> {
   @Column
   body: string;
 
+  /* Is featured during update only, and by admins */
+  @Column
+  isFeatured: boolean;
+
   @ForeignKey(() => User)
   @Column
   authorId: string;

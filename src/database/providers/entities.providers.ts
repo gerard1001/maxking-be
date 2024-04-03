@@ -3,6 +3,7 @@ import {
   ARTICLE_TAG_MODEL,
   COMMENT_MODEL,
   PROFILE_MODEL,
+  REPLY_MODEL,
   ROLE_MODEL,
   TAG_MODEL,
   USER_ARTICLE_MODEL,
@@ -12,6 +13,7 @@ import {
 import { Article } from 'src/modules/article/model/article.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Reply } from 'src/modules/reply/model/reply.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
@@ -78,5 +80,12 @@ export const commentProviders = [
   {
     provide: COMMENT_MODEL,
     useValue: Comment,
+  },
+];
+
+export const replyProviders = [
+  {
+    provide: REPLY_MODEL,
+    useValue: Reply,
   },
 ];

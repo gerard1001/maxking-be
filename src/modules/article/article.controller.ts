@@ -68,6 +68,13 @@ export class ArticleController {
     return await this.articleService.findOne(id);
   }
 
+  @Get(':id/related')
+  async findByRelatedArticleTags(
+    @Param('id') id: string,
+  ): Promise<IResponse<Article[]>> {
+    return await this.articleService.findByRelatedArticleTags(id);
+  }
+
   @Patch(':id')
   @UseGuards(AuthGuard, RoleGuard)
   @SetMetadata('metadata', {

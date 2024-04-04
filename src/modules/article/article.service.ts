@@ -188,6 +188,33 @@ export class ArticleService {
     }
   }
 
+  async findByRelatedArticleTags(
+    articleId: string,
+  ): Promise<IResponse<Article[]>> {
+    try {
+      const article = await this.articleRepo.findById(articleId);
+      if (!article) {
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      }
+      const articleTags = article.tags?.map((tag) => tag.id) || [];
+      const relatedArticles = await this.articleRepo.findByRelatedArticleTags(
+        articleId,
+        articleTags,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Articles retrieved successfully',
+        data: relatedArticles,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,

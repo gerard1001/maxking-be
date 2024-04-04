@@ -5,6 +5,7 @@ import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ArticleRepository {
@@ -61,6 +62,13 @@ export class ArticleRepository {
           model: User,
           as: 'author',
           attributes: ['id', 'firstName', 'lastName', 'email'],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
         },
         {
           model: Comment,
@@ -91,6 +99,45 @@ export class ArticleRepository {
 
   async findFeaturedArticles(): Promise<Article[]> {
     return await this.articleModel.findAll({ where: { isFeatured: true } });
+  }
+
+  async findByRelatedArticleTags(
+    articleId: string,
+    tagIds: string[],
+  ): Promise<Article[]> {
+    return await this.articleModel.findAll({
+      where: {
+        id: { [Op.not]: articleId },
+        '$tags.id$': { [Op.in]: tagIds },
+      },
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async update(

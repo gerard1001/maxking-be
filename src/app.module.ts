@@ -15,6 +15,8 @@ import { ConfigModule } from '@nestjs/config';
 import { CommentModule } from './modules/comment/comment.module';
 import configuration from 'config/configuration';
 import { ReplyModule } from './modules/reply/reply.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './core/strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { ReplyModule } from './modules/reply/reply.module';
       isGlobal: true,
       load: [configuration],
     }),
+    PassportModule.register({ session: true }),
     DatabaseModule,
     ProfileModule,
     AuthModule,
@@ -36,6 +39,6 @@ import { ReplyModule } from './modules/reply/reply.module';
     ReplyModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

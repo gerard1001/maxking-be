@@ -7,16 +7,28 @@ import { RoleModule } from '../role/role.module';
 import { UserRoleModule } from '../user_role/user_role.module';
 import { AuthHelper } from 'src/core/helpers/auth.helper';
 import { JwtDynamicModule } from 'src/core/jwt/jwt.module';
+import { SessionSerializer } from 'src/core/utils/auth.serializer';
+import { GoogleAuthStrategy } from 'src/core/strategies/google.strategy';
+import { JwtStrategy } from 'src/core/strategies/jwt.strategy';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     forwardRef(() => RoleModule),
     forwardRef(() => UserRoleModule),
+    forwardRef(() => ProfileModule),
     JwtDynamicModule.forRoot(),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordHelper, AuthHelper],
+  providers: [
+    AuthService,
+    PasswordHelper,
+    AuthHelper,
+    GoogleAuthStrategy,
+    JwtStrategy,
+    SessionSerializer,
+  ],
   exports: [AuthHelper],
 })
 export class AuthModule {}

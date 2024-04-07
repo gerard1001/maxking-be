@@ -16,7 +16,7 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { multerOptions } from 'src/core/upload/multer.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RoleGuard } from 'src/core/guards/role.guard';
-import { AuthGuard } from 'src/core/guards/auth.guard';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './model/profile.model';
@@ -37,7 +37,7 @@ export class ProfileController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
@@ -47,7 +47,7 @@ export class ProfileController {
   }
 
   @Get('user/:id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],

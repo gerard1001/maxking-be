@@ -4,18 +4,24 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  Get,
+  UseGuards,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { IResponse, IToken } from 'src/core/interfaces/response.interface';
 import { User } from '../user/model/user.model';
+import { GoogleAuthGuard } from 'src/core/guards/google-auth.guard';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('register')
   async register(
     @Body() createUserDto: CreateUserDto,
   ): Promise<IResponse<User>> {
@@ -38,6 +44,41 @@ export class AuthController {
         error.message || 'Server Error',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  // @Post('/login')
+  // @UseGuards(LocalAuthGuard)
+  // async login(@Req() req) {
+  //   try {
+  //     return req.user;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       error.message || 'Server Error',
+  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth(): Promise<any> {
+    return { msg: 'Google Auth' };
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(@Req() req: any, @Res() res: any) {
+    return this.authService.googleLogin(req, res);
+  }
+
+  @Get('status')
+  user(@Req() request: Request) {
+    console.log(request.user);
+    if (request.user) {
+      return { msg: 'Authenticated' };
+    } else {
+      return { msg: 'Not Authenticated' };
     }
   }
 }

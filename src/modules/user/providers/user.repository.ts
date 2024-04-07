@@ -10,7 +10,7 @@ import { Profile } from 'src/modules/profile/model/profile.model';
 export class UserRepository {
   constructor(@Inject(USER_MODEL) private readonly userModel: typeof User) {}
 
-  async register(createUserDto: CreateUserDto): Promise<User> {
+  async register(createUserDto: any): Promise<User> {
     return await this.userModel.create(createUserDto);
   }
 

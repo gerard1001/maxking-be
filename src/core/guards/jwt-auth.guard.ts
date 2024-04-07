@@ -1,20 +1,29 @@
 import {
-  Injectable,
+  ExecutionContext,
   HttpException,
   HttpStatus,
-  ExecutionContext,
-  CanActivate,
+  Inject,
+  Injectable,
+  forwardRef,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { AuthHelper } from '../helpers/auth.helper';
 
 @Injectable()
-export class UserAuthGuard implements CanActivate {
-  constructor(private readonly authHelper: AuthHelper) {}
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(
+    @Inject(forwardRef(() => AuthHelper))
+    private readonly authHelper: AuthHelper,
+  ) {
+    super();
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractToken(request);
+    const token: string = this.extractToken(request);
+
+    console.log('Token', token);
 
     if (!token) {
       throw new HttpException('Please login to proceed', HttpStatus.FORBIDDEN);
@@ -23,7 +32,9 @@ export class UserAuthGuard implements CanActivate {
     try {
       const payload = await this.authHelper.decodeJwtToken(token);
       request['user'] = payload;
-    } catch {
+      console.log('************', payload);
+    } catch (error) {
+      console.log(error);
       throw new HttpException('Invalid signin token', HttpStatus.UNAUTHORIZED);
     }
 

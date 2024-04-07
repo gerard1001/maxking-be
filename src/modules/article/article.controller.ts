@@ -18,7 +18,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/core/upload/multer.config';
-import { AuthGuard } from 'src/core/guards/auth.guard';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
@@ -33,7 +33,7 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Post()
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [
@@ -76,7 +76,7 @@ export class ArticleController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
@@ -92,7 +92,7 @@ export class ArticleController {
   }
 
   @Patch('feature/:id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [

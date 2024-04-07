@@ -14,7 +14,7 @@ import { CommentService } from './comment.service';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Comment } from './model/comment.model';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { AuthGuard } from 'src/core/guards/auth.guard';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -24,7 +24,7 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Post(':articleId')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [
@@ -53,7 +53,7 @@ export class CommentController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],
@@ -66,7 +66,7 @@ export class CommentController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],

@@ -14,7 +14,7 @@ import { ReplyService } from './reply.service';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Reply } from './model/reply.model';
 import { CreateReplyDto } from './dto/create-reply.dto';
-import { AuthGuard } from 'src/core/guards/auth.guard';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { UpdateReplyDto } from './dto/update-reply.dto';
@@ -24,7 +24,7 @@ export class ReplyController {
   constructor(private readonly replyService: ReplyService) {}
 
   @Post(':commentId')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [
@@ -53,7 +53,7 @@ export class ReplyController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],
@@ -66,7 +66,7 @@ export class ReplyController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],
@@ -76,7 +76,7 @@ export class ReplyController {
   }
 
   @Delete()
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN],

@@ -15,6 +15,7 @@ import { IResponse, IToken } from 'src/core/interfaces/response.interface';
 import { AuthHelper } from 'src/core/helpers/auth.helper';
 import { User } from '../user/model/user.model';
 import { ProfileRepository } from '../profile/providers/profile.repository';
+import { MailerHelper } from 'src/core/helpers/mailer.helper';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly userRoleService: UserRoleService,
     private readonly passwordHelper: PasswordHelper,
     private readonly authHelper: AuthHelper,
+    private readonly mailerHelper: MailerHelper,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<IResponse<User>> {
@@ -39,6 +41,139 @@ export class AuthService {
     const role = await this.roleRepo.findByType('CLIENT');
     if (!role) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    const token = await this.authHelper.generateJwtToken<{ email: string }>({
+      email,
+    });
+    const subject = 'MaxKing Account Confirmation';
+    const text = `
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Max King Institute</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Source Sans 3", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        background-color: rgba(241, 241, 241, 0);
+        border-radius: 10px;
+        width: fit-content;
+        margin: auto;
+        padding: 10px 20px 20px 20px;
+        max-width: 440px;
+        width: 640px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        align-items: center;
+        justify-items: center;
+        font-optical-sizing: auto;
+        font-style: normal;
+      "
+    >
+      <img
+        src="https://res.cloudinary.com/rutagerard/image/upload/v1712586592/Important/logo_krcqtj.png"
+        alt=""
+        style="width: 100px; aspect-ratio: 1/1"
+      />
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-items: center;
+          background-color: #a65309;
+          color: white;
+          padding: 20px;
+          border-radius: 10px;
+        "
+      >
+        <h1 style="font-size: 24px; text-align: center">
+          Thanks for joining Max King's Institute
+        </h1>
+        <p style="text-align: center">
+          We sent this email to confirm your account creation on Max King's app,
+          and to confirm the email address you provided
+        </p>
+        <p style="font-size: 14px; color: #e7e7e7">
+          Click the button below to confirm and proceed with login
+        </p>
+        <a href="http://localhost:3000/?token=${token}">
+          <button
+            style="
+              background-color: #f9a826;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              padding: 10px 20px;
+              font-size: 14px;
+              cursor: pointer;
+              text-transform: uppercase;
+            "
+          >
+            Confirm Account
+          </button></a
+        >
+        <br />
+        <hr style="width: 100%" />
+        <p style="font-size: 14px; color: #e7e7e7">
+          If you did not create an account on Max King's app, no further action
+          is required
+        </p>
+      </div>
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          gap: 2px;
+          align-items: center;
+          justify-items: center;
+          padding-top: 20px;
+        "
+      >
+        <a
+          href="https://twitter.com/maxkinginstitut"
+          target="_blank"
+          style="
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            align-items: center;
+            justify-items: center;
+            border-radius: 50%;
+            background-color: #242e8f;
+          "
+        >
+          <img
+            src="https://res.cloudinary.com/rutagerard/image/upload/v1712589344/X-Logo_mjray4.png"
+            alt=""
+            style="width: 18px; aspect-ratio: 1/1; filter: invert(1)"
+          />
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
+`;
+    try {
+      await this.mailerHelper.sendEmail(email, subject, text);
+    } catch (error) {
+      throw new HttpException(
+        'Email delivery has failed, please check again your email address or try again later',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const newUser = await this.userRepo.register({
       firstName,

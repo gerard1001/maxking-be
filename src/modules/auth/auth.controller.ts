@@ -8,6 +8,7 @@ import {
   UseGuards,
   Res,
   Req,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -16,12 +17,15 @@ import { IResponse, IToken } from 'src/core/interfaces/response.interface';
 import { User } from '../user/model/user.model';
 import { GoogleAuthGuard } from 'src/core/guards/google-auth.guard';
 import { Request } from 'express';
+import { ValidationPipe } from 'src/core/pipes/validation.pipe';
+import { createUserValidation } from 'src/core/validations/user.validation';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @UsePipes(new ValidationPipe(createUserValidation))
   async register(
     @Body() createUserDto: CreateUserDto,
   ): Promise<IResponse<User>> {

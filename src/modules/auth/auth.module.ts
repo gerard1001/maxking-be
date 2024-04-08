@@ -11,6 +11,7 @@ import { SessionSerializer } from 'src/core/utils/auth.serializer';
 import { GoogleAuthStrategy } from 'src/core/strategies/google.strategy';
 import { JwtStrategy } from 'src/core/strategies/jwt.strategy';
 import { ProfileModule } from '../profile/profile.module';
+import { MailerHelper } from 'src/core/helpers/mailer.helper';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProfileModule } from '../profile/profile.module';
     GoogleAuthStrategy,
     JwtStrategy,
     SessionSerializer,
+    MailerHelper,
   ],
   exports: [AuthHelper],
 })

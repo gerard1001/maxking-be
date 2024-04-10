@@ -23,8 +23,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
     const token: string = this.extractToken(request);
 
-    console.log('Token', token);
-
     if (!token) {
       throw new HttpException('Please login to proceed', HttpStatus.FORBIDDEN);
     }
@@ -32,9 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       const payload = await this.authHelper.decodeJwtToken(token);
       request['user'] = payload;
-      console.log('************', payload);
     } catch (error) {
-      console.log(error);
       throw new HttpException('Invalid signin token', HttpStatus.UNAUTHORIZED);
     }
 

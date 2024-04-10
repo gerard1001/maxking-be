@@ -13,6 +13,7 @@ import {
 import { Article } from 'src/modules/article/model/article.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Profile } from 'src/modules/profile/model/profile.model';
 import { Reply } from 'src/modules/reply/model/reply.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
@@ -30,7 +31,7 @@ export const userProviders = [
 export const profileProviders = [
   {
     provide: PROFILE_MODEL,
-    useValue: User,
+    useValue: Profile,
   },
 ];
 

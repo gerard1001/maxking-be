@@ -33,6 +33,9 @@ export class User extends Model<User> {
   @Column(DataType.BOOLEAN)
   isVerified: boolean;
 
+  @Column(DataType.BOOLEAN)
+  isGoogleUser: boolean;
+
   @HasOne(() => Profile)
   profile: Profile;
 

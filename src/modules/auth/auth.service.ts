@@ -428,7 +428,6 @@ export class AuthService {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      console.log(user);
       if (user.isVerified === true) {
         throw new HttpException('User already verified', HttpStatus.CONFLICT);
       }
@@ -452,10 +451,16 @@ export class AuthService {
     try {
       const { email, password } = loginAuthDto;
       const user = await this.userRepo.findByEmail(email);
-      console.log(user);
       if (!user) {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }
+      if (user.isGoogleUser) {
+        throw new HttpException(
+          'User not registered with email and password, please proceed with google sign in',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
       const isCorrectPassword = await this.passwordHelper.comparePassword(
         password,
         user.password,
@@ -486,163 +491,70 @@ export class AuthService {
     }
   }
 
-  // async googleLogin(data: any): Promise<any> {
-  //   try {
-  //     const user = await this.userRepo.findByEmail(data.email);
-
-  //     if (!user) {
-  //       console.log('User not found, creating user');
-  //       const role = await this.roleRepo.findByType('CLIENT');
-  //       if (!role) {
-  //         throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
-  //       }
-  //       const newUser = await this.userRepo.register({
-  //         firstName: data.firstName,
-  //         lastName: data.lastName,
-  //         email: data.email,
-  //         password: null,
-  //         isVerified: data.isVerified,
-  //       });
-  //       const token = await this.authHelper.generateJwtToken({
-  //         id: newUser.id,
-  //       });
-
-  //       await this.userRoleService.create({
-  //         userId: newUser.id,
-  //         roleId: role.id,
-  //       });
-
-  //       console.log('User created successfully');
-  //       console.log('Token:', token);
-  //       console.log('User:', newUser);
-
-  //       /* return {
-  //         statusCode: HttpStatus.CREATED,
-  //         message: 'User registered successfully (With Google)',
-  //         data: {
-  //           token,
-  //         },
-  //       }; */
-
-  //       return newUser;
-  //     }
-
-  //     const token = await this.authHelper.generateJwtToken({
-  //       id: user.id,
-  //     });
-  //     console.log('User logged in successfully');
-  //     console.log('Token:', token);
-  //     console.log('User:', user);
-
-  //     return user;
-
-  //     /* return {
-  //       statusCode: HttpStatus.OK,
-  //       message: 'User logged in successfully (With Google)',
-  //       data: {
-  //         token,
-  //       },
-  //     }; */
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       error.message || 'Server Error',
-  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
-
   async googleLogin(req: any, res: any) {
     try {
-      console.log('***********$$$$$$************');
-      console.log(req.user);
-
-      // res.json(req.user);
-
-      // return res.redirect(`http://localhost:3000`);
-      // return req.user;
-      // return req.user;
-
+      const params = new URLSearchParams();
       const { firstName, lastName, email, picture, isVerified } = req.user;
 
       const user = await this.userRepo.findByEmail(req.user?.email);
 
       if (!user) {
-        console.log('User not found, creating user');
-        console.log('Create user:', req.user.firstName);
-
         const role = await this.roleRepo.findByType('CLIENT');
         if (!role) {
-          throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+          params.set('error', 'role_not_found');
+          // throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
         }
+
         const newUser = await this.userRepo.register({
           firstName,
           lastName,
           email,
           password: null,
           isVerified,
+          isGoogleUser: true,
         });
         const token = await this.authHelper.generateJwtToken({
           id: newUser.id,
         });
 
-        await this.userRoleService.create({
-          userId: newUser.id,
-          roleId: role.id,
-        });
+        try {
+          await this.userRoleService.create({
+            userId: newUser.id,
+            roleId: role.id,
+          });
+        } catch (error) {
+          params.set('error', 'role_assignment_failed');
+          await this.userRepo.deleteOne(newUser.id);
+        }
 
-        console.log('User created successfully');
-        console.log('Token:', token);
-        console.log('User:', newUser);
+        try {
+          await this.profileRepo.create({
+            userId: newUser.id,
+            picture,
+          });
+        } catch (error) {
+          params.set('error', 'profile_creation_failed');
+        }
 
-        return {
-          statusCode: HttpStatus.CREATED,
-          message: 'User registered successfully (With Google)',
-          data: {
-            token,
-          },
-        };
+        params.set('token', token);
+        params.set('new_user', 'true');
+
+        return res.redirect(`http://localhost:3000?${params}`);
       }
 
       const token = await this.authHelper.generateJwtToken({
         id: user.id,
       });
 
-      // if (user.password !== null) {
-      //   throw new HttpException(
-      //     'This email was registered manually, please proceed with email and password',
-      //     HttpStatus.FORBIDDEN,
-      //   );
-      // }
-
-      const params = new URLSearchParams();
       if (user.password !== null) {
-        params.set('error', 'manual_user-google_signin-conflict');
+        params.set('error', 'manual_user_google_signin_conflict');
       } else {
         params.set('token', token);
+        params.set('new_user', 'false');
       }
 
-      console.log('$%$%$%$%$45454545', params);
-
-      // await res.redirect(`http://localhost:3000`);
-      // return {
-      //   statusCode: HttpStatus.OK,
-      //   message: 'User logged in successfully (With Google)',
-      //   data: {
-      //     token,
-      //   },
-      // };
-
       return res.redirect(`http://localhost:3000?${params}`);
-      // return {
-      //   statusCode: HttpStatus.OK,
-      //   message: 'User logged in successfully (With Google)',
-      //   data: {
-      //     token,
-      //   },
-      // };
     } catch (error) {
-      console.log('+++++++++++');
-      console.log(error);
       throw new HttpException(
         error.message || 'Server Error',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,

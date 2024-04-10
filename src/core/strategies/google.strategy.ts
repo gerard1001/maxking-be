@@ -25,32 +25,6 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     cb: VerifiedCallback,
   ) {
-    console.log(_accessToken);
-    console.log(_refreshToken);
-    console.log(profile);
-
-    // const { name, emails, photos } = profile;
-
-    // const user = await this.authService.googleLogin({
-    //   email: emails[0].value,
-    //   firstName: name.givenName,
-    //   lastName: name.familyName,
-    //   picture: photos[0].value,
-    //   isVerified: emails[0].verified,
-    // });
-
-    // console.log('Validate**');
-    // console.log(user);
-
-    // return user || null;
-    // const emailUser = await this.userRepo.findByEmail(profile.emails[0].value);
-    // if (emailUser.password !== null) {
-    //   throw new HttpException(
-    //     'This email was registered manually, please proceed with email and password',
-    //     HttpStatus.FORBIDDEN,
-    //   );
-    // }
-
     const { name, emails, photos } = profile;
     const user = {
       email: emails[0].value,

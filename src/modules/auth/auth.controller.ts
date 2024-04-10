@@ -41,7 +41,6 @@ export class AuthController {
 
   @Get('verify/:token')
   async verifyEmail(@Req() req: Request) {
-    console.log(req.params);
     return this.authService.verifyEmail(req);
   }
 
@@ -60,22 +59,12 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   async googleAuth(): Promise<any> {
-    return { msg: 'Google Auth' };
+    return;
   }
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
     return this.authService.googleLogin(req, res);
-  }
-
-  @Get('status')
-  user(@Req() request: Request) {
-    console.log(request.user);
-    if (request.user) {
-      return { msg: 'Authenticated' };
-    } else {
-      return { msg: 'Not Authenticated' };
-    }
   }
 }

@@ -3,7 +3,6 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../model/user.model';
 import { Role } from '../../role/model/role.model';
 import { USER_MODEL } from 'src/core/constants';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { Profile } from 'src/modules/profile/model/profile.model';
 
 @Injectable()
@@ -45,8 +44,14 @@ export class UserRepository {
     return await this.userModel.findOne({ where: { email } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<[number, User[]]> {
+    return await this.userModel.update(updateUserDto, {
+      where: { id },
+      returning: true,
+    });
   }
 
   async deleteOne(id: string): Promise<number> {

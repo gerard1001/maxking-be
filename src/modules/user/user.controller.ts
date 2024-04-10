@@ -29,9 +29,14 @@ export class UserController {
     return this.userService.findById(id);
   }
 
+  @Get('token/:token')
+  async findByToken(@Param('token') token: string): Promise<IResponse<User>> {
+    return await this.userService.findByToken(token);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

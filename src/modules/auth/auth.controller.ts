@@ -39,6 +39,12 @@ export class AuthController {
     }
   }
 
+  @Get('verify/:token')
+  async verifyEmail(@Req() req: Request) {
+    console.log(req.params);
+    return this.authService.verifyEmail(req);
+  }
+
   @Post('/login')
   async login(@Body() loginAuthDto: LoginAuthDto): Promise<IResponse<IToken>> {
     try {
@@ -50,19 +56,6 @@ export class AuthController {
       );
     }
   }
-
-  // @Post('/login')
-  // @UseGuards(LocalAuthGuard)
-  // async login(@Req() req) {
-  //   try {
-  //     return req.user;
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       error.message || 'Server Error',
-  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
 
   @Get('google')
   @UseGuards(GoogleAuthGuard)

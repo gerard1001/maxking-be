@@ -12,6 +12,7 @@ import { GoogleAuthStrategy } from 'src/core/strategies/google.strategy';
 import { JwtStrategy } from 'src/core/strategies/jwt.strategy';
 import { ProfileModule } from '../profile/profile.module';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MailerHelper } from 'src/core/helpers/mailer.helper';
     forwardRef(() => UserRoleModule),
     forwardRef(() => ProfileModule),
     JwtDynamicModule.forRoot(),
+    CacheModule.register(),
   ],
   controllers: [AuthController],
   providers: [

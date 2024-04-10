@@ -17,6 +17,7 @@ import configuration from 'config/configuration';
 import { ReplyModule } from './modules/reply/reply.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './core/strategies/jwt.strategy';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { JwtStrategy } from './core/strategies/jwt.strategy';
       load: [configuration],
     }),
     PassportModule.register({ session: true }),
+
     DatabaseModule,
     ProfileModule,
     AuthModule,

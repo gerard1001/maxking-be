@@ -4,10 +4,14 @@ import { User } from './model/user.model';
 import { UserRepository } from './providers/user.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { DeleteUsersDto } from './dto/delete-user.dto';
+import { AuthHelper } from 'src/core/helpers/auth.helper';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(
+    private readonly userRepo: UserRepository,
+    private readonly authHelper: AuthHelper,
+  ) {}
 
   async findAll(): Promise<IResponse<User[]>> {
     try {
@@ -55,9 +59,39 @@ export class UserService {
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async findByToken(token: string): Promise<IResponse<User>> {
     try {
-      return `This action updates a #${id} user`;
+      const decodedToken = await this.authHelper.decodeJwtToken(token);
+      if (!decodedToken)
+        throw new HttpException('Invalid token', HttpStatus.BAD_REQUEST);
+      const user = await this.userRepo.findById(decodedToken.id);
+      if (!user)
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User retrieved successfully',
+        data: user,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<IResponse<User>> {
+    try {
+      const {} = updateUserDto;
+      const newUser = await this.userRepo.update(id, updateUserDto);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User updated successfully',
+        data: newUser[1][0],
+      };
     } catch (error) {
       throw new HttpException(
         error.message || 'Server Error',

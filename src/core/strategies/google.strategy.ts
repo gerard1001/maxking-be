@@ -1,12 +1,16 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { VerifiedCallback } from 'passport-jwt';
+import { UserRepository } from 'src/modules/user/providers/user.repository';
 
 @Injectable()
 export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(public readonly configService: ConfigService) {
+  constructor(
+    public readonly configService: ConfigService,
+    private readonly userRepo: UserRepository,
+  ) {
     super({
       clientID: configService.get<string>('CLIENT_ID'),
       clientSecret: configService.get<string>('CLIENT_SECRET'),
@@ -39,6 +43,13 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
     // console.log(user);
 
     // return user || null;
+    // const emailUser = await this.userRepo.findByEmail(profile.emails[0].value);
+    // if (emailUser.password !== null) {
+    //   throw new HttpException(
+    //     'This email was registered manually, please proceed with email and password',
+    //     HttpStatus.FORBIDDEN,
+    //   );
+    // }
 
     const { name, emails, photos } = profile;
     const user = {

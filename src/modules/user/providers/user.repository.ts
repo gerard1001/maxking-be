@@ -58,6 +58,10 @@ export class UserRepository {
     return await this.userModel.destroy({ where: { id } });
   }
 
+  async deleteByEmail(email: string): Promise<number> {
+    return await this.userModel.destroy({ where: { email } });
+  }
+
   async deleteMultiple(ids: string[]): Promise<number> {
     return await this.userModel.destroy({ where: { id: ids } });
   }

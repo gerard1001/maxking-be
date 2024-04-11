@@ -16,8 +16,8 @@ import { AuthHelper } from 'src/core/helpers/auth.helper';
 import { User } from '../user/model/user.model';
 import { ProfileRepository } from '../profile/providers/profile.repository';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+// import { CACHE_MANAGER } from '@nestjs/cache-manager';
+// import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +29,7 @@ export class AuthService {
     private readonly passwordHelper: PasswordHelper,
     private readonly authHelper: AuthHelper,
     private readonly mailerHelper: MailerHelper,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<IResponse<User>> {
@@ -492,17 +492,15 @@ export class AuthService {
   }
 
   async googleLogin(req: any, res: any) {
+    const params = new URLSearchParams();
+    const { firstName, lastName, email, picture, isVerified } = req.user;
     try {
-      const params = new URLSearchParams();
-      const { firstName, lastName, email, picture, isVerified } = req.user;
-
       const user = await this.userRepo.findByEmail(req.user?.email);
 
       if (!user) {
         const role = await this.roleRepo.findByType('CLIENT');
         if (!role) {
           params.set('error', 'role_not_found');
-          // throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
         }
 
         const newUser = await this.userRepo.register({
@@ -546,7 +544,7 @@ export class AuthService {
         id: user.id,
       });
 
-      if (user.password !== null) {
+      if (!user.isGoogleUser) {
         params.set('error', 'manual_user_google_signin_conflict');
       } else {
         params.set('token', token);
@@ -555,10 +553,9 @@ export class AuthService {
 
       return res.redirect(`http://localhost:3000?${params}`);
     } catch (error) {
-      throw new HttpException(
-        error.message || 'Server Error',
-        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      await this.userRepo.deleteByEmail(req?.user?.email);
+      params.set('error', 'server_error');
+      return res.redirect(`http://localhost:3000?${params}`);
     }
   }
 }

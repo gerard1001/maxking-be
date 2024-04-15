@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-export const createUserValidation = Joi.object({
+export const userRegisterValidation = Joi.object({
   firstName: Joi.string().required().empty().min(1).max(40),
   lastName: Joi.string().required().empty().min(1).max(40),
   email: Joi.string().email().required().empty().max(40),
@@ -15,4 +15,11 @@ export const createUserValidation = Joi.object({
       'string.pattern.base':
         '{{#label}} must contain at least 6 characters including at least one number.',
     }),
+});
+
+export const createUserValidation = Joi.object({
+  firstName: Joi.string().required().empty().min(1).max(40),
+  lastName: Joi.string().required().empty().min(1).max(40),
+  email: Joi.string().email().required().empty().max(40),
+  roleId: Joi.string().uuid().required(),
 });

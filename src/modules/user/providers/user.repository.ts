@@ -22,6 +22,7 @@ export class UserRepository {
           attributes: ['id', 'type'],
           through: { attributes: [] },
         },
+        { model: Profile, as: 'profile' },
       ],
     });
   }

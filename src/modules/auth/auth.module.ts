@@ -13,6 +13,9 @@ import { JwtStrategy } from 'src/core/strategies/jwt.strategy';
 import { ProfileModule } from '../profile/profile.module';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ArticleModule } from '../article/article.module';
+import { CommentModule } from '../comment/comment.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { CacheModule } from '@nestjs/cache-manager';
     forwardRef(() => RoleModule),
     forwardRef(() => UserRoleModule),
     forwardRef(() => ProfileModule),
+    forwardRef(() => ArticleModule),
+    forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
     JwtDynamicModule.forRoot(),
     CacheModule.register(),
   ],

@@ -3,6 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ROLE_MODEL } from 'src/core/constants';
 import { Role } from './model/role.model';
+import { IResponse } from 'src/core/interfaces/response.interface';
 
 @Injectable()
 export class RoleService {
@@ -12,9 +13,14 @@ export class RoleService {
     return 'This action adds a new role';
   }
 
-  async findAll(): Promise<Role[]> {
+  async findAll(): Promise<IResponse<Role[]>> {
     try {
-      return await this.roleRepo.findAll({ include: { all: true } });
+      const roles = await this.roleRepo.findAll({ include: { all: true } });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Roles fetched successfully',
+        data: roles,
+      };
     } catch (error) {
       throw new HttpException(
         error.message || 'Server Error',

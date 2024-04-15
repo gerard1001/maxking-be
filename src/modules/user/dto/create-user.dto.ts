@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsBoolean,
   IsOptional,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -24,9 +25,13 @@ export class CreateUserDto {
   readonly email: string;
 
   @IsString()
-  @IsDefined()
-  @IsNotEmpty()
-  readonly password: string;
+  @IsOptional()
+  readonly password?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsUUID()
+  readonly roleId?: string;
 
   @IsBoolean()
   @IsOptional()

@@ -399,6 +399,20 @@ export class AuthService {
         isVerified: false,
       });
 
+      try {
+        await this.profileRepo.create({
+          userId: newUser.id,
+          picture:
+            'https://res.cloudinary.com/rutagerard/image/upload/v1710712498/brand/elh13kdsiqvo8dvjyh0a.jpg',
+        });
+      } catch (error) {
+        await this.userRepo.deleteByEmail(email);
+        return {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create user profile, try again',
+        };
+      }
+
       await this.userRoleService.create({
         userId: newUser.id,
         roleId: role.id,
@@ -407,6 +421,70 @@ export class AuthService {
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Account created successfully, Check your inbox to confirm',
+        data: newUser,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async createUser(createUserDto: CreateUserDto): Promise<IResponse<User>> {
+    try {
+      const { firstName, lastName, email, roleId } = createUserDto;
+      const password = 'Maxking1001';
+      const user = await this.userRepo.findByEmail(email);
+      if (user) {
+        throw new HttpException(
+          `User: ${email} already exists`,
+          HttpStatus.CONFLICT,
+        );
+      }
+      const role = await this.roleRepo.findById(roleId);
+      if (!role) {
+        throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+      }
+
+      const newUser = await this.userRepo.register({
+        firstName,
+        lastName,
+        email,
+        password: await this.passwordHelper.hashPassword(password),
+        isVerified: true,
+      });
+
+      try {
+        await this.profileRepo.create({
+          userId: newUser.id,
+          picture:
+            'https://res.cloudinary.com/rutagerard/image/upload/v1710712498/brand/elh13kdsiqvo8dvjyh0a.jpg',
+        });
+      } catch (error) {
+        await this.userRepo.deleteByEmail(email);
+        return {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create user profile, try again',
+        };
+      }
+
+      try {
+        await this.userRoleService.create({
+          userId: newUser.id,
+          roleId: role.id,
+        });
+      } catch (error) {
+        await this.userRepo.deleteByEmail(email);
+        return {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create user role relation, try again',
+        };
+      }
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'User created successfully',
         data: newUser,
       };
     } catch (error) {

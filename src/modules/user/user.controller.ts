@@ -13,13 +13,14 @@ import { DeleteUsersDto } from './dto/delete-user.dto';
 import { User } from './model/user.model';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { JwtAuthGuard } from 'src/core/guards/jwt-auth.guard';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(UserAuthGuard)
   findAll(): Promise<IResponse<User[]>> {
     return this.userService.findAll();
   }

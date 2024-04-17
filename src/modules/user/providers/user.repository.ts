@@ -4,6 +4,7 @@ import { User } from '../model/user.model';
 import { Role } from '../../role/model/role.model';
 import { USER_MODEL } from 'src/core/constants';
 import { Profile } from 'src/modules/profile/model/profile.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UserRepository {
@@ -13,13 +14,18 @@ export class UserRepository {
     return await this.userModel.create(createUserDto);
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(excludedRoles: string[]): Promise<User[]> {
     return await this.userModel.findAll({
       include: [
         {
           model: Role,
           as: 'roles',
           attributes: ['id', 'type'],
+          where: {
+            type: {
+              [Op.notIn]: excludedRoles,
+            },
+          },
           through: { attributes: [] },
         },
         { model: Profile, as: 'profile' },

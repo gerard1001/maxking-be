@@ -36,6 +36,9 @@ export class User extends Model<User> {
   @Column(DataType.BOOLEAN)
   isGoogleUser: boolean;
 
+  @Column(DataType.BOOLEAN)
+  publicDisplay: boolean;
+
   @HasOne(() => Profile)
   profile: Profile;
 

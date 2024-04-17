@@ -40,4 +40,8 @@ export class CreateUserDto {
   @IsBoolean()
   @IsOptional()
   readonly isGoogleUser?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly publicDisplay?: boolean;
 }

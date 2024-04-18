@@ -16,6 +16,7 @@ import { AuthHelper } from 'src/core/helpers/auth.helper';
 import { User } from '../user/model/user.model';
 import { ProfileRepository } from '../profile/providers/profile.repository';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
+import { ConfigService } from '@nestjs/config';
 // import { CACHE_MANAGER } from '@nestjs/cache-manager';
 // import { Cache } from 'cache-manager';
 
@@ -30,6 +31,7 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
     private readonly mailerHelper: MailerHelper,
     // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<IResponse<User>> {
@@ -49,6 +51,7 @@ export class AuthService {
       const token = await this.authHelper.generateJwtToken<{ email: string }>({
         email,
       });
+      const frontendUrl = this.configService.get('FRONTEND_URL');
       const subject = 'MaxKing Account Confirmation';
       const text = `
 <!DOCTYPE html>
@@ -154,7 +157,7 @@ export class AuthService {
             <tr>
               <td align="center" valign="top" style="padding: 36px 24px 0px">
                 <a
-                  href="http://localhost:3000"
+                  href="${frontendUrl}"
                   target="_blank"
                   style="display: inline-block"
                 >
@@ -255,7 +258,7 @@ export class AuthService {
                             style="border-radius: 6px"
                           >
                             <a
-                              href="http://localhost:3000/verify?token=${token}"
+                              href="${frontendUrl}/verify?token=${token}"
                               target="_blank"
                               style="
                                 display: inline-block;
@@ -294,8 +297,8 @@ export class AuthService {
                   If you are having trouble with the button above, use the link below:
                 </p>
                 <p style="margin: 0">
-                  <a href="http://localhost:3000/?token=${token}" target="_blank"
-                    >http://localhost:3000</a
+                  <a href="${frontendUrl}/?token=${token}" target="_blank"
+                    >${frontendUrl}</a
                   >
                 </p>
               </td>
@@ -344,7 +347,7 @@ export class AuthService {
               >
                 <p style="margin: 0">
                   To stop receiving these emails, press:
-                  <a href="http://localhost:3000" target="_blank"
+                  <a href="${frontendUrl}" target="_blank"
                   >unsubscribe</a
                   >
                 </p>
@@ -572,6 +575,7 @@ export class AuthService {
   async googleLogin(req: any, res: any) {
     const params = new URLSearchParams();
     const { firstName, lastName, email, picture, isVerified } = req.user;
+    const frontendUrl = this.configService.get('FRONTEND_URL');
     try {
       const user = await this.userRepo.findByEmail(req.user?.email);
 
@@ -615,7 +619,7 @@ export class AuthService {
         params.set('token', token);
         params.set('new_user', 'true');
 
-        return res.redirect(`http://localhost:3000?${params}`);
+        return res.redirect(`${frontendUrl}?${params}`);
       }
 
       const token = await this.authHelper.generateJwtToken({
@@ -629,11 +633,11 @@ export class AuthService {
         params.set('new_user', 'false');
       }
 
-      return res.redirect(`http://localhost:3000?${params}`);
+      return res.redirect(`${frontendUrl}?${params}`);
     } catch (error) {
       await this.userRepo.deleteByEmail(req?.user?.email);
       params.set('error', 'server_error');
-      return res.redirect(`http://localhost:3000?${params}`);
+      return res.redirect(`${frontendUrl}?${params}`);
     }
   }
 }

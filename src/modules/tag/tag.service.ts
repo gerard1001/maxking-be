@@ -21,7 +21,7 @@ export class TagService {
       }
       const tag = await this.tagRepo.create({ name: name.trim() });
       return {
-        statusCode: HttpStatus.OK,
+        statusCode: HttpStatus.CREATED,
         message: 'Tag added successfully',
         data: tag,
       };

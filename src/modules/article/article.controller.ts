@@ -58,6 +58,22 @@ export class ArticleController {
     return await this.articleService.findAll();
   }
 
+  @Get('saved')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+      ENUM_ROLE_TYPE.MENTOR,
+      ENUM_ROLE_TYPE.CLIENT,
+    ],
+  })
+  async findSaved(@Req() req: any): Promise<IResponse<Article[]>> {
+    return await this.articleService.findSaved(req);
+  }
+
   @Get('featured')
   async findFeatured(): Promise<IResponse<Article[]>> {
     return await this.articleService.findFeatured();
@@ -101,11 +117,11 @@ export class ArticleController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
-  updateFeatured(
+  async updateFeatured(
     @Param('id') id: string,
     @Body() featureArticlesDto: FeatureArticlesDto,
   ): Promise<IResponse<Article>> {
-    return this.articleService.updateFeatured(id, featureArticlesDto);
+    return await this.articleService.updateFeatured(id, featureArticlesDto);
   }
 
   @Delete(':id')

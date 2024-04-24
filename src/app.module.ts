@@ -18,6 +18,12 @@ import { ReplyModule } from './modules/reply/reply.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './core/strategies/jwt.strategy';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CategoryModule } from './modules/category/category.module';
+import { SubjectModule } from './modules/subject/subject.module';
+import { CourseModule } from './modules/course/course.module';
+import { ModuleModule } from './modules/module/module.module';
+import { TestModule } from './modules/test/test.module';
+import { QuizModule } from './modules/quiz/quiz.module';
 
 @Module({
   imports: [
@@ -39,6 +45,12 @@ import { CacheModule } from '@nestjs/cache-manager';
     UserArticleModule,
     CommentModule,
     ReplyModule,
+    CategoryModule,
+    SubjectModule,
+    CourseModule,
+    ModuleModule,
+    TestModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

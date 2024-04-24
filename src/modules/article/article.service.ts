@@ -156,6 +156,27 @@ export class ArticleService {
     }
   }
 
+  async findSaved(req: any): Promise<IResponse<Article[]>> {
+    try {
+      const id = req['user'].id;
+      const user = await this.userRepo.findById(id);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const articles = await this.articleRepo.findSavedArticles(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User Saved articles retrieved successfully',
+        data: articles,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findFeatured(): Promise<IResponse<Article[]>> {
     try {
       const articles = await this.articleRepo.findFeaturedArticles();
@@ -231,7 +252,7 @@ export class ArticleService {
         title,
         description,
         body,
-        tags = [],
+        tags = [...articleTags],
         newTags = [],
       } = updateArticleDto;
 
@@ -249,17 +270,21 @@ export class ArticleService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (
-        articleTags?.length === 0 &&
-        tags?.length === 0 &&
-        newTags?.length === 0
-      ) {
+      if (tags?.length === 0 && newTags?.length === 0) {
         throw new HttpException(
           'You must provide at least one tag',
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (articleTags?.length + tags?.length + newTags?.length > 3) {
+      if (articleTags?.length > 0) {
+        for (const articleTag of articleTags) {
+          await this.articleTagRepo.deleteByArticleAndTagId(id, articleTag);
+        }
+      }
+
+      if (tags.includes) {
+      }
+      if (tags?.length + newTags?.length > 3) {
         throw new HttpException(
           'You can only add 3 tags to an article',
           HttpStatus.BAD_REQUEST,
@@ -302,16 +327,6 @@ export class ArticleService {
           throw new HttpException(
             `This article already has a tag with id: ${tag}`,
             HttpStatus.CONFLICT,
-          );
-        }
-      }
-      for (const articleTag of articleTags) {
-        const articleTagExists =
-          await this.articleTagRepo.findByArticleAndTagId(id, articleTag);
-        if (!articleTagExists) {
-          throw new HttpException(
-            'Aricle and tag relation does not exist',
-            HttpStatus.NOT_FOUND,
           );
         }
       }

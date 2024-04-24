@@ -49,6 +49,39 @@ export class ArticleRepository {
     });
   }
 
+  async findSavedArticles(userId: string): Promise<Article[]> {
+    return await this.articleModel.findAll({
+      include: [
+        {
+          model: User,
+          as: 'favoritedBy',
+          where: { id: userId },
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
   async findById(id: string) {
     return await this.articleModel.findByPk(id, {
       include: [

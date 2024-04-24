@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Articles', {
+    await queryInterface.createTable('Courses', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,39 +11,28 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      authorId: {
+      subjectId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Subjects',
           key: 'id',
-          as: 'author',
+          as: 'subject',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-      },
-      coverImage: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue:
-          'https://www.pngkit.com/png/detail/2-23698_splash-png-image-color-splash-png-blue.png',
       },
       title: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-          max: 500,
-          min: 1,
-        },
+      previewVideo: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
-      body: {
+      previewText: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -57,6 +46,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Articles');
+    await queryInterface.dropTable('Courses');
   },
 };

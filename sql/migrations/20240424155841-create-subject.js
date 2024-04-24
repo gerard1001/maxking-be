@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Articles', {
+    await queryInterface.createTable('Subjects', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,39 +11,25 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      authorId: {
+      categoryId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Categories',
           key: 'id',
-          as: 'author',
+          as: 'category',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      coverImage: {
+      name: {
         type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue:
-          'https://www.pngkit.com/png/detail/2-23698_splash-png-image-color-splash-png-blue.png',
-      },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.TEXT,
         allowNull: false,
         validate: {
           notEmpty: true,
-          max: 500,
+          max: 100,
           min: 1,
         },
-      },
-      body: {
-        type: Sequelize.TEXT,
-        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -57,6 +43,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Articles');
+    await queryInterface.dropTable('Subjects');
   },
 };

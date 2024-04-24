@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserArticleDto } from './dto/create-user_article.dto';
 import { UserArticleRepository } from './providers/user_article.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { ArticleRepository } from '../article/providers/article.repository';
@@ -14,28 +13,44 @@ export class UserArticleService {
     private readonly articlRepo: ArticleRepository,
   ) {}
 
-  async create(
-    createUserArticleDto: CreateUserArticleDto,
-  ): Promise<IResponse<UserArticle>> {
+  async create(id: string, req: any): Promise<IResponse<UserArticle>> {
     try {
-      const { userId, articleId } = createUserArticleDto;
+      const userId = req?.user?.id;
       const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const article = await this.userArticleRepo.findById(articleId);
+      const article = await this.articlRepo.findById(id);
       if (!article) {
         throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
       }
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const userArticle =
-        await this.userArticleRepo.create(createUserArticleDto);
+      const userArticle = await this.userArticleRepo.findByUserIdAndArticleId(
+        userId,
+        article.id,
+      );
+      if (userArticle) {
+        await this.userArticleRepo.deleteByUserAndArticle(
+          userArticle.userId,
+          userArticle.articleId,
+        );
+
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'User article deleted successfully',
+          data: userArticle,
+        };
+      }
+      const newUserArticle = await this.userArticleRepo.create({
+        userId,
+        articleId: id,
+      });
       return {
         statusCode: HttpStatus.OK,
         message: 'User article created successfully',
-        data: userArticle,
+        data: newUserArticle,
       };
     } catch (error) {
       throw new HttpException(

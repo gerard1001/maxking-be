@@ -37,6 +37,15 @@ export class UserArticleRepository {
     return await this.userArticleModel.destroy({ where: { id } });
   }
 
+  async deleteByUserAndArticle(
+    userId: string,
+    articleId: string,
+  ): Promise<number> {
+    return await this.userArticleModel.destroy({
+      where: { userId, articleId },
+    });
+  }
+
   async deleteMultiple(ids: string[]): Promise<number> {
     return await this.userArticleModel.destroy({ where: { id: ids } });
   }

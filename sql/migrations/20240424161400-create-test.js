@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Articles', {
+    await queryInterface.createTable('Tests', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,38 +11,23 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      authorId: {
+      courseId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Courses',
           key: 'id',
-          as: 'author',
+          as: 'course',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      coverImage: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue:
-          'https://www.pngkit.com/png/detail/2-23698_splash-png-image-color-splash-png-blue.png',
-      },
-      title: {
+      question: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-          max: 500,
-          min: 1,
-        },
-      },
-      body: {
-        type: Sequelize.TEXT,
+      trueAnswer: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
@@ -57,6 +42,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Articles');
+    await queryInterface.dropTable('Tests');
   },
 };

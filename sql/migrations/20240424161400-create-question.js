@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Tests', {
+    await queryInterface.createTable('Questions', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -13,7 +13,7 @@ module.exports = {
       },
       courseId: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Courses',
           key: 'id',
@@ -22,8 +22,23 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+      moduleId: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'Modules',
+          key: 'id',
+          as: 'module',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
       question: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      choices: {
+        type: Sequelize.ARRAY(Sequelize.JSONB),
         allowNull: false,
       },
       trueAnswer: {
@@ -42,6 +57,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Tests');
+    await queryInterface.dropTable('Questions');
   },
 };

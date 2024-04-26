@@ -48,7 +48,17 @@ export class UserRepository {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userModel.findOne({ where: { email } });
+    return await this.userModel.findOne({
+      where: { email },
+      include: [
+        {
+          model: Role,
+          as: 'roles',
+          attributes: ['id', 'type'],
+          through: { attributes: [] },
+        },
+      ],
+    });
   }
 
   async update(

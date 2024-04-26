@@ -1,34 +1,82 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  SetMetadata,
+} from '@nestjs/common';
 import { ModuleService } from './module.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
+import { UserAuthGuard } from 'src/core/guards/auth.guard';
+import { RoleGuard } from 'src/core/guards/role.guard';
+import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
+import { Module } from './model/module.model';
+import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 
 @Controller('module')
 export class ModuleController {
   constructor(private readonly moduleService: ModuleService) {}
 
-  @Post()
-  create(@Body() createModuleDto: CreateModuleDto) {
-    return this.moduleService.create(createModuleDto);
+  @Post(':id')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  async create(
+    @Param('id') id: string,
+    @Body() createModuleDto: CreateModuleDto,
+  ): Promise<IResponse<Module>> {
+    return await this.moduleService.create(id, createModuleDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<IResponse<Module[]>> {
     return this.moduleService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.moduleService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<IResponse<Module>> {
+    return this.moduleService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleDto) {
-    return this.moduleService.update(+id, updateModuleDto);
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() updateModuleDto: UpdateModuleDto,
+  ): Promise<IResponse<Module>> {
+    return await this.moduleService.update(id, updateModuleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.moduleService.remove(+id);
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  async deleteOne(@Param('id') id: string): Promise<IResponse<ICount>> {
+    return await this.moduleService.deleteOne(id);
   }
 }

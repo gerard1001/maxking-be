@@ -10,4 +10,11 @@ export interface ICount {
 
 export interface IToken {
   token: string;
+  role?: string;
+  id?: string;
+}
+
+export interface Choice {
+  choice: string;
+  index: number;
 }

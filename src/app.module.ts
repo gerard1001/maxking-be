@@ -17,13 +17,12 @@ import configuration from 'config/configuration';
 import { ReplyModule } from './modules/reply/reply.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './core/strategies/jwt.strategy';
-import { CacheModule } from '@nestjs/cache-manager';
+// import { CacheModule } from '@nestjs/cache-manager';
 import { CategoryModule } from './modules/category/category.module';
 import { SubjectModule } from './modules/subject/subject.module';
 import { CourseModule } from './modules/course/course.module';
 import { ModuleModule } from './modules/module/module.module';
-import { TestModule } from './modules/test/test.module';
-import { QuizModule } from './modules/quiz/quiz.module';
+import { QuestionModule } from './modules/question/question.module';
 
 @Module({
   imports: [
@@ -49,8 +48,7 @@ import { QuizModule } from './modules/quiz/quiz.module';
     SubjectModule,
     CourseModule,
     ModuleModule,
-    TestModule,
-    QuizModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

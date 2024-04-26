@@ -562,6 +562,8 @@ export class AuthService {
         message: 'User logged in successfully',
         data: {
           token,
+          role: user.roles[0].type,
+          id: user.id,
         },
       };
     } catch (error) {

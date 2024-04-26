@@ -11,6 +11,10 @@ import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Reply } from 'src/modules/reply/model/reply.model';
+import { Category } from 'src/modules/category/model/category.model';
+import { Subject } from 'src/modules/subject/model/subject.model';
+import { Course } from 'src/modules/course/model/course.model';
+import { Module } from 'src/modules/module/model/module.model';
 
 export const databaseProviders = [
   {
@@ -42,6 +46,10 @@ export const databaseProviders = [
         ArticleTag,
         Comment,
         Reply,
+        Category,
+        Subject,
+        Course,
+        Module,
       ]);
       await sequelize.sync();
       return sequelize;

@@ -51,6 +51,15 @@ export class TagController {
   }
 
   @Patch(':id')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
   update(
     @Param('id') id: string,
     @Body() updateTagDto: UpdateTagDto,
@@ -59,6 +68,15 @@ export class TagController {
   }
 
   @Delete(':id')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
   remove(@Param('id') id: string): Promise<IResponse<ICount>> {
     return this.tagService.deleteOne(id);
   }

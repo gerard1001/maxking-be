@@ -23,6 +23,7 @@ import { SubjectModule } from './modules/subject/subject.module';
 import { CourseModule } from './modules/course/course.module';
 import { ModuleModule } from './modules/module/module.module';
 import { QuestionModule } from './modules/question/question.module';
+import { UserCourseModule } from './modules/user_course/user_course.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { QuestionModule } from './modules/question/question.module';
     CourseModule,
     ModuleModule,
     QuestionModule,
+    UserCourseModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

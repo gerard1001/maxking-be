@@ -38,8 +38,14 @@ module.exports = {
         allowNull: false,
       },
       choices: {
-        type: Sequelize.ARRAY(Sequelize.JSONB),
-        allowNull: false,
+        type: Sequelize.TEXT,
+        get() {
+          const rawValue = this.getDataValue('choices');
+          return rawValue ? JSON.parse(rawValue) : JSON.parse('[]');
+        },
+        set(value) {
+          this.setDataValue('choices', JSON.stringify(value));
+        },
       },
       trueAnswer: {
         type: Sequelize.STRING,

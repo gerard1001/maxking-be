@@ -14,6 +14,14 @@ export class CreateProfileDto {
 
   @IsString()
   @IsOptional()
+  readonly title?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly specialty?: string;
+
+  @IsString()
+  @IsOptional()
   readonly phoneNumber?: string;
 
   @IsString()
@@ -34,9 +42,9 @@ export class CreateProfileDto {
 
   @IsString()
   @IsOptional()
-  readonly address1?: string;
+  readonly addressLine?: string;
 
   @IsString()
   @IsOptional()
-  readonly address2?: string;
+  readonly bio?: string;
 }

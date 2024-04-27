@@ -9,6 +9,8 @@ import { CommentModule } from '../comment/comment.module';
 import { ReplyModule } from '../reply/reply.module';
 import { UserModule } from '../user/user.module';
 import { SubjectModule } from '../subject/subject.module';
+import { UserCourseModule } from '../user_course/user_course.module';
+import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { SubjectModule } from '../subject/subject.module';
     forwardRef(() => ArticleModule),
     forwardRef(() => CommentModule),
     forwardRef(() => ReplyModule),
+    forwardRef(() => UserCourseModule),
+    forwardRef(() => CloudinaryModule),
   ],
   controllers: [CourseController],
   providers: [CourseService, CourseRepository, ...courseProviders],

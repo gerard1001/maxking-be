@@ -22,6 +22,16 @@ module.exports = {
           as: 'user',
         },
       },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+      specialty: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
       phoneNumber: {
         type: Sequelize.STRING,
         allowNull: true,
@@ -57,13 +67,13 @@ module.exports = {
         allowNull: true,
         defaultValue: null,
       },
-      address1: {
+      addressLine: {
         type: Sequelize.STRING,
         allowNull: true,
         defaultValue: null,
       },
-      address2: {
-        type: Sequelize.STRING,
+      bio: {
+        type: Sequelize.TEXT,
         allowNull: true,
         defaultValue: null,
       },

@@ -1,5 +1,7 @@
 'use strict';
 
+const { title } = require('process');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -10,6 +12,8 @@ module.exports = {
       return {
         id: Sequelize.literal('uuid_generate_v4()'),
         userId: user.id,
+        title: '',
+        specialty: '',
         phoneNumber: '',
         gender: null,
         birthDate: new Date('1990-01-01'),
@@ -17,8 +21,8 @@ module.exports = {
           'https://res.cloudinary.com/rutagerard/image/upload/v1710712498/brand/elh13kdsiqvo8dvjyh0a.jpg',
         country: '',
         city: '',
-        address1: '',
-        address2: '',
+        addressLine: '',
+        bio: '',
         createdAt: new Date(),
         updatedAt: new Date(),
       };

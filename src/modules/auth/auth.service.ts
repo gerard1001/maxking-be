@@ -619,6 +619,8 @@ export class AuthService {
         }
 
         params.set('token', token);
+        params.set('role', user.roles[0].type);
+        params.set('id', user.id);
         params.set('new_user', 'true');
 
         return res.redirect(`${frontendUrl}?${params}`);

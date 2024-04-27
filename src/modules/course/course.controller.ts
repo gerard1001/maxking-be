@@ -8,6 +8,9 @@ import {
   Delete,
   UseGuards,
   SetMetadata,
+  UseInterceptors,
+  UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -17,6 +20,8 @@ import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { Course } from './model/course.model';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/core/upload/multer.config';
 
 @Controller('course')
 export class CourseController {
@@ -32,11 +37,14 @@ export class CourseController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
+  @UseInterceptors(FileInterceptor('coverImage', multerOptions))
   create(
     @Param('id') id: string,
     @Body() createCourseDto: CreateCourseDto,
+    @UploadedFile() coverImage: Express.Multer.File,
+    @Req() req: Request,
   ): Promise<IResponse<Course>> {
-    return this.courseService.create(id, createCourseDto);
+    return this.courseService.create(id, createCourseDto, coverImage, req);
   }
 
   @Get()
@@ -59,11 +67,19 @@ export class CourseController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
+  @UseInterceptors(FileInterceptor('coverImage', multerOptions))
   async update(
     @Param('id') id: string,
     @Body() updateCourseDto: UpdateCourseDto,
+    @UploadedFile() coverImage: Express.Multer.File,
+    @Req() req: Request,
   ): Promise<IResponse<Course>> {
-    return await this.courseService.update(id, updateCourseDto);
+    return await this.courseService.update(
+      id,
+      updateCourseDto,
+      coverImage,
+      req,
+    );
   }
 
   @Delete(':id')

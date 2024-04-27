@@ -12,6 +12,9 @@ import { Subject } from 'src/modules/subject/model/subject.model';
 @Table({ tableName: 'Courses', timestamps: true })
 export class Course extends Model<Course> {
   @Column
+  coverImage: string;
+
+  @Column
   title: string;
 
   @Column

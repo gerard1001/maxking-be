@@ -3,22 +3,25 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  // Patch,
   Param,
   Delete,
   UseGuards,
   SetMetadata,
+  UsePipes,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+// import { UpdateQuestionDto } from './dto/update-question.dto';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { Question } from './model/question.model';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { ValidationPipe } from 'src/core/pipes/validation.pipe';
+import { createQuestionValidation } from 'src/core/validations/question.validation';
 
-@Controller('subject')
+@Controller('question')
 export class QuestionController {
   constructor(private readonly subjectService: QuestionService) {}
 
@@ -33,6 +36,7 @@ export class QuestionController {
       ENUM_ROLE_TYPE.MENTOR,
     ],
   })
+  @UsePipes(new ValidationPipe(createQuestionValidation))
   async create(
     @Param('id') id: string,
     @Body() createQuestionDto: CreateQuestionDto,
@@ -48,6 +52,13 @@ export class QuestionController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<IResponse<Question>> {
     return this.subjectService.findById(id);
+  }
+
+  @Get('course/:id')
+  async findByModuleOrCourseId(
+    @Param('id') id: string,
+  ): Promise<IResponse<Question[]>> {
+    return await this.subjectService.findByModuleOrCourseId(id);
   }
 
   // @Patch(':id')

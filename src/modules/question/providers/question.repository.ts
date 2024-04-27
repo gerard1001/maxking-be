@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { QUESTION_MODEL } from 'src/core/constants';
 import { Question } from '../model/question.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class QuestionRepository {
@@ -18,6 +19,14 @@ export class QuestionRepository {
 
   async findById(id: string): Promise<Question> {
     return await this.questionModel.findByPk(id);
+  }
+
+  async findByModuleOrCourseId(id: string): Promise<Question[]> {
+    return await this.questionModel.findAll({
+      where: {
+        [Op.or]: [{ courseId: id }, { moduleId: id }],
+      },
+    });
   }
 
   async update(

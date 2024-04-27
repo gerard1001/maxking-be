@@ -13,9 +13,6 @@ import { Module } from 'src/modules/module/model/module.model';
 @Table({ tableName: 'Questions', timestamps: true })
 export class Question extends Model<Question> {
   @Column
-  type: string;
-
-  @Column
   question: string;
 
   @Column({ type: DataType.JSONB })

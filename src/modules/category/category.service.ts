@@ -4,16 +4,23 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './providers/category.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Category } from './model/category.model';
+import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepo: CategoryRepository) {}
+  constructor(
+    private readonly categoryRepo: CategoryRepository,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   async create(
     createCategoryDto: CreateCategoryDto,
+    image: Express.Multer.File,
+    req: Request,
   ): Promise<IResponse<Category>> {
     try {
       const { name } = createCategoryDto;
+      console.log({ name });
       const categoryExists = await this.categoryRepo.findByName(name.trim());
       if (categoryExists) {
         throw new HttpException(
@@ -21,8 +28,16 @@ export class CategoryService {
           HttpStatus.CONFLICT,
         );
       }
+      const file =
+        req['file'] &&
+        (await this.cloudinaryService.uploadImage(image).catch((err) => {
+          throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        }));
 
-      const category = await this.categoryRepo.create({ name: name.trim() });
+      const category = await this.categoryRepo.create({
+        name: name.trim(),
+        image: req['file'] ? file?.secure_url : null,
+      });
       return {
         statusCode: HttpStatus.CREATED,
         message: `Category created successfully`,
@@ -93,6 +108,8 @@ export class CategoryService {
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
+    image: Express.Multer.File,
+    req: Request,
   ): Promise<IResponse<Category>> {
     try {
       const { name } = updateCategoryDto;
@@ -107,7 +124,16 @@ export class CategoryService {
           HttpStatus.CONFLICT,
         );
       }
-      const newCategory = await this.categoryRepo.update(id, updateCategoryDto);
+      const file =
+        req['file'] &&
+        (await this.cloudinaryService.uploadImage(image).catch((err) => {
+          throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        }));
+
+      const newCategory = await this.categoryRepo.update(id, {
+        ...updateCategoryDto,
+        image: req['file'] ? file?.secure_url : idCategory.image,
+      });
       return {
         statusCode: HttpStatus.OK,
         message: 'Category updated successfully',

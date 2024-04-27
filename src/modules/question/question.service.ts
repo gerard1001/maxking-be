@@ -2,7 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 // import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionRepository } from './providers/question.repository';
-import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import {
+  Choice,
+  ICount,
+  IResponse,
+} from 'src/core/interfaces/response.interface';
 import { Question } from './model/question.model';
 import { CourseRepository } from '../course/providers/course.repository';
 import { ModuleRepository } from '../module/providers/module.repository';
@@ -45,7 +49,28 @@ export class QuestionService {
           .filter((choice) => choice === trueAnswer).length === 1;
       if (!isTrueAnswerValid || !isTrueAnswerUnique) {
         throw new HttpException(
-          'True answer must match one and only one of the choices',
+          'True answer must match one of the choices',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      function checkChoicesIndexes(choices: Choice[]) {
+        const indexes = choices.map((choice) => choice.index);
+        indexes.sort((a, b) => a - b);
+        let expectedIndex = 1;
+
+        for (const index of indexes) {
+          if (index !== expectedIndex) {
+            return false;
+          }
+          expectedIndex++;
+        }
+
+        return true;
+      }
+
+      if (!checkChoicesIndexes(choices)) {
+        throw new HttpException(
+          'Choices indexes must be consecutive numbers starting from 1',
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -96,6 +121,25 @@ export class QuestionService {
         statusCode: HttpStatus.OK,
         message: 'Question retrieved successfully',
         data: question,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByModuleOrCourseId(id: string): Promise<IResponse<Question[]>> {
+    try {
+      const questions = await this.questionRepo.findByModuleOrCourseId(id);
+      if (!questions) {
+        throw new HttpException('Questions not found', HttpStatus.NOT_FOUND);
+      }
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Questions retrieved successfully',
+        data: questions,
       };
     } catch (error) {
       throw new HttpException(

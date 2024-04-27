@@ -6,6 +6,9 @@ export class Category extends Model<Category> {
   @Column
   name: string;
 
+  @Column
+  image: string;
+
   @HasMany(() => Subject)
   subjects: Subject[];
 }

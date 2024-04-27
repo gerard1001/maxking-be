@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
         defaultValue:
-          'https://www.pngkit.com/png/detail/2-23698_splash-png-image-color-splash-png-blue.png',
+          'https://res.cloudinary.com/rutagerard/image/upload/v1713800805/Important/manga_z8z1xs.png',
       },
       title: {
         type: Sequelize.STRING,

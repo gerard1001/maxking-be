@@ -16,6 +16,12 @@ export class Profile extends Model<Profile> {
   userId: string;
 
   @Column
+  title: string;
+
+  @Column
+  specialty: string;
+
+  @Column
   phoneNumber: string;
 
   @Column
@@ -34,10 +40,10 @@ export class Profile extends Model<Profile> {
   city: string;
 
   @Column
-  address1: string;
+  addressLine: string;
 
   @Column
-  address2: string;
+  bio: string;
 
   @BelongsTo(() => User)
   user: User;

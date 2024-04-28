@@ -27,6 +27,10 @@ export class SubjectRepository {
     });
   }
 
+  async findByCategoryId(categoryId: string): Promise<Subject[]> {
+    return await this.subjectModel.findAll({ where: { categoryId } });
+  }
+
   async update(
     id: string,
     updateSubjectDto: any,

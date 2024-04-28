@@ -49,6 +49,13 @@ export class SubjectController {
     return this.subjectService.findById(id);
   }
 
+  @Get('category/:id')
+  findByCategoryId(
+    @Param('id') categoryId: string,
+  ): Promise<IResponse<Subject[]>> {
+    return this.subjectService.findByCategoryId(categoryId);
+  }
+
   @Patch(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

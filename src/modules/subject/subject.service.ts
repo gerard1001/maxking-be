@@ -102,6 +102,26 @@ export class SubjectService {
     }
   }
 
+  async findByCategoryId(id: string): Promise<IResponse<Subject[]>> {
+    try {
+      const category = await this.categoryRepo.findById(id);
+      if (!category) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+      const subjects = await this.subjectRepo.findByCategoryId(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Subjects retrieved successfully',
+        data: subjects,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async update(
     id: string,
     updateSubjectDto: UpdateSubjectDto,

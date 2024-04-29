@@ -16,4 +16,7 @@ export class UserCourse extends Model<UserCourse> {
 
   @Column
   readonly userType: string;
+
+  @Column
+  readonly currentModule: number;
 }

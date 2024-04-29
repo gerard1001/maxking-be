@@ -11,6 +11,8 @@ import { UserModule } from '../user/user.module';
 import { SubjectModule } from '../subject/subject.module';
 import { UserCourseModule } from '../user_course/user_course.module';
 import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
+import { TagModule } from '../tag/tag.module';
+import { CourseTagModule } from '../course_tag/course_tag.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
     forwardRef(() => ArticleModule),
     forwardRef(() => CommentModule),
     forwardRef(() => ReplyModule),
+    forwardRef(() => TagModule),
+    forwardRef(() => CourseTagModule),
     forwardRef(() => UserCourseModule),
     forwardRef(() => CloudinaryModule),
   ],

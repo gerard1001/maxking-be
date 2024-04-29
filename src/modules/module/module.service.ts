@@ -108,7 +108,7 @@ export class ModuleService {
       }
       if (nameModule && nameModule.id !== idModule.id) {
         throw new HttpException(
-          `Module: ${name} already exists`,
+          `Module: ${title} already exists`,
           HttpStatus.CONFLICT,
         );
       }

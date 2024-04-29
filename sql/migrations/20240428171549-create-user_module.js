@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Courses', {
+    await queryInterface.createTable('UserModules', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,41 +11,30 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      subjectId: {
+      userId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Subjects',
+          model: 'Users',
           key: 'id',
-          as: 'subject',
+          as: 'user',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      coverImage: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue:
-          'https://res.cloudinary.com/rutagerard/image/upload/v1713800805/Important/manga_z8z1xs.png',
-      },
-      title: {
-        type: Sequelize.STRING,
+      moduleId: {
+        type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'Modules',
+          key: 'id',
+          as: 'module',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      estimatedDuration: {
+      rank: {
         type: Sequelize.STRING,
-        allowNull: true,
-      },
-      previewVideo: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      previewText: {
-        type: Sequelize.TEXT,
         allowNull: true,
       },
       createdAt: {
@@ -60,6 +49,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Courses');
+    await queryInterface.dropTable('UserModules');
   },
 };

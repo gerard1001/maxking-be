@@ -10,7 +10,7 @@ export class UserCourseRepository {
     private readonly userCourseModel: typeof UserCourse,
   ) {}
 
-  async create(createUserCourseDto: CreateUserCourseDto): Promise<UserCourse> {
+  async create(createUserCourseDto: any): Promise<UserCourse> {
     return await this.userCourseModel.create(createUserCourseDto);
   }
 

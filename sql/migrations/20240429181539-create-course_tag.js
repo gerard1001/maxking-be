@@ -3,24 +3,13 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UserCourses', {
+    await queryInterface.createTable('CourseTags', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false,
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
-      },
-      userId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'user',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       courseId: {
         type: Sequelize.UUID,
@@ -33,23 +22,20 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      userType: {
-        type: Sequelize.ENUM,
-        values: ['STUDENT', 'TUTOR'],
+      tagId: {
+        type: Sequelize.UUID,
         allowNull: false,
-      },
-      currentModule: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-        allowNull: false,
-      },
-      rank: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        references: {
+          model: 'Tags',
+          key: 'id',
+          as: 'tag',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
@@ -59,6 +45,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserCourses');
+    await queryInterface.dropTable('CourseTags');
   },
 };

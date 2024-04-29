@@ -1,4 +1,6 @@
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsDefined,
   IsNotEmpty,
@@ -13,6 +15,16 @@ export class CreateCourseDto {
   readonly title: string;
 
   @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly description: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  readonly estimatedDuration?: string;
+
+  @IsString()
   @IsOptional()
   @IsNotEmpty()
   readonly previewVideo?: string;
@@ -25,4 +37,10 @@ export class CreateCourseDto {
   @IsString()
   @IsOptional()
   readonly tutor?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  readonly tags?: string[];
 }

@@ -1,4 +1,4 @@
-import { IsDefined, IsEnum, IsString } from 'class-validator';
+import { IsDefined, IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class CreateUserCourseDto {
   @IsString()
@@ -13,4 +13,8 @@ export class CreateUserCourseDto {
   @IsDefined()
   @IsEnum(['STUDENT', 'TUTOR'])
   readonly userType: string;
+
+  @IsNumber()
+  @IsDefined()
+  readonly currentModule?: string;
 }

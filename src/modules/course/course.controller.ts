@@ -57,6 +57,11 @@ export class CourseController {
     return this.courseService.findById(id);
   }
 
+  @Get('subject/:id')
+  findBySubjectId(@Param('id') id: string): Promise<IResponse<Course[]>> {
+    return this.courseService.findBySubjectId(id);
+  }
+
   @Patch(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

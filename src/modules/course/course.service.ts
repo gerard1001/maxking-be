@@ -8,6 +8,9 @@ import { SubjectRepository } from '../subject/providers/subject.repository';
 import { UserCourseRepository } from '../user_course/providers/user_course.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
+import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.functions';
+import { TagRepository } from '../tag/providers/tag.repository';
+import { CourseTagRepository } from '../course_tag/providers/course_tag.repository';
 
 @Injectable()
 export class CourseService {
@@ -16,6 +19,8 @@ export class CourseService {
     private readonly userRepo: UserRepository,
     private readonly subjectRepo: SubjectRepository,
     private readonly userCourseRepo: UserCourseRepository,
+    private readonly tagRepo: TagRepository,
+    private readonly courseTagRepo: CourseTagRepository,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -26,7 +31,15 @@ export class CourseService {
     req: Request,
   ): Promise<IResponse<Course>> {
     try {
-      const { title, previewVideo, previewText, tutor } = createCourseDto;
+      const {
+        title,
+        previewVideo,
+        previewText,
+        tutor,
+        description,
+        estimatedDuration,
+        tags = [],
+      } = createCourseDto;
       const subjectExists = await this.subjectRepo.findById(id);
       if (!subjectExists) {
         throw new HttpException(`Subject not found`, HttpStatus.NOT_FOUND);
@@ -48,18 +61,57 @@ export class CourseService {
       if (!user) {
         throw new HttpException('Tutor not found', HttpStatus.NOT_FOUND);
       }
+      if (checkStringDuplicatesInArray(tags)) {
+        throw new HttpException(
+          'You cannot add duplicate tags',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (tags?.length === 0) {
+        throw new HttpException(
+          'You must provide at least one tag',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (tags?.length > 3) {
+        throw new HttpException(
+          'You can only add 3 tags to the course',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (tags?.length > 0) {
+        for (const tag of tags) {
+          const tagExists = await this.tagRepo.findById(tag);
+          if (!tagExists) {
+            throw new HttpException(
+              `Tag with id: ${tag} does not exist`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+        }
+      }
+
       const file =
         req['file'] &&
         (await this.cloudinaryService.uploadImage(coverImage).catch((err) => {
           throw new HttpException(err, HttpStatus.BAD_REQUEST);
         }));
       const course = await this.courseRepo.create({
+        description: description.trim(),
+        estimatedDuration: estimatedDuration.trim(),
         title: title.trim(),
         previewVideo: previewVideo.trim(),
         previewText: previewText.trim(),
         coverImage: req['file'] && file?.secure_url,
         subjectId: id,
       });
+
+      for (const tag of tags) {
+        await this.courseTagRepo.create({
+          courseId: course.id,
+          tagId: tag,
+        });
+      }
 
       try {
         await this.userCourseRepo.create({
@@ -114,6 +166,26 @@ export class CourseService {
         statusCode: HttpStatus.OK,
         message: 'Course retrieved successfully',
         data: course,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findBySubjectId(id: string): Promise<IResponse<Course[]>> {
+    try {
+      const subjectExists = await this.subjectRepo.findById(id);
+      if (!subjectExists) {
+        throw new HttpException(`Subject not found`, HttpStatus.NOT_FOUND);
+      }
+      const courses = await this.courseRepo.findBySubjectId(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Courses retrieved successfully',
+        data: courses,
       };
     } catch (error) {
       throw new HttpException(

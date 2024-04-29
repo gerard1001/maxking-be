@@ -27,6 +27,12 @@ export class CourseRepository {
     });
   }
 
+  async findBySubjectId(subjectId: string): Promise<Course[]> {
+    return await this.courseModel.findAll({
+      where: { subjectId },
+    });
+  }
+
   async update(id: string, updateCourseDto: any): Promise<[number, Course[]]> {
     return await this.courseModel.update(updateCourseDto, {
       where: { id },

@@ -18,6 +18,12 @@ export class Course extends Model<Course> {
   title: string;
 
   @Column
+  description: string;
+
+  @Column
+  estimatedDuration: string;
+
+  @Column
   previewVideo: string;
 
   @Column

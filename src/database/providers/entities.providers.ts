@@ -4,6 +4,7 @@ import {
   CATEGORY_MODEL,
   COMMENT_MODEL,
   COURSE_MODEL,
+  COURSE_TAG_MODEL,
   MODULE_MODEL,
   PROFILE_MODEL,
   QUESTION_MODEL,
@@ -14,6 +15,7 @@ import {
   USER_ARTICLE_MODEL,
   USER_COURSE_MODEL,
   USER_MODEL,
+  USER_MODULE_MODEL,
   USER_ROLE_MODEL,
 } from 'src/core/constants';
 import { Article } from 'src/modules/article/model/article.model';
@@ -21,6 +23,7 @@ import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Category } from 'src/modules/category/model/category.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
+import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Question } from 'src/modules/question/model/question.model';
@@ -31,6 +34,7 @@ import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
+import { UserModule } from 'src/modules/user_module/model/user_module.model';
 import { UserRole } from 'src/modules/user_role/models/user_role.model';
 
 export const userProviders = [
@@ -142,5 +146,19 @@ export const userCourseProviders = [
   {
     provide: USER_COURSE_MODEL,
     useValue: UserCourse,
+  },
+];
+
+export const userModuleProviders = [
+  {
+    provide: USER_MODULE_MODEL,
+    useValue: UserModule,
+  },
+];
+
+export const courseTagProviders = [
+  {
+    provide: COURSE_TAG_MODEL,
+    useValue: CourseTag,
   },
 ];

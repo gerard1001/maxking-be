@@ -10,9 +10,11 @@ import {
 } from 'sequelize-typescript';
 import { Article } from 'src/modules/article/model/article.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Course } from 'src/modules/course/model/course.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
+import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { UserRole } from 'src/modules/user_role/models/user_role.model';
 
 @Table({ tableName: 'Users', timestamps: true })
@@ -44,6 +46,9 @@ export class User extends Model<User> {
 
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];
+
+  @BelongsToMany(() => Course, () => UserCourse)
+  courses: Course[];
 
   @BelongsToMany(() => Article, () => UserArticle)
   favorites: Article[];

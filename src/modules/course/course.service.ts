@@ -202,17 +202,41 @@ export class CourseService {
     req: Request,
   ): Promise<IResponse<Course>> {
     try {
-      const { title } = updateCourseDto;
-      const nameCourse = await this.courseRepo.findByTitle(title);
+      console.log({ updateCourseDto });
       const course = await this.courseRepo.findById(id);
       if (!course) {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
       }
-      if (nameCourse && nameCourse.id !== course.id) {
+      const courseTags = course.tags.map((tag) => tag.id) || [];
+      const { tutor, tags = [...courseTags] } = updateCourseDto;
+
+      if (checkStringDuplicatesInArray(tags)) {
         throw new HttpException(
-          `Course: ${name} already exists`,
-          HttpStatus.CONFLICT,
+          'You cannot add duplicate tags',
+          HttpStatus.BAD_REQUEST,
         );
+      }
+      if (tags?.length === 0) {
+        throw new HttpException(
+          'You must provide at least one tag',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (courseTags?.length > 0) {
+        for (const courseTag of courseTags) {
+          await this.courseTagRepo.deleteByCourseAndTagId(id, courseTag);
+        }
+      }
+      if (tags?.length > 0) {
+        for (const tag of tags) {
+          const tagExists = await this.tagRepo.findById(tag);
+          if (!tagExists) {
+            throw new HttpException(
+              `Tag with id: ${tag} does not exist`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+        }
       }
       const file =
         req['file'] &&
@@ -223,6 +247,43 @@ export class CourseService {
         ...updateCourseDto,
         coverImage: req['file'] ? file?.secure_url : course.coverImage,
       });
+
+      for (const tag of tags) {
+        const articleTagExists = await this.courseTagRepo.findByCourseAndTagId(
+          newCourse[1][0].id,
+          tag,
+        );
+        if (articleTagExists) {
+          throw new HttpException(
+            `This article already has a tag with id: ${tag}`,
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.courseTagRepo.create({
+          courseId: newCourse[1][0].id,
+          tagId: tag,
+        });
+      }
+      if (tutor) {
+        await this.userCourseRepo.deleteByUserAndCourseId(
+          course.users[0].id,
+          course.id,
+        );
+        try {
+          const userCourse = await this.userCourseRepo.create({
+            userId: tutor,
+            courseId: course.id,
+            userType: 'TUTOR',
+          });
+        } catch (error) {
+          await this.courseRepo.deleteOne(course.id);
+          throw new HttpException(
+            error.message || 'Failed to assign course to tutor',
+            error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+      }
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Course updated successfully',

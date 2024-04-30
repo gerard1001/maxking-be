@@ -70,6 +70,7 @@ export class CourseController {
       ENUM_ROLE_TYPE.SUPER_ADMIN,
       ENUM_ROLE_TYPE.ADMIN,
       ENUM_ROLE_TYPE.MANAGER,
+      ENUM_ROLE_TYPE.MENTOR,
     ],
   })
   @UseInterceptors(FileInterceptor('coverImage', multerOptions))

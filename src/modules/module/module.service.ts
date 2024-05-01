@@ -18,7 +18,8 @@ export class ModuleService {
     createModuleDto: CreateModuleDto,
   ): Promise<IResponse<Module>> {
     try {
-      const { moduleNumber, title, description, content } = createModuleDto;
+      const { title, description, content } = createModuleDto;
+      const moduleNumber = (await this.moduleRepo.countByCourseId(id)) + 1;
       const courseExists = await this.courseRepo.findById(id);
       if (!courseExists) {
         throw new HttpException(`Course not found`, HttpStatus.NOT_FOUND);
@@ -43,7 +44,7 @@ export class ModuleService {
         moduleNumber,
         title: title && title.trim(),
         description: description && description.trim(),
-        content: content && content.trim(),
+        content: content && content,
         courseId: id,
       });
 

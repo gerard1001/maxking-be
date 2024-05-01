@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { SUBJECT_MODEL } from 'src/core/constants';
 import { Subject } from '../model/subject.model';
 import { Op } from 'sequelize';
+import { Course } from 'src/modules/course/model/course.model';
 
 @Injectable()
 export class SubjectRepository {
@@ -14,7 +15,15 @@ export class SubjectRepository {
   }
 
   async findAll(): Promise<Subject[]> {
-    return await this.subjectModel.findAll();
+    return await this.subjectModel.findAll({
+      include: [
+        {
+          model: Course,
+          as: 'courses',
+          // attributes: [],
+        },
+      ],
+    });
   }
 
   async findById(id: string): Promise<Subject> {
@@ -28,7 +37,16 @@ export class SubjectRepository {
   }
 
   async findByCategoryId(categoryId: string): Promise<Subject[]> {
-    return await this.subjectModel.findAll({ where: { categoryId } });
+    return await this.subjectModel.findAll({
+      where: { categoryId },
+      include: [
+        {
+          model: Course,
+          as: 'courses',
+          // attributes: [],
+        },
+      ],
+    });
   }
 
   async update(

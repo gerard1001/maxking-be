@@ -7,10 +7,10 @@ import {
 } from 'class-validator';
 
 export class CreateModuleDto {
-  @IsNumber()
-  @IsDefined()
-  @IsNotEmpty()
-  readonly moduleNumber: number;
+  // @IsNumber()
+  // @IsDefined()
+  // @IsNotEmpty()
+  // readonly moduleNumber: number;
 
   @IsString()
   @IsDefined()

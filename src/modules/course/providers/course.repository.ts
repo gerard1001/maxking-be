@@ -18,7 +18,15 @@ export class CourseRepository {
   }
 
   async findAll(): Promise<Course[]> {
-    return await this.courseModel.findAll();
+    return await this.courseModel.findAll({
+      include: [
+        {
+          model: Module,
+          as: 'modules',
+          // attributes: [],
+        },
+      ],
+    });
   }
 
   async findById(id: string): Promise<Course> {

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   SetMetadata,
+  UsePipes,
 } from '@nestjs/common';
 import { ModuleService } from './module.service';
 import { CreateModuleDto } from './dto/create-module.dto';
@@ -17,6 +18,8 @@ import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { Module } from './model/module.model';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
+import { ValidationPipe } from 'src/core/pipes/validation.pipe';
+import { createModuleValidation } from 'src/core/validations/module.validation';
 
 @Controller('module')
 export class ModuleController {
@@ -32,6 +35,7 @@ export class ModuleController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
+  @UsePipes(new ValidationPipe(createModuleValidation))
   async create(
     @Param('id') id: string,
     @Body() createModuleDto: CreateModuleDto,

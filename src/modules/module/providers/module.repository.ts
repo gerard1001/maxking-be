@@ -27,6 +27,10 @@ export class ModuleRepository {
     });
   }
 
+  async countByCourseId(courseId: string): Promise<number> {
+    return await this.moduleModel.count({ where: { courseId } });
+  }
+
   async findByCourseIdAndModuleNumber(
     courseId: string,
     moduleNumber: number,

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Modules', {
+    await queryInterface.createTable('Chapters', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,18 +11,18 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      moduleNumber: {
+      chapterNumber: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 1,
       },
-      courseId: {
+      moduleId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Courses',
+          model: 'Modules',
           key: 'id',
-          as: 'course',
+          as: 'module',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -32,6 +32,10 @@ module.exports = {
         allowNull: false,
       },
       description: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      content: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
@@ -47,6 +51,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Modules');
+    await queryInterface.dropTable('Chapters');
   },
 };

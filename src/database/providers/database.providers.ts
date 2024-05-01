@@ -19,6 +19,7 @@ import { Question } from 'src/modules/question/model/question.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
 import { UserModule } from 'src/modules/user_module/model/user_module.model';
+import { Chapter } from 'src/modules/chapter/model/chapter.model';
 
 export const databaseProviders = [
   {
@@ -58,6 +59,7 @@ export const databaseProviders = [
         UserCourse,
         UserModule,
         CourseTag,
+        Chapter,
       ]);
       await sequelize.sync();
       return sequelize;

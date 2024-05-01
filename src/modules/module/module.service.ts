@@ -18,7 +18,7 @@ export class ModuleService {
     createModuleDto: CreateModuleDto,
   ): Promise<IResponse<Module>> {
     try {
-      const { title, description, content } = createModuleDto;
+      const { title, description } = createModuleDto;
       const moduleNumber = (await this.moduleRepo.countByCourseId(id)) + 1;
       const courseExists = await this.courseRepo.findById(id);
       if (!courseExists) {
@@ -44,7 +44,6 @@ export class ModuleService {
         moduleNumber,
         title: title && title.trim(),
         description: description && description.trim(),
-        content: content && content,
         courseId: id,
       });
 
@@ -87,6 +86,26 @@ export class ModuleService {
         statusCode: HttpStatus.OK,
         message: 'Module retrieved successfully',
         data: module,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByCourseId(courseId: string): Promise<IResponse<Module[]>> {
+    try {
+      const courseExists = await this.courseRepo.findById(courseId);
+      if (!courseExists) {
+        throw new HttpException(`Course not found`, HttpStatus.NOT_FOUND);
+      }
+      const modules = await this.moduleRepo.findByCourseId(courseId);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Modules retrieved successfully',
+        data: modules,
       };
     } catch (error) {
       throw new HttpException(

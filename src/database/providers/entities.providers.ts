@@ -2,6 +2,7 @@ import {
   ARTICLE_MODEL,
   ARTICLE_TAG_MODEL,
   CATEGORY_MODEL,
+  CHAPTER_MODEL,
   COMMENT_MODEL,
   COURSE_MODEL,
   COURSE_TAG_MODEL,
@@ -21,6 +22,7 @@ import {
 import { Article } from 'src/modules/article/model/article.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Category } from 'src/modules/category/model/category.model';
+import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
@@ -160,5 +162,12 @@ export const courseTagProviders = [
   {
     provide: COURSE_TAG_MODEL,
     useValue: CourseTag,
+  },
+];
+
+export const chapterProviders = [
+  {
+    provide: CHAPTER_MODEL,
+    useValue: Chapter,
   },
 ];

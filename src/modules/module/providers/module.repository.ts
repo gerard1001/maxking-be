@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MODULE_MODEL } from 'src/core/constants';
 import { Module } from '../model/module.model';
 import { Op } from 'sequelize';
+import { Chapter } from 'src/modules/chapter/model/chapter.model';
 
 @Injectable()
 export class ModuleRepository {
@@ -18,13 +19,24 @@ export class ModuleRepository {
   }
 
   async findById(id: string): Promise<Module> {
-    return await this.moduleModel.findByPk(id);
+    return await this.moduleModel.findByPk(id, {
+      include: [
+        {
+          model: Chapter,
+          as: 'chapters',
+        },
+      ],
+    });
   }
 
   async findByTitle(title: string): Promise<Module> {
     return await this.moduleModel.findOne({
       where: { title: { [Op.iLike]: `%${title}` } },
     });
+  }
+
+  async findByCourseId(courseId: string): Promise<Module[]> {
+    return await this.moduleModel.findAll({ where: { courseId } });
   }
 
   async countByCourseId(courseId: string): Promise<number> {

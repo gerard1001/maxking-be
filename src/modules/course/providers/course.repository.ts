@@ -6,6 +6,7 @@ import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
+import { Chapter } from 'src/modules/chapter/model/chapter.model';
 
 @Injectable()
 export class CourseRepository {
@@ -23,7 +24,6 @@ export class CourseRepository {
         {
           model: Module,
           as: 'modules',
-          // attributes: [],
         },
       ],
     });
@@ -48,6 +48,12 @@ export class CourseRepository {
         {
           model: Module,
           as: 'modules',
+          include: [
+            {
+              model: Chapter,
+              as: 'chapters',
+            },
+          ],
         },
         {
           model: Tag,

@@ -6,11 +6,11 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateModuleDto {
+export class CreateChapterDto {
   // @IsNumber()
   // @IsDefined()
   // @IsNotEmpty()
-  // readonly moduleNumber: number;
+  // readonly chapterNumber: number;
 
   @IsString()
   @IsDefined()
@@ -22,8 +22,8 @@ export class CreateModuleDto {
   @IsNotEmpty()
   readonly description?: string;
 
-  // @IsString()
-  // @IsDefined()
-  // @IsNotEmpty()
-  // readonly content: string;
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly content: string;
 }

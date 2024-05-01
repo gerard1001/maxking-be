@@ -10,20 +10,20 @@ import {
   SetMetadata,
   UsePipes,
 } from '@nestjs/common';
-import { ModuleService } from './module.service';
-import { CreateModuleDto } from './dto/create-module.dto';
-import { UpdateModuleDto } from './dto/update-module.dto';
+import { ChapterService } from './chapter.service';
+import { CreateChapterDto } from './dto/create-chapter.dto';
+import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
-import { Module } from './model/module.model';
+import { Chapter } from './model/chapter.model';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
-import { createModuleValidation } from 'src/core/validations/module.validation';
+import { createChapterValidation } from 'src/core/validations/chapter.validation';
 
-@Controller('module')
-export class ModuleController {
-  constructor(private readonly moduleService: ModuleService) {}
+@Controller('chapter')
+export class ChapterController {
+  constructor(private readonly chapterService: ChapterService) {}
 
   @Post(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
@@ -35,27 +35,22 @@ export class ModuleController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
-  @UsePipes(new ValidationPipe(createModuleValidation))
+  @UsePipes(new ValidationPipe(createChapterValidation))
   async create(
     @Param('id') id: string,
-    @Body() createModuleDto: CreateModuleDto,
-  ): Promise<IResponse<Module>> {
-    return await this.moduleService.create(id, createModuleDto);
+    @Body() createChapterDto: CreateChapterDto,
+  ): Promise<IResponse<Chapter>> {
+    return await this.chapterService.create(id, createChapterDto);
   }
 
   @Get()
-  findAll(): Promise<IResponse<Module[]>> {
-    return this.moduleService.findAll();
+  findAll(): Promise<IResponse<Chapter[]>> {
+    return this.chapterService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<IResponse<Module>> {
-    return this.moduleService.findById(id);
-  }
-
-  @Get('course/:id')
-  findByCourseId(@Param('id') id: string): Promise<IResponse<Module[]>> {
-    return this.moduleService.findByCourseId(id);
+  findOne(@Param('id') id: string): Promise<IResponse<Chapter>> {
+    return this.chapterService.findById(id);
   }
 
   @Patch(':id')
@@ -70,9 +65,9 @@ export class ModuleController {
   })
   async update(
     @Param('id') id: string,
-    @Body() updateModuleDto: UpdateModuleDto,
-  ): Promise<IResponse<Module>> {
-    return await this.moduleService.update(id, updateModuleDto);
+    @Body() updateChapterDto: UpdateChapterDto,
+  ): Promise<IResponse<Chapter>> {
+    return await this.chapterService.update(id, updateChapterDto);
   }
 
   @Delete(':id')
@@ -86,6 +81,6 @@ export class ModuleController {
     ],
   })
   async deleteOne(@Param('id') id: string): Promise<IResponse<ICount>> {
-    return await this.moduleService.deleteOne(id);
+    return await this.chapterService.deleteOne(id);
   }
 }

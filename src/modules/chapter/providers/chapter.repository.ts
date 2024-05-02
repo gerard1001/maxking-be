@@ -40,6 +40,15 @@ export class ChapterRepository {
     });
   }
 
+  async findByModuleIdAndChapterNumberGreaterThan(
+    moduleId: string,
+    chapterNumber: number,
+  ): Promise<Chapter[]> {
+    return await this.chapterModel.findAll({
+      where: { moduleId, chapterNumber: { [Op.gt]: chapterNumber } },
+    });
+  }
+
   async update(
     id: string,
     updateChapterDto: any,

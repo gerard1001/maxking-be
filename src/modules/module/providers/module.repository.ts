@@ -52,6 +52,15 @@ export class ModuleRepository {
     });
   }
 
+  async findByCourseIdAndModuleNumberGreaterThan(
+    courseId: string,
+    moduleNumber: number,
+  ): Promise<Module[]> {
+    return await this.moduleModel.findAll({
+      where: { courseId, moduleNumber: { [Op.gt]: moduleNumber } },
+    });
+  }
+
   async update(id: string, updateModuleDto: any): Promise<[number, Module[]]> {
     return await this.moduleModel.update(updateModuleDto, {
       where: { id },

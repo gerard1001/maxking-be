@@ -148,15 +148,32 @@ export class ModuleService {
 
   async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
-      const module = await this.moduleRepo.findById(id);
-      if (!module) {
-        throw new HttpException('Module not found', HttpStatus.NOT_FOUND);
+      const chapter = await this.moduleRepo.findById(id);
+      if (!chapter) {
+        throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
       }
-      const count = await this.moduleRepo.deleteOne(id);
+
+      const moduleNumber = chapter.moduleNumber;
+
+      await this.moduleRepo.deleteOne(id);
+
+      const chaptersToUpdate =
+        await this.moduleRepo.findByCourseIdAndModuleNumberGreaterThan(
+          chapter.courseId,
+          moduleNumber,
+        );
+
+      for (const chapterToUpdate of chaptersToUpdate) {
+        // chapterToUpdate.moduleNumber -= 1;
+        await this.moduleRepo.update(chapterToUpdate.id, {
+          moduleNumber: chapterToUpdate.moduleNumber - 1,
+        });
+      }
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Module deleted successfully',
-        data: { count },
+        data: { count: 1 },
       };
     } catch (error) {
       throw new HttpException(
@@ -165,4 +182,24 @@ export class ModuleService {
       );
     }
   }
+
+  // async deleteOne(id: string): Promise<IResponse<ICount>> {
+  //   try {
+  //     const module = await this.moduleRepo.findById(id);
+  //     if (!module) {
+  //       throw new HttpException('Module not found', HttpStatus.NOT_FOUND);
+  //     }
+  //     const count = await this.moduleRepo.deleteOne(id);
+  //     return {
+  //       statusCode: HttpStatus.OK,
+  //       message: 'Module deleted successfully',
+  //       data: { count },
+  //     };
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       error.message || 'Server Error',
+  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 }

@@ -136,6 +136,44 @@ export class ChapterService {
       if (!chapter) {
         throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
       }
+
+      const chapterNumber = chapter.chapterNumber;
+
+      await this.chapterRepo.deleteOne(id);
+
+      const chaptersToUpdate =
+        await this.chapterRepo.findByModuleIdAndChapterNumberGreaterThan(
+          chapter.moduleId,
+          chapterNumber,
+        );
+      for (const chapterToUpdate of chaptersToUpdate) {
+        // chapterToUpdate.chapterNumber -= 1;
+        await this.chapterRepo.update(chapterToUpdate.id, {
+          chapterNumber: chapterToUpdate.chapterNumber - 1,
+        });
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Chapter deleted successfully',
+        data: { count: 1 },
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+}
+
+/* 
+  async deleteOne(id: string): Promise<IResponse<ICount>> {
+    try {
+      const chapter = await this.chapterRepo.findById(id);
+      if (!chapter) {
+        throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+      }
       const count = await this.chapterRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,
@@ -149,4 +187,4 @@ export class ChapterService {
       );
     }
   }
-}
+*/

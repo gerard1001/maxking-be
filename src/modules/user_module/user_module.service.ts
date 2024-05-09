@@ -5,6 +5,7 @@ import { ModuleRepository } from '../module/providers/module.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { UserModule } from './model/user_module.model';
+import { UpdateUserModuleDto } from './dto/update-user_module.dto';
 
 @Injectable()
 export class UserModuleService {
@@ -32,7 +33,7 @@ export class UserModuleService {
         moduleId,
       });
       return {
-        statusCode: HttpStatus.OK,
+        statusCode: HttpStatus.CREATED,
         message: 'User module created successfully',
         data: userModule,
       };
@@ -119,6 +120,66 @@ export class UserModuleService {
     }
   }
 
+  async findByUserAndModuleId(
+    userId: string,
+    moduleId: string,
+  ): Promise<IResponse<UserModule>> {
+    try {
+      const user = await this.userRepo.findById(userId);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const module = await this.moduleRepo.findById(moduleId);
+      if (!module) {
+        throw new HttpException('Module not found', HttpStatus.NOT_FOUND);
+      }
+      const userModule = await this.userModuleRepo.findByUserAndModuleId(
+        userId,
+        moduleId,
+      );
+      if (!userModule) {
+        throw new HttpException('User module not found', HttpStatus.NOT_FOUND);
+      }
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User module retrieved successfully',
+        data: userModule,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateCurrentChapter(
+    id: string,
+    updateUserCourseDto: UpdateUserModuleDto,
+  ): Promise<IResponse<UserModule>> {
+    try {
+      const { currentChapter } = updateUserCourseDto;
+      const userCourse = await this.userModuleRepo.findById(id);
+      if (!userCourse) {
+        throw new HttpException('User module not found', HttpStatus.NOT_FOUND);
+      }
+      const updatedUserCourse = await this.userModuleRepo.update(id, {
+        currentChapter,
+      });
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Current chapter updated successfully',
+        data: updatedUserCourse[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const userModule = await this.userModuleRepo.findById(id);
@@ -140,10 +201,11 @@ export class UserModuleService {
   }
 
   async deleteByUserAndModuleId(
-    deleteUserModuleDto: CreateUserModuleDto,
+    userId: string,
+    moduleId: string,
   ): Promise<IResponse<ICount>> {
     try {
-      const { userId, moduleId } = deleteUserModuleDto;
+      // const { userId, moduleId } = deleteUserModuleDto;
       const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);

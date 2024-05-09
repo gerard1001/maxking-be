@@ -25,6 +25,7 @@ import { ModuleModule } from './modules/module/module.module';
 import { QuestionModule } from './modules/question/question.module';
 import { UserCourseModule } from './modules/user_course/user_course.module';
 import { ChapterModule } from './modules/chapter/chapter.module';
+import { UserModuleModule } from './modules/user_module/user_module.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ChapterModule } from './modules/chapter/chapter.module';
     ModuleModule,
     QuestionModule,
     UserCourseModule,
+    UserModuleModule,
     ChapterModule,
   ],
   controllers: [AppController],

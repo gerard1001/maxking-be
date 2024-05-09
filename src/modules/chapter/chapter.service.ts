@@ -99,6 +99,24 @@ export class ChapterService {
     }
   }
 
+  async findByModuleIdAndChapterNumber(
+    moduleId: string,
+    chapterNumber: string,
+  ): Promise<IResponse<Chapter>> {
+    const chapter = await this.chapterRepo.findByModuleIdAndChapterNumber(
+      moduleId,
+      Number(chapterNumber),
+    );
+    if (!chapter) {
+      throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Chapter retrieved successfully',
+      data: chapter,
+    };
+  }
+
   async update(
     id: string,
     updateChapterDto: UpdateChapterDto,

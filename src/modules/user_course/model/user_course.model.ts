@@ -19,4 +19,7 @@ export class UserCourse extends Model<UserCourse> {
 
   @Column
   readonly currentModule: number;
+
+  @Column
+  readonly rank: string;
 }

@@ -7,13 +7,16 @@ export class UserModule extends Model<UserModule> {
   @ForeignKey(() => User)
   @IsUUID(4)
   @Column
-  readonly userId: string;
+  userId: string;
 
   @ForeignKey(() => Module)
   @IsUUID(4)
   @Column
-  readonly moduleId: string;
+  moduleId: string;
 
   @Column
-  readonly rank: string;
+  currentChapter: number;
+
+  @Column
+  rank: string;
 }

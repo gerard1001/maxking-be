@@ -580,7 +580,6 @@ export class AuthService {
     const frontendUrl = this.configService.get('FRONTEND_URL');
     try {
       const user = await this.userRepo.findByEmail(req.user?.email);
-
       if (!user) {
         const role = await this.roleRepo.findByType('CLIENT');
         if (!role) {
@@ -618,9 +617,11 @@ export class AuthService {
           params.set('error', 'profile_creation_failed');
         }
 
+        const createdUser = await this.userRepo.findByEmail(email);
+
         params.set('token', token);
-        params.set('role', user.roles[0].type);
-        params.set('id', user.id);
+        params.set('role', createdUser.roles[0].type);
+        params.set('id', createdUser.id);
         params.set('new_user', 'true');
 
         return res.redirect(`${frontendUrl}?${params}`);
@@ -634,12 +635,18 @@ export class AuthService {
         params.set('error', 'manual_user_google_signin_conflict');
       } else {
         params.set('token', token);
+        params.set('role', user.roles[0].type);
+        params.set('id', user.id);
         params.set('new_user', 'false');
       }
 
       return res.redirect(`${frontendUrl}?${params}`);
     } catch (error) {
       await this.userRepo.deleteByEmail(req?.user?.email);
+      params.delete('token');
+      params.delete('role');
+      params.delete('id');
+      params.delete('new_user');
       params.set('error', 'server_error');
       return res.redirect(`${frontendUrl}?${params}`);
     }

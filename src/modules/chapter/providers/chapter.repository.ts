@@ -36,7 +36,7 @@ export class ChapterRepository {
     chapterNumber: number,
   ): Promise<Chapter> {
     return await this.chapterModel.findOne({
-      where: { moduleId, chapterNumber },
+      where: { moduleId, chapterNumber: chapterNumber },
     });
   }
 

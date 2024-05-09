@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { USER_COURSE_MODEL } from 'src/core/constants';
 import { UserCourse } from '../model/user_course.model';
 import { CreateUserCourseDto } from '../dto/create-user_course.dto';
+import { User } from 'src/modules/user/model/user.model';
 
 @Injectable()
 export class UserCourseRepository {
@@ -19,7 +20,10 @@ export class UserCourseRepository {
   }
 
   async findById(id: string): Promise<UserCourse> {
-    return await this.userCourseModel.findByPk(id);
+    return await this.userCourseModel.findOne({
+      where: { id },
+      attributes: ['id', 'userId', 'courseId', 'currentModule', 'rank'],
+    });
   }
 
   async findByUserAndCourseId(
@@ -28,6 +32,7 @@ export class UserCourseRepository {
   ): Promise<UserCourse> {
     return await this.userCourseModel.findOne({
       where: { userId, courseId },
+      attributes: ['id', 'userId', 'courseId', 'currentModule', 'rank'],
     });
   }
 
@@ -39,6 +44,13 @@ export class UserCourseRepository {
           all: true,
         },
       ],
+    });
+  }
+
+  async update(id: string, data: any): Promise<[number, UserCourse[]]> {
+    return await this.userCourseModel.update(data, {
+      where: { id },
+      returning: true,
     });
   }
 

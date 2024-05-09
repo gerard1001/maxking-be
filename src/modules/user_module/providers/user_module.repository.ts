@@ -19,7 +19,10 @@ export class UserModuleRepository {
   }
 
   async findById(id: string): Promise<UserModule> {
-    return await this.userModuleModel.findByPk(id);
+    return await this.userModuleModel.findOne({
+      where: { id },
+      attributes: ['id', 'userId', 'moduleId', 'currentChapter', 'rank'],
+    });
   }
 
   async findByUserAndModuleId(
@@ -28,6 +31,7 @@ export class UserModuleRepository {
   ): Promise<UserModule> {
     return await this.userModuleModel.findOne({
       where: { userId, moduleId },
+      attributes: ['id', 'userId', 'moduleId', 'currentChapter', 'rank'],
     });
   }
 
@@ -45,6 +49,13 @@ export class UserModuleRepository {
   async findByModuleId(moduleId: string): Promise<UserModule[]> {
     return await this.userModuleModel.findAll({
       where: { moduleId },
+    });
+  }
+
+  async update(id: string, data: any): Promise<[number, UserModule[]]> {
+    return await this.userModuleModel.update(data, {
+      where: { id },
+      returning: true,
     });
   }
 

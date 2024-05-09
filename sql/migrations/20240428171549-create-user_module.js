@@ -33,6 +33,11 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+      currentChapter: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
+        allowNull: false,
+      },
       rank: {
         type: Sequelize.STRING,
         allowNull: true,

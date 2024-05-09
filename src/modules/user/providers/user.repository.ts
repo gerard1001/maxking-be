@@ -5,6 +5,8 @@ import { Role } from '../../role/model/role.model';
 import { USER_MODEL } from 'src/core/constants';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Op } from 'sequelize';
+import { Course } from 'src/modules/course/model/course.model';
+import { Module } from 'src/modules/module/model/module.model';
 
 @Injectable()
 export class UserRepository {
@@ -26,7 +28,7 @@ export class UserRepository {
               [Op.notIn]: excludedRoles,
             },
           },
-          through: { attributes: [] },
+          // through: { attributes: [] },
         },
         { model: Profile, as: 'profile' },
       ],
@@ -43,6 +45,22 @@ export class UserRepository {
           through: { attributes: [] },
         },
         { model: Profile, as: 'profile' },
+        {
+          model: Course,
+          as: 'courses',
+          through: {
+            as: 'user_course',
+            attributes: ['id', 'userId', 'courseId', 'currentModule', 'rank'],
+          },
+        },
+        {
+          model: Module,
+          as: 'modules',
+          through: {
+            as: 'user_module',
+            attributes: ['id', 'userId', 'moduleId', 'currentChapter', 'rank'],
+          },
+        },
       ],
     });
   }

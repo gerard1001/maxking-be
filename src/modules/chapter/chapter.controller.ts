@@ -53,6 +53,14 @@ export class ChapterController {
     return this.chapterService.findById(id);
   }
 
+  @Get(':id/module/:moduleId')
+  findByModuleId(
+    @Param('modulId') modulId: string,
+    @Param('id') id: string,
+  ): Promise<IResponse<Chapter>> {
+    return this.chapterService.findByModuleIdAndChapterNumber(modulId, id);
+  }
+
   @Patch(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

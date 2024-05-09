@@ -202,7 +202,6 @@ export class CourseService {
     req: Request,
   ): Promise<IResponse<Course>> {
     try {
-      console.log({ updateCourseDto });
       const course = await this.courseRepo.findById(id);
       if (!course) {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);

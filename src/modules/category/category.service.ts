@@ -20,7 +20,6 @@ export class CategoryService {
   ): Promise<IResponse<Category>> {
     try {
       const { name } = createCategoryDto;
-      console.log({ name });
       const categoryExists = await this.categoryRepo.findByName(name.trim());
       if (categoryExists) {
         throw new HttpException(

@@ -39,6 +39,6 @@ import { ReplyModule } from '../reply/reply.module';
     SessionSerializer,
     MailerHelper,
   ],
-  exports: [AuthHelper],
+  exports: [AuthHelper, MailerHelper],
 })
 export class AuthModule {}

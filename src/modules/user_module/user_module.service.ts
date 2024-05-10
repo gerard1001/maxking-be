@@ -28,6 +28,10 @@ export class UserModuleService {
       if (!module) {
         throw new HttpException('Module not found', HttpStatus.NOT_FOUND);
       }
+      const userModuleExist = await this.userModuleRepo.findByUserAndModuleId(userId, moduleId)
+      if(userModuleExist) {
+        throw new HttpException('Confict while assigning module', HttpStatus.CONFLICT)
+      }
       const userModule = await this.userModuleRepo.create({
         userId,
         moduleId,

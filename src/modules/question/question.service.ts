@@ -41,11 +41,11 @@ export class QuestionService {
         );
       }
       const isTrueAnswerValid = choices
-        .map((choice) => choice.choice)
+        .map((choice) => choice)
         .includes(trueAnswer);
       const isTrueAnswerUnique =
         choices
-          .map((choice) => choice.choice)
+          .map((choice) => choice)
           .filter((choice) => choice === trueAnswer).length === 1;
       if (!isTrueAnswerValid || !isTrueAnswerUnique) {
         throw new HttpException(
@@ -53,31 +53,35 @@ export class QuestionService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      function checkChoicesIndexes(choices: Choice[]) {
-        const indexes = choices.map((choice) => choice.index);
-        indexes.sort((a, b) => a - b);
-        let expectedIndex = 1;
+      const choicesWithIndex = choices.map((choice, index) => ({
+        index: index + 1,
+        choice,
+      }));
+      // function checkChoicesIndexes(choices: string[]) {
+      //   const indexes = choices.map((choice) => choice.index);
+      //   indexes.sort((a, b) => a - b);
+      //   let expectedIndex = 1;
 
-        for (const index of indexes) {
-          if (index !== expectedIndex) {
-            return false;
-          }
-          expectedIndex++;
-        }
+      //   for (const index of indexes) {
+      //     if (index !== expectedIndex) {
+      //       return false;
+      //     }
+      //     expectedIndex++;
+      //   }
 
-        return true;
-      }
+      //   return true;
+      // }
 
-      if (!checkChoicesIndexes(choices)) {
-        throw new HttpException(
-          'Choices indexes must be consecutive numbers starting from 1',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // if (!checkChoicesIndexes(choices)) {
+      //   throw new HttpException(
+      //     'Choices indexes must be consecutive numbers starting from 1',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
 
       const newQuestion = await this.questionRepo.create({
         question,
-        choices,
+        choices: choicesWithIndex as Choice[],
         trueAnswer,
         courseId: course ? course.id : null,
         moduleId: module ? module.id : null,

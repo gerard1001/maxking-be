@@ -7,19 +7,22 @@ export class UserCourse extends Model<UserCourse> {
   @ForeignKey(() => User)
   @IsUUID(4)
   @Column
-  readonly userId: string;
+  userId: string;
 
   @ForeignKey(() => Course)
   @IsUUID(4)
   @Column
-  readonly courseId: string;
+  courseId: string;
 
   @Column
-  readonly userType: string;
+  userType: string;
 
   @Column
-  readonly currentModule: number;
+  currentModule: number;
 
   @Column
-  readonly rank: string;
+  rank: string;
+
+  @Column
+  completed: boolean;
 }

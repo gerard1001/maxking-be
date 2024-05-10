@@ -34,7 +34,7 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       question: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       choices: {

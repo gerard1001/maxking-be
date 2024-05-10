@@ -7,6 +7,7 @@ import { Profile } from 'src/modules/profile/model/profile.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
+import { Question } from 'src/modules/question/model/question.model';
 
 @Injectable()
 export class CourseRepository {
@@ -54,6 +55,10 @@ export class CourseRepository {
               as: 'chapters',
             },
           ],
+        },
+        {
+          model: Question,
+          as: 'questions',
         },
         {
           model: Tag,

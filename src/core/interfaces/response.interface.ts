@@ -16,5 +16,5 @@ export interface IToken {
 
 export interface Choice {
   choice: string;
-  index: number;
+  index?: number;
 }

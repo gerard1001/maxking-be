@@ -178,7 +178,7 @@ export class UserCourseService {
     }
   }
 
-  async updateCurrentModule(
+  async update(
     id: string,
     updateUserCourseDto: UpdateUserCourseDto,
   ): Promise<IResponse<UserCourse>> {
@@ -188,9 +188,10 @@ export class UserCourseService {
       if (!userCourse) {
         throw new HttpException('User course not found', HttpStatus.NOT_FOUND);
       }
-      const updatedUserCourse = await this.userCourseRepo.update(id, {
-        currentModule,
-      });
+      const updatedUserCourse = await this.userCourseRepo.update(
+        id,
+        updateUserCourseDto,
+      );
 
       return {
         statusCode: HttpStatus.OK,

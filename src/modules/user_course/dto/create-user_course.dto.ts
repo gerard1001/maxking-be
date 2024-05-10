@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDefined,
   IsEnum,
   IsNumber,
@@ -27,4 +28,8 @@ export class CreateUserCourseDto {
   @IsString()
   @IsDefined()
   readonly rank?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly completed?: boolean;
 }

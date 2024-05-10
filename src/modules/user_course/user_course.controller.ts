@@ -43,14 +43,11 @@ export class UserCourseController {
   }
 
   @Patch(':id')
-  async updateCurrentModule(
+  async update(
     @Param('id') id: string,
     @Body() updateUserCourseDto: UpdateUserCourseDto,
   ): Promise<IResponse<UserCourse>> {
-    return await this.userCourseService.updateCurrentModule(
-      id,
-      updateUserCourseDto,
-    );
+    return await this.userCourseService.update(id, updateUserCourseDto);
   }
 
   @Delete(':id')

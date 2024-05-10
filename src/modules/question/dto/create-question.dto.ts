@@ -10,7 +10,7 @@ export class CreateQuestionDto {
   @IsArray()
   @IsDefined()
   @IsNotEmpty()
-  readonly choices: Choice[];
+  readonly choices: string[];
 
   @IsString()
   @IsDefined()

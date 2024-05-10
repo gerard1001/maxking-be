@@ -7,6 +7,7 @@ import { Profile } from 'src/modules/profile/model/profile.model';
 import { Op } from 'sequelize';
 import { Course } from 'src/modules/course/model/course.model';
 import { Module } from 'src/modules/module/model/module.model';
+import { Chapter } from 'src/modules/chapter/model/chapter.model';
 
 @Injectable()
 export class UserRepository {
@@ -52,6 +53,20 @@ export class UserRepository {
             as: 'user_course',
             attributes: ['id', 'userId', 'courseId', 'currentModule', 'rank'],
           },
+          include: [
+            {
+              model: Module,
+              as: 'modules',
+              attributes: ['id'],
+              include: [
+                {
+                  model: Chapter,
+                  as: 'chapters',
+                  attributes: ['id'],
+                },
+              ],
+            },
+          ],
         },
         {
           model: Module,

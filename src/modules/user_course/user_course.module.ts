@@ -6,12 +6,16 @@ import { userCourseProviders } from 'src/database/providers/entities.providers';
 import { UserModule } from '../user/user.module';
 import { CourseModule } from '../course/course.module';
 import { AuthModule } from '../auth/auth.module';
+import { ModuleModule } from '../module/module.module';
+import { UserModuleModule } from '../user_module/user_module.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     forwardRef(() => CourseModule),
     forwardRef(() => AuthModule),
+    forwardRef(() => ModuleModule),
+    forwardRef(() => UserModuleModule),
   ],
   controllers: [UserCourseController],
   providers: [UserCourseService, UserCourseRepository, ...userCourseProviders],

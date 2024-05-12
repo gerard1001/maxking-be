@@ -51,7 +51,14 @@ export class UserRepository {
           as: 'courses',
           through: {
             as: 'user_course',
-            attributes: ['id', 'userId', 'courseId', 'currentModule', 'rank'],
+            attributes: [
+              'id',
+              'userId',
+              'courseId',
+              'currentModule',
+              'rank',
+              'completed',
+            ],
           },
           include: [
             {

@@ -3,6 +3,7 @@ import { MODULE_MODEL } from 'src/core/constants';
 import { Module } from '../model/module.model';
 import { Op } from 'sequelize';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
+import { User } from 'src/modules/user/model/user.model';
 
 @Injectable()
 export class ModuleRepository {
@@ -49,6 +50,22 @@ export class ModuleRepository {
   ): Promise<Module> {
     return await this.moduleModel.findOne({
       where: { courseId, moduleNumber },
+    });
+  }
+
+  async findByUserIdAndCourseId(
+    userId: string,
+    courseId: string,
+  ): Promise<Module[]> {
+    return await this.moduleModel.findAll({
+      where: { courseId },
+      include: [
+        {
+          model: User,
+          as: 'users',
+          where: { id: userId },
+        },
+      ],
     });
   }
 

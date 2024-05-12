@@ -7,6 +7,8 @@ import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { UserCourse } from './model/user_course.model';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { UpdateUserCourseDto } from './dto/update-user_course.dto';
+import { UserModuleRepository } from '../user_module/providers/user_module.repository';
+import { ModuleRepository } from '../module/providers/module.repository';
 
 @Injectable()
 export class UserCourseService {
@@ -14,6 +16,8 @@ export class UserCourseService {
     private readonly userCourseRepo: UserCourseRepository,
     private readonly userRepo: UserRepository,
     private readonly courseRepo: CourseRepository,
+    private readonly moduleRepo: ModuleRepository,
+    private readonly userModuleRepo: UserModuleRepository,
     private readonly mailerHelper: MailerHelper,
   ) {}
 
@@ -46,6 +50,7 @@ export class UserCourseService {
       try {
         await this.mailerHelper.sendEmail(email, subject, text);
       } catch (error) {
+        console.log(error, '^^^^^^^^^');
         throw new HttpException(
           'Email delivery has failed, please check again your email address or try again later',
           HttpStatus.BAD_REQUEST,
@@ -211,6 +216,21 @@ export class UserCourseService {
       const userCourse = await this.userCourseRepo.findById(id);
       if (!userCourse) {
         throw new HttpException('User course not found', HttpStatus.NOT_FOUND);
+      }
+      const useCourseModules = await this.moduleRepo.findByUserIdAndCourseId(
+        userCourse.userId,
+        userCourse.courseId,
+      );
+      if (useCourseModules.length > 0) {
+        console.log(useCourseModules, '^^^^^^^^^');
+        for (let i = 0; i < useCourseModules.length; i++) {
+          const userModule = await this.userModuleRepo.findByUserAndModuleId(
+            userCourse.userId,
+            useCourseModules[i].id,
+          );
+          // const userModule = useCourseModules[i];
+          await this.userModuleRepo.deleteOne(userModule.id);
+        }
       }
       const count = await this.userCourseRepo.deleteOne(id);
       return {

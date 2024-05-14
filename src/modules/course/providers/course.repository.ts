@@ -26,6 +26,30 @@ export class CourseRepository {
           model: Module,
           as: 'modules',
         },
+        {
+          model: User,
+          as: 'users',
+          attributes: ['id', 'firstName', 'lastName', 'email'],
+          through: {
+            as: 'user_course',
+            attributes: [
+              'id',
+              'userId',
+              'courseId',
+              'userType',
+              'currentModule',
+              'rank',
+              'completed',
+            ],
+          },
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              // attributes: ['id', 'firstName', 'lastName'],
+            },
+          ],
+        },
       ],
     });
   }
@@ -80,10 +104,25 @@ export class CourseRepository {
       where: { subjectId },
       include: [
         {
+          model: Module,
+          as: 'modules',
+        },
+        {
           model: User,
           as: 'users',
           attributes: ['id', 'firstName', 'lastName', 'email'],
-          through: { attributes: ['userType', 'currentModule'] },
+          through: {
+            as: 'user_course',
+            attributes: [
+              'id',
+              'userId',
+              'courseId',
+              'userType',
+              'currentModule',
+              'rank',
+              'completed',
+            ],
+          },
           include: [
             {
               model: Profile,

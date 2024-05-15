@@ -3,6 +3,7 @@ import { CATEGORY_MODEL } from 'src/core/constants';
 import { Category } from '../model/category.model';
 import { Op } from 'sequelize';
 import { Subject } from 'src/modules/subject/model/subject.model';
+import { Course } from 'src/modules/course/model/course.model';
 
 @Injectable()
 export class CategoryRepository {
@@ -15,7 +16,22 @@ export class CategoryRepository {
   }
 
   async findAll(): Promise<Category[]> {
-    return await this.categoryModel.findAll();
+    return await this.categoryModel.findAll({
+      include: [
+        {
+          model: Subject,
+          as: 'subjects',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: Course,
+              as: 'courses',
+              attributes: ['id'],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async findById(id: string): Promise<Category> {

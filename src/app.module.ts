@@ -26,6 +26,7 @@ import { QuestionModule } from './modules/question/question.module';
 import { UserCourseModule } from './modules/user_course/user_course.module';
 import { ChapterModule } from './modules/chapter/chapter.module';
 import { UserModuleModule } from './modules/user_module/user_module.module';
+import { LikeModule } from './modules/like/like.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { UserModuleModule } from './modules/user_module/user_module.module';
     UserArticleModule,
     CommentModule,
     ReplyModule,
+    LikeModule,
     CategoryModule,
     SubjectModule,
     CourseModule,

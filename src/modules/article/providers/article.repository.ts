@@ -6,6 +6,7 @@ import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Op } from 'sequelize';
+import { Like } from 'src/modules/like/model/like.model';
 
 @Injectable()
 export class ArticleRepository {
@@ -23,7 +24,6 @@ export class ArticleRepository {
         {
           model: Tag,
           as: 'tags',
-          // attributes: ['id', 'name'],
           through: { attributes: [] },
         },
         {
@@ -47,6 +47,25 @@ export class ArticleRepository {
               model: Profile,
               as: 'profile',
               attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
             },
           ],
         },
@@ -85,6 +104,25 @@ export class ArticleRepository {
               model: Profile,
               as: 'profile',
               attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
             },
           ],
         },
@@ -132,6 +170,25 @@ export class ArticleRepository {
             },
           ],
         },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
+            },
+          ],
+        },
       ],
     });
   }
@@ -141,24 +198,18 @@ export class ArticleRepository {
   }
 
   async findFeaturedArticles(): Promise<Article[]> {
-    return await this.articleModel.findAll({ where: { isFeatured: true } });
-  }
-
-  async findByRelatedArticleTags(
-    articleId: string,
-    tagIds: string[],
-  ): Promise<Article[]> {
     return await this.articleModel.findAll({
-      where: {
-        id: { [Op.not]: articleId },
-        '$tags.id$': { [Op.in]: tagIds },
-      },
+      where: { isFeatured: true },
       include: [
         {
           model: Tag,
           as: 'tags',
-          attributes: ['id', 'name'],
           through: { attributes: [] },
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
         },
         {
           model: User,
@@ -176,6 +227,87 @@ export class ArticleRepository {
               model: Profile,
               as: 'profile',
               attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async findByRelatedArticleTags(
+    articleId: string,
+    tagIds: string[],
+  ): Promise<Article[]> {
+    return await this.articleModel.findAll({
+      where: {
+        id: { [Op.not]: articleId },
+        '$tags.id$': { [Op.in]: tagIds },
+      },
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          through: { attributes: [] },
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
             },
           ],
         },

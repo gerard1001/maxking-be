@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
+import { Like } from 'src/modules/like/model/like.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { User } from 'src/modules/user/model/user.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
@@ -46,4 +47,7 @@ export class Article extends Model<Article> {
 
   @HasMany(() => Comment)
   comments: Comment[];
+
+  @HasMany(() => Like)
+  likes: Like[];
 }

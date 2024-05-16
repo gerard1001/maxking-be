@@ -62,7 +62,7 @@ export class RoleGuard implements CanActivate {
         return null;
       });
 
-    const route = request.route.path.split('/')[1];
+    const route = request.route.path.split('/')[3];
 
     let paramUser = '';
 

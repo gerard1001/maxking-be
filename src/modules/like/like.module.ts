@@ -7,13 +7,15 @@ import { UserModule } from '../user/user.module';
 import { LikeRepository } from './providers/like.repository';
 import { likeProviders } from 'src/database/providers/entities.providers';
 import { ArticleModule } from '../article/article.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
-    forwardRef(() => CommentModule),
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
     forwardRef(() => ArticleModule),
+    forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
   ],
   controllers: [LikeController],
   providers: [LikeService, LikeRepository, ...likeProviders],

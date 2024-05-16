@@ -20,6 +20,7 @@ import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
 import { UserModule } from 'src/modules/user_module/model/user_module.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
+import { Like } from 'src/modules/like/model/like.model';
 
 export const databaseProviders = [
   {
@@ -51,6 +52,7 @@ export const databaseProviders = [
         ArticleTag,
         Comment,
         Reply,
+        Like,
         Category,
         Subject,
         Course,

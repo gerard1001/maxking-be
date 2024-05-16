@@ -24,7 +24,7 @@ module.exports = {
       },
       articleId: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Articles',
           key: 'id',
@@ -35,7 +35,7 @@ module.exports = {
       },
       commentId: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Comments',
           key: 'id',

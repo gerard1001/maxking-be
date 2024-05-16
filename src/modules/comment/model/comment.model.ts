@@ -7,6 +7,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Article } from 'src/modules/article/model/article.model';
+import { Like } from 'src/modules/like/model/like.model';
 import { Reply } from 'src/modules/reply/model/reply.model';
 import { User } from 'src/modules/user/model/user.model';
 
@@ -31,4 +32,7 @@ export class Comment extends Model<Comment> {
 
   @HasMany(() => Reply)
   replies: Reply[];
+
+  @HasMany(() => Like)
+  likes: Like[];
 }

@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { REPLY_MODEL } from 'src/core/constants';
+import { LIKE_MODEL } from 'src/core/constants';
 import { Like } from '../model/like.model';
-import { UpdateLikeDto } from '../dto/update-like.dto';
 import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 
 @Injectable()
 export class LikeRepository {
-  constructor(@Inject(REPLY_MODEL) private readonly likeModel: typeof Like) {}
+  constructor(@Inject(LIKE_MODEL) private readonly likeModel: typeof Like) {}
 
   async create(createLikeDto: any): Promise<Like> {
     return await this.likeModel.create(createLikeDto);
@@ -38,6 +37,14 @@ export class LikeRepository {
 
   async findByUser(userId: string) {
     return await this.likeModel.findOne({ where: { userId } });
+  }
+
+  async findByUserAndArticleId(userId: string, articleId: string) {
+    return await this.likeModel.findOne({ where: { userId, articleId } });
+  }
+
+  async findByUserAndCommentId(userId: string, commentId: string) {
+    return await this.likeModel.findOne({ where: { userId, commentId } });
   }
 
   async findByComment(commentId: string) {

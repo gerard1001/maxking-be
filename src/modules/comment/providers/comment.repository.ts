@@ -5,6 +5,7 @@ import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Reply } from 'src/modules/reply/model/reply.model';
+import { Like } from 'src/modules/like/model/like.model';
 
 @Injectable()
 export class CommentRepository {
@@ -78,12 +79,13 @@ export class CommentRepository {
           ],
         },
         {
-          model: Reply,
-          as: 'replies',
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
           include: [
             {
               model: User,
-              as: 'writer',
+              as: 'liker',
               attributes: ['id', 'firstName', 'lastName', 'email'],
               include: [
                 {

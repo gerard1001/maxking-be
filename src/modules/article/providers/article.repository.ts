@@ -27,6 +27,11 @@ export class ArticleRepository {
           through: { attributes: [] },
         },
         {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
+        },
+        {
           model: User,
           as: 'author',
           attributes: [
@@ -58,6 +63,11 @@ export class ArticleRepository {
           where: { id: userId },
           attributes: ['id'],
           through: { attributes: [] },
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
         },
         {
           model: User,

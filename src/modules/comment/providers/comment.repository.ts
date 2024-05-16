@@ -61,8 +61,42 @@ export class CommentRepository {
     return await this.commentModel.findOne({ where: { userId } });
   }
 
-  async findByArticle(articleId: string) {
-    return await this.commentModel.findOne({ where: { articleId } });
+  async findByArticle(articleId: string): Promise<Comment[]> {
+    return await this.commentModel.findAll({
+      where: { articleId },
+      include: [
+        {
+          model: User,
+          as: 'writer',
+          attributes: ['id', 'firstName', 'lastName', 'email'],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Reply,
+          as: 'replies',
+          include: [
+            {
+              model: User,
+              as: 'writer',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async update(

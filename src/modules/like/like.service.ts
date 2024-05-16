@@ -1,48 +1,48 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CommentRepository } from './providers/comment.repository';
+import { LikeRepository } from './providers/like.repository';
 import { UserRepository } from '../user/providers/user.repository';
-import { ArticleRepository } from '../article/providers/article.repository';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CommentRepository } from '../comment/providers/comment.repository';
+import { CreateLikeDto } from './dto/create-like.dto';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
-import { Comment } from './model/comment.model';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Like } from './model/like.model';
+import { UpdateLikeDto } from './dto/update-like.dto';
 
 @Injectable()
-export class CommentService {
+export class LikeService {
   constructor(
-    private readonly commentRepo: CommentRepository,
+    private readonly likeRepo: LikeRepository,
     private readonly userRepo: UserRepository,
-    private readonly articleRepo: ArticleRepository,
+    private readonly commentRepo: CommentRepository,
   ) {}
 
   async create(
-    createCommentDto: CreateCommentDto,
-    articleId: string,
+    createLikeDto: CreateLikeDto,
+    commentId: string,
     req: Request,
-  ): Promise<IResponse<Comment>> {
+  ): Promise<IResponse<Like>> {
     try {
-      const { text } = createCommentDto;
+      const { text } = createLikeDto;
       const userId = req['user'].id;
       const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      const article = await this.articleRepo.findById(articleId);
-      if (!article) {
-        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      const comment = await this.commentRepo.findById(commentId);
+      if (!comment) {
+        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
       }
 
-      const newComment = await this.commentRepo.create({
+      const newLike = await this.likeRepo.create({
         text,
         userId,
-        articleId,
+        commentId,
       });
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Comment created successfully',
-        data: newComment,
+        message: 'Like created successfully',
+        data: newLike,
       };
     } catch (error) {
       throw new HttpException(
@@ -52,13 +52,13 @@ export class CommentService {
     }
   }
 
-  async findAll(): Promise<IResponse<Comment[]>> {
+  async findAll(): Promise<IResponse<Like[]>> {
     try {
-      const comments = await this.commentRepo.findAll();
+      const likes = await this.likeRepo.findAll();
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comments fetched successfully',
-        data: comments,
+        message: 'Replies fetched successfully',
+        data: likes,
       };
     } catch (error) {
       throw new HttpException(
@@ -68,16 +68,16 @@ export class CommentService {
     }
   }
 
-  async findById(id: string): Promise<IResponse<Comment>> {
+  async findById(id: string): Promise<IResponse<Like>> {
     try {
-      const comment = await this.commentRepo.findById(id);
-      if (!comment) {
-        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      const like = await this.likeRepo.findById(id);
+      if (!like) {
+        throw new HttpException('Like not found', HttpStatus.NOT_FOUND);
       }
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comment retrieved successfully',
-        data: comment,
+        message: 'Like retrieved successfully',
+        data: like,
       };
     } catch (error) {
       throw new HttpException(
@@ -87,20 +87,20 @@ export class CommentService {
     }
   }
 
-  async findByUser(userId: string): Promise<IResponse<Comment>> {
+  async findByUser(userId: string): Promise<IResponse<Like>> {
     try {
       const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const comment = await this.commentRepo.findByUser(userId);
-      if (!comment) {
-        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      const like = await this.likeRepo.findByUser(userId);
+      if (!like) {
+        throw new HttpException('Like not found', HttpStatus.NOT_FOUND);
       }
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comment retrieved successfully',
-        data: comment,
+        message: 'Like retrieved successfully',
+        data: like,
       };
     } catch (error) {
       throw new HttpException(
@@ -110,20 +110,20 @@ export class CommentService {
     }
   }
 
-  async findByArticle(articleId: string): Promise<IResponse<Comment[]>> {
+  async findByComment(commentId: string): Promise<IResponse<Like>> {
     try {
-      const article = await this.articleRepo.findById(articleId);
-      if (!article) {
-        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
-      }
-      const comment = await this.commentRepo.findByArticle(articleId);
+      const comment = await this.commentRepo.findById(commentId);
       if (!comment) {
         throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
       }
+      const like = await this.likeRepo.findByComment(commentId);
+      if (!like) {
+        throw new HttpException('Like not found', HttpStatus.NOT_FOUND);
+      }
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comment retrieved successfully',
-        data: comment,
+        message: 'Like retrieved successfully',
+        data: like,
       };
     } catch (error) {
       throw new HttpException(
@@ -135,21 +135,18 @@ export class CommentService {
 
   async update(
     id: string,
-    updateCommentDto: UpdateCommentDto,
-  ): Promise<IResponse<Comment>> {
+    updateLikeDto: UpdateLikeDto,
+  ): Promise<IResponse<Like>> {
     try {
-      const comment = await this.commentRepo.findById(id);
-      if (!comment) {
-        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      const like = await this.likeRepo.findById(id);
+      if (!like) {
+        throw new HttpException('Like not found', HttpStatus.NOT_FOUND);
       }
-      const updatedComment = await this.commentRepo.update(
-        id,
-        updateCommentDto,
-      );
+      const updatedLike = await this.likeRepo.update(id, updateLikeDto);
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comment updated successfully',
-        data: updatedComment[1][0],
+        message: 'Like updated successfully',
+        data: updatedLike[1][0],
       };
     } catch (error) {
       throw new HttpException(
@@ -161,14 +158,14 @@ export class CommentService {
 
   async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
-      const comment = await this.commentRepo.findById(id);
-      if (!comment) {
-        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      const like = await this.likeRepo.findById(id);
+      if (!like) {
+        throw new HttpException('Like not found', HttpStatus.NOT_FOUND);
       }
-      const count = await this.commentRepo.deleteOne(id);
+      const count = await this.likeRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comment deleted successfully',
+        message: 'Like deleted successfully',
         data: { count },
       };
     } catch (error) {
@@ -181,10 +178,10 @@ export class CommentService {
 
   async deleteMultiple(ids: string[]): Promise<IResponse<ICount>> {
     try {
-      const count = await this.commentRepo.deleteMultiple(ids);
+      const count = await this.likeRepo.deleteMultiple(ids);
       return {
         statusCode: HttpStatus.OK,
-        message: 'Comments deleted successfully',
+        message: 'Replies deleted successfully',
         data: { count },
       };
     } catch (error) {

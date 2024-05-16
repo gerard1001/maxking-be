@@ -28,6 +28,7 @@ export class CommentController {
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
       ENUM_ROLE_TYPE.ADMIN,
       ENUM_ROLE_TYPE.MANAGER,
       ENUM_ROLE_TYPE.MENTOR,
@@ -63,6 +64,13 @@ export class CommentController {
     @Body() updateCommentDto: UpdateCommentDto,
   ): Promise<IResponse<Comment>> {
     return await this.commentService.update(id, updateCommentDto);
+  }
+
+  @Get('article/:articleId')
+  async findByArticleId(
+    @Param('articleId') articleId: string,
+  ): Promise<IResponse<Comment[]>> {
+    return await this.commentService.findByArticle(articleId);
   }
 
   @Delete(':id')

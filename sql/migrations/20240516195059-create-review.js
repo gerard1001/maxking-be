@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Comments', {
+    await queryInterface.createTable('Reviews', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -17,30 +17,26 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-          as: 'writer',
+          as: 'user',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      articleId: {
+      courseId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Articles',
+          model: 'Courses',
           key: 'id',
-          as: 'article',
+          as: 'course',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      text: {
-        type: Sequelize.TEXT,
+      rating: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-          max: 1000,
-          min: 1,
-        },
       },
       createdAt: {
         allowNull: false,
@@ -54,6 +50,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Comments');
+    await queryInterface.dropTable('Reviews');
   },
 };

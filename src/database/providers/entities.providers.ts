@@ -14,6 +14,7 @@ import {
   ROLE_MODEL,
   SUBJECT_MODEL,
   TAG_MODEL,
+  TESTIMONIAL_MODEL,
   USER_ARTICLE_MODEL,
   USER_COURSE_MODEL,
   USER_MODEL,
@@ -177,6 +178,13 @@ export const courseTagProviders = [
 export const chapterProviders = [
   {
     provide: CHAPTER_MODEL,
+    useValue: Chapter,
+  },
+];
+
+export const testimonialProviders = [
+  {
+    provide: TESTIMONIAL_MODEL,
     useValue: Chapter,
   },
 ];

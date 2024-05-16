@@ -27,6 +27,7 @@ import { UserCourseModule } from './modules/user_course/user_course.module';
 import { ChapterModule } from './modules/chapter/chapter.module';
 import { UserModuleModule } from './modules/user_module/user_module.module';
 import { LikeModule } from './modules/like/like.module';
+import { TestimonialModule } from './modules/testimonial/testimonial.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { LikeModule } from './modules/like/like.module';
     UserCourseModule,
     UserModuleModule,
     ChapterModule,
+    TestimonialModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

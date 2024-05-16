@@ -48,6 +48,30 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      isPublished: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      isFree: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      price: {
+        type: Sequelize.DECIMAL,
+        allowNull: true,
+      },
+      discount: {
+        type: Sequelize.DECIMAL,
+        defaultValue: 0,
+        allowNull: true,
+      },
+      currency: {
+        type: Sequelize.ENUM('USD', 'EUR', 'GBP', 'RWF'),
+        allowNull: true,
+        defaultValue: 'USD',
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

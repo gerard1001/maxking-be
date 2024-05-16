@@ -14,6 +14,7 @@ import { Course } from 'src/modules/course/model/course.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 import { Role } from 'src/modules/role/model/role.model';
+import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { UserModule } from 'src/modules/user_module/model/user_module.model';
@@ -45,6 +46,9 @@ export class User extends Model<User> {
 
   @HasOne(() => Profile)
   profile: Profile;
+
+  @HasOne(() => Testimonial)
+  testimonial: Testimonial;
 
   @BelongsToMany(() => Role, () => UserRole)
   roles: Role[];

@@ -36,7 +36,7 @@ module.exports = {
       text: {
         type: Sequelize.TEXT,
         allowNull: false,
-        validate: { notEmpty: true, max: 100, min: 1 },
+        validate: { notEmpty: true, max: 1000, min: 1 },
       },
       createdAt: {
         allowNull: false,

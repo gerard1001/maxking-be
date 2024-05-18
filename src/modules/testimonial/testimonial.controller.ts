@@ -55,7 +55,12 @@ export class TestimonialController {
     return this.testimonialService.findById(id);
   }
 
-  @Patch(':id')
+  @Get('user/:id')
+  async findByUserId(@Param('id') id: string): Promise<IResponse<Testimonial>> {
+    return await this.testimonialService.findByUserId(id);
+  }
+
+  @Get('toggle-pin/:id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
@@ -65,7 +70,6 @@ export class TestimonialController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
-  @Get('toggle-pin/:id')
   async togglePin(@Param('id') id: string): Promise<IResponse<Testimonial>> {
     return await this.testimonialService.togglePin(id);
   }

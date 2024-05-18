@@ -8,6 +8,7 @@ import { Op } from 'sequelize';
 import { Course } from 'src/modules/course/model/course.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
+import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 
 @Injectable()
 export class UserRepository {
@@ -82,6 +83,10 @@ export class UserRepository {
             as: 'user_module',
             attributes: ['id', 'userId', 'moduleId', 'currentChapter', 'rank'],
           },
+        },
+        {
+          model: Testimonial,
+          as: 'testimonial',
         },
       ],
     });

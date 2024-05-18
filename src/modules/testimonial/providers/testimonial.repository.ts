@@ -3,7 +3,6 @@ import { TESTIMONIAL_MODEL } from 'src/core/constants';
 import { Testimonial } from '../model/testimonial.model';
 import { CreateTestimonialDto } from '../dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from '../dto/update-testimonial.dto';
-import { Op } from 'sequelize';
 import { User } from 'src/modules/user/model/user.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
 
@@ -41,6 +40,26 @@ export class TestimonialRepository {
 
   async findById(id: string) {
     return await this.testimonialModel.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName'],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async findByUserId(userId: string): Promise<Testimonial> {
+    return await this.testimonialModel.findOne({
+      where: { userId },
       include: [
         {
           model: User,

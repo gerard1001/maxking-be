@@ -36,6 +36,7 @@ import { Reply } from 'src/modules/reply/model/reply.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { Subject } from 'src/modules/subject/model/subject.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
+import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { User } from 'src/modules/user/model/user.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
@@ -185,6 +186,6 @@ export const chapterProviders = [
 export const testimonialProviders = [
   {
     provide: TESTIMONIAL_MODEL,
-    useValue: Chapter,
+    useValue: Testimonial,
   },
 ];

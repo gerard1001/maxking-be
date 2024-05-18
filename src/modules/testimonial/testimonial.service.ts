@@ -24,12 +24,14 @@ export class TestimonialService {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
+      console.log(user);
       if (user.testimonial) {
         await this.testimonialRepo.deleteOne(user.testimonial.id);
       }
       const newTestimonial = await this.testimonialRepo.create({
         userId,
         text: text.trim(),
+        isPinned: false,
       });
       return {
         statusCode: HttpStatus.CREATED,
@@ -70,6 +72,22 @@ export class TestimonialService {
         statusCode: HttpStatus.OK,
         message: 'Testimonial retrieved successfully',
         data: testimonial,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByUserId(userId: string): Promise<IResponse<Testimonial>> {
+    try {
+      const testimonials = await this.testimonialRepo.findByUserId(userId);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Your testimonials were retrieved successfully',
+        data: testimonials,
       };
     } catch (error) {
       throw new HttpException(

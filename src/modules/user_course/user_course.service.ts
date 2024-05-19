@@ -50,7 +50,6 @@ export class UserCourseService {
       try {
         await this.mailerHelper.sendEmail(email, subject, text);
       } catch (error) {
-        console.log(error, '^^^^^^^^^');
         throw new HttpException(
           'Email delivery has failed, please check again your email address or try again later',
           HttpStatus.BAD_REQUEST,
@@ -202,6 +201,68 @@ export class UserCourseService {
         statusCode: HttpStatus.OK,
         message: 'Current module updated successfully',
         data: updatedUserCourse[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async userPayCourse(
+    id: string,
+    req: Request,
+  ): Promise<IResponse<UserCourse>> {
+    try {
+      const course = await this.courseRepo.findById(id);
+      if (!course) {
+        throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
+      }
+
+      const userId = req['user'].id;
+
+      const user = await this.userRepo.findById(userId);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const userCourseExists = await this.userCourseRepo.findByUserAndCourseId(
+        userId,
+        id,
+      );
+      if (userCourseExists) {
+        throw new HttpException(
+          'User is already enrolled for this course',
+          HttpStatus.CONFLICT,
+        );
+      }
+      const email = user.email;
+      const subject = 'Course Enrollment';
+      const text = `You have successfully enrolled for the course: ${course.title}`;
+      try {
+        await this.mailerHelper.sendEmail(email, subject, text);
+      } catch (error) {
+        throw new HttpException(
+          'Email delivery has failed, please check again your email address or try again later',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const userCourse = await this.userCourseRepo.create({
+        userId,
+        courseId: id,
+        userType: 'STUDENT',
+        isPaid: true,
+      });
+
+      console.log(
+        userCourse,
+        '**************************************************',
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User course created successfully with payment',
+        data: userCourse,
       };
     } catch (error) {
       throw new HttpException(

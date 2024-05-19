@@ -8,6 +8,8 @@ import { Module } from 'src/modules/module/model/module.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Question } from 'src/modules/question/model/question.model';
+import { Subject } from 'src/modules/subject/model/subject.model';
+import { Category } from 'src/modules/category/model/category.model';
 
 @Injectable()
 export class CourseRepository {
@@ -50,6 +52,17 @@ export class CourseRepository {
             },
           ],
         },
+        {
+          model: Subject,
+          as: 'subject',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: Category,
+              as: 'category',
+            },
+          ],
+        },
       ],
     });
   }
@@ -88,6 +101,17 @@ export class CourseRepository {
           model: Tag,
           as: 'tags',
           through: { attributes: [] },
+        },
+        {
+          model: Subject,
+          as: 'subject',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: Category,
+              as: 'category',
+            },
+          ],
         },
       ],
     });

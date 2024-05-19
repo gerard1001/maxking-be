@@ -59,11 +59,11 @@ module.exports = {
         defaultValue: false,
       },
       price: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.FLOAT,
         allowNull: true,
       },
       discount: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.FLOAT,
         defaultValue: 0,
         allowNull: true,
       },

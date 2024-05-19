@@ -8,6 +8,9 @@ import { CourseModule } from '../course/course.module';
 import { AuthModule } from '../auth/auth.module';
 import { ModuleModule } from '../module/module.module';
 import { UserModuleModule } from '../user_module/user_module.module';
+import { CommentModule } from '../comment/comment.module';
+import { ArticleModule } from '../article/article.module';
+import { ReplyModule } from '../reply/reply.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { UserModuleModule } from '../user_module/user_module.module';
     forwardRef(() => CourseModule),
     forwardRef(() => AuthModule),
     forwardRef(() => ModuleModule),
+    forwardRef(() => ArticleModule),
+    forwardRef(() => CommentModule),
+    forwardRef(() => ReplyModule),
     forwardRef(() => UserModuleModule),
   ],
   controllers: [UserCourseController],

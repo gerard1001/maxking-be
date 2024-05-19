@@ -39,7 +39,12 @@ export class CourseService {
         description,
         estimatedDuration,
         tags = [],
+        currency,
+        discount,
+        isPublished,
+        price,
       } = createCourseDto;
+
       const subjectExists = await this.subjectRepo.findById(id);
       if (!subjectExists) {
         throw new HttpException(`Subject not found`, HttpStatus.NOT_FOUND);
@@ -104,6 +109,11 @@ export class CourseService {
         previewText: previewText.trim(),
         coverImage: req['file'] && file?.secure_url,
         subjectId: id,
+        isFree: !price || price === 0 ? true : false,
+        price: Number(price) || 0,
+        // discount,
+        // currency,
+        isPublished: false,
       });
 
       for (const tag of tags) {
@@ -282,6 +292,30 @@ export class CourseService {
           );
         }
       }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Course updated successfully',
+        data: newCourse[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async togglePublishCourse(id: string): Promise<IResponse<Course>> {
+    try {
+      const course = await this.courseRepo.findById(id);
+      if (!course) {
+        throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
+      }
+
+      const newCourse = await this.courseRepo.update(id, {
+        isPublished: !course.isPublished,
+      });
 
       return {
         statusCode: HttpStatus.OK,

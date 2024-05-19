@@ -35,6 +35,21 @@ export class Course extends Model<Course> {
   @Column
   previewText: string;
 
+  @Column
+  isFree: boolean;
+
+  @Column
+  price: number;
+
+  @Column
+  discount: number;
+
+  @Column
+  currency: number;
+
+  @Column
+  isPublished: boolean;
+
   @ForeignKey(() => Subject)
   @Column
   subjectId: string;

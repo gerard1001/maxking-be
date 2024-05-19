@@ -2,8 +2,10 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsDefined,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -37,6 +39,26 @@ export class CreateCourseDto {
   @IsString()
   @IsOptional()
   readonly tutor?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly isPublished?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly isFree?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  readonly price?: number;
+
+  @IsNumber()
+  @IsOptional()
+  readonly discount?: number;
+
+  @IsString()
+  @IsOptional()
+  readonly currency?: string;
 
   @IsArray()
   @IsString({ each: true })

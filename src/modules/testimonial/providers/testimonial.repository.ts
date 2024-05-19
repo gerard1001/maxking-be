@@ -77,6 +77,26 @@ export class TestimonialRepository {
     });
   }
 
+  async findPinnedTestimonials(): Promise<Testimonial[]> {
+    return await this.testimonialModel.findAll({
+      where: { isPinned: true },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName'],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
   async update(
     id: string,
     updateTestimonialDto: UpdateTestimonialDto,

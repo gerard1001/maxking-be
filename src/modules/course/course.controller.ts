@@ -88,6 +88,22 @@ export class CourseController {
     );
   }
 
+  @Get('toggle-publish/:id')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  async togglePublishCourse(
+    @Param('id') id: string,
+  ): Promise<IResponse<Course>> {
+    return await this.courseService.togglePublishCourse(id);
+  }
+
   @Delete(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

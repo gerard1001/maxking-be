@@ -129,6 +129,14 @@ export class TestimonialService {
       if (!testimonial) {
         throw new HttpException('Testimonial not found', HttpStatus.NOT_FOUND);
       }
+      const pinnedTestimonials =
+        await this.testimonialRepo.findPinnedTestimonials();
+      if (!testimonial.isPinned && pinnedTestimonials.length >= 6) {
+        throw new HttpException(
+          'You can only pin 5 testimonials at a time',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const newTestimonial = await this.testimonialRepo.update(id, {
         isPinned: !testimonial.isPinned,
       });

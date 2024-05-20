@@ -37,6 +37,19 @@ export class UserRepository {
     });
   }
 
+  async findAllFree(): Promise<User[]> {
+    return await this.userModel.findAll({
+      include: [
+        {
+          model: Role,
+          as: 'roles',
+          attributes: ['id', 'type'],
+        },
+        { model: Profile, as: 'profile' },
+      ],
+    });
+  }
+
   async findById(id: string) {
     return await this.userModel.findByPk(id, {
       include: [

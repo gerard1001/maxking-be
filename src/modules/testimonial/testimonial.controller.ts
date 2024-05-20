@@ -34,6 +34,7 @@ export class TestimonialController {
       ENUM_ROLE_TYPE.SUPER_ADMIN,
       ENUM_ROLE_TYPE.ADMIN,
       ENUM_ROLE_TYPE.MANAGER,
+      ENUM_ROLE_TYPE.MENTOR,
       ENUM_ROLE_TYPE.CLIENT,
     ],
   })

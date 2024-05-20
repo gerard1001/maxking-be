@@ -28,6 +28,7 @@ import { ChapterModule } from './modules/chapter/chapter.module';
 import { UserModuleModule } from './modules/user_module/user_module.module';
 import { LikeModule } from './modules/like/like.module';
 import { TestimonialModule } from './modules/testimonial/testimonial.module';
+import { TweetModule } from './modules/tweet/tweet.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { TestimonialModule } from './modules/testimonial/testimonial.module';
     UserModuleModule,
     ChapterModule,
     TestimonialModule,
+    TweetModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

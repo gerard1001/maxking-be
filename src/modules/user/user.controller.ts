@@ -36,6 +36,11 @@ export class UserController {
     return await this.userService.findAll(req);
   }
 
+  @Get('all')
+  async findAllFree(): Promise<IResponse<User[]>> {
+    return await this.userService.findAllFree();
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string): Promise<IResponse<User>> {
     return await this.userService.findById(id);

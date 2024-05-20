@@ -48,6 +48,22 @@ export class UserService {
     }
   }
 
+  async findAllFree(): Promise<IResponse<User[]>> {
+    try {
+      const users = await this.userRepo.findAllFree();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Users retrieved successfully',
+        data: users,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findById(id: string): Promise<IResponse<User>> {
     try {
       const user = await this.userRepo.findById(id);

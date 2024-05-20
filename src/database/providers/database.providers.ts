@@ -22,6 +22,7 @@ import { UserModule } from 'src/modules/user_module/model/user_module.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Like } from 'src/modules/like/model/like.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
+import { Tweet } from 'src/modules/tweet/model/tweet.model';
 
 export const databaseProviders = [
   {
@@ -64,6 +65,7 @@ export const databaseProviders = [
         CourseTag,
         Chapter,
         Testimonial,
+        Tweet,
       ]);
       await sequelize.sync();
       return sequelize;

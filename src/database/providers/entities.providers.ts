@@ -15,6 +15,7 @@ import {
   SUBJECT_MODEL,
   TAG_MODEL,
   TESTIMONIAL_MODEL,
+  TWEET_MODEL,
   USER_ARTICLE_MODEL,
   USER_COURSE_MODEL,
   USER_MODEL,
@@ -37,6 +38,7 @@ import { Role } from 'src/modules/role/model/role.model';
 import { Subject } from 'src/modules/subject/model/subject.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
+import { Tweet } from 'src/modules/tweet/model/tweet.model';
 import { User } from 'src/modules/user/model/user.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
@@ -187,5 +189,12 @@ export const testimonialProviders = [
   {
     provide: TESTIMONIAL_MODEL,
     useValue: Testimonial,
+  },
+];
+
+export const tweetProviders = [
+  {
+    provide: TWEET_MODEL,
+    useValue: Tweet,
   },
 ];

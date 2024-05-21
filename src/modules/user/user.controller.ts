@@ -51,6 +51,11 @@ export class UserController {
     return await this.userService.findByToken(token);
   }
 
+  @Get('public/all')
+  async findPublicUsers(): Promise<IResponse<User[]>> {
+    return await this.userService.findPublicUsers();
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

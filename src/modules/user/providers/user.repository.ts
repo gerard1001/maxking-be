@@ -119,6 +119,13 @@ export class UserRepository {
     });
   }
 
+  async findPublicUsers(): Promise<User[]> {
+    return await this.userModel.findAll({
+      where: { publicDisplay: true },
+      include: [{ model: Profile, as: 'profile' }],
+    });
+  }
+
   async update(
     id: string,
     updateUserDto: UpdateUserDto,

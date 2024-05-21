@@ -115,6 +115,22 @@ export class UserService {
     }
   }
 
+  async findPublicUsers(): Promise<IResponse<User[]>> {
+    try {
+      const user = await this.userRepo.findPublicUsers();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User retrieved successfully',
+        data: user,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async update(
     id: string,
     updateUserDto: UpdateUserDto,

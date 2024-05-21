@@ -43,14 +43,14 @@ export class TweetController {
     return this.tweetService.findAll();
   }
 
+  @Get('pinned')
+  async findPinnedTweet(): Promise<IResponse<Tweet>> {
+    return await this.tweetService.findPinnedTweet();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<IResponse<Tweet>> {
     return this.tweetService.findById(id);
-  }
-
-  @Get('pinned')
-  findPinnedTweet(): Promise<IResponse<Tweet>> {
-    return this.tweetService.findPinnedTweet();
   }
 
   @Get('toggle-pin/:id')

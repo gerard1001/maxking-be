@@ -3,8 +3,6 @@ import { TWEET_MODEL } from 'src/core/constants';
 import { Tweet } from '../model/tweet.model';
 import { CreateTweetDto } from '../dto/create-tweet.dto';
 import { UpdateTweetDto } from '../dto/update-tweet.dto';
-import { User } from 'src/modules/user/model/user.model';
-import { Profile } from 'src/modules/profile/model/profile.model';
 
 @Injectable()
 export class TweetRepository {
@@ -22,22 +20,7 @@ export class TweetRepository {
   }
 
   async findById(id: string) {
-    return await this.tweetModel.findByPk(id, {
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'firstName', 'lastName'],
-          include: [
-            {
-              model: Profile,
-              as: 'profile',
-              attributes: ['picture', 'city', 'country'],
-            },
-          ],
-        },
-      ],
-    });
+    return await this.tweetModel.findByPk(id);
   }
 
   async findPinnedTweet(): Promise<Tweet> {

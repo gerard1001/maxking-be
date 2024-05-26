@@ -27,7 +27,9 @@ export class DocumentService {
           throw new HttpException(err, HttpStatus.BAD_REQUEST);
         }));
 
-      console.log(reqFile);
+      if (!reqFile || !req['file']) {
+        throw new HttpException('File not uploaded', HttpStatus.BAD_REQUEST);
+      }
 
       const newDocument = await this.documentRepo.create({
         authorName,
@@ -35,7 +37,7 @@ export class DocumentService {
         summary,
         type,
         price,
-        publishedOn: new Date(publishedOn) || new Date(),
+        publishedOn: new Date(),
         file: req['file'] && reqFile.secure_url,
       });
       return {

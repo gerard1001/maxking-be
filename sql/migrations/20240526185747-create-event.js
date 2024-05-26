@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Documents', {
+    await queryInterface.createTable('Events', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -11,40 +11,54 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      authorName: {
+      coverImage: {
         type: Sequelize.STRING,
         allowNull: true,
+        defaultValue:
+          'https://res.cloudinary.com/rutagerard/image/upload/v1713800805/Important/manga_z8z1xs.png',
       },
       title: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      summary: {
+      about: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
       type: {
-        type: Sequelize.ENUM('book', 'publication'),
+        type: Sequelize.ENUM('event', 'job', 'training', 'internship'),
         allowNull: true,
-        defaultValue: 'book',
+        defaultValue: 'event',
       },
-      file: {
+      venue: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      price: {
-        type: Sequelize.FLOAT,
         allowNull: true,
-        defaultValue: 0,
       },
-      currency: {
-        type: Sequelize.ENUM('USD', 'EUR', 'GBP', 'RWF'),
-        allowNull: true,
-        defaultValue: 'USD',
-      },
-      publishedOn: {
-        allowNull: true,
+      startDate: {
         type: Sequelize.DATE,
+        allowNull: true,
+      },
+      startTime: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      endDate: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      endTime: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      requirements: {
+        type: Sequelize.TEXT,
+        get() {
+          const rawValue = this.getDataValue('requirements');
+          return rawValue ? JSON.parse(rawValue) : JSON.parse('[]');
+        },
+        set(value) {
+          this.setDataValue('requirements', JSON.stringify(value));
+        },
       },
       createdAt: {
         allowNull: false,
@@ -58,6 +72,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Documents');
+    await queryInterface.dropTable('Events');
   },
 };

@@ -24,6 +24,7 @@ import { Like } from 'src/modules/like/model/like.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { Tweet } from 'src/modules/tweet/model/tweet.model';
 import { Document } from 'src/modules/document/model/document.model';
+import { Event } from 'src/modules/event/model/event.model';
 
 export const databaseProviders = [
   {
@@ -68,6 +69,7 @@ export const databaseProviders = [
         Testimonial,
         Tweet,
         Document,
+        Event,
       ]);
       await sequelize.sync();
       return sequelize;

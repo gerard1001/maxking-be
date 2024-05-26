@@ -7,6 +7,7 @@ import {
   COURSE_MODEL,
   COURSE_TAG_MODEL,
   DOCUMENT_MODEL,
+  EVENT_MODEL,
   LIKE_MODEL,
   MODULE_MODEL,
   PROFILE_MODEL,
@@ -31,6 +32,7 @@ import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
 import { Document } from 'src/modules/document/model/document.model';
+import { Event } from 'src/modules/event/model/event.model';
 import { Like } from 'src/modules/like/model/like.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
@@ -205,5 +207,12 @@ export const documentProviders = [
   {
     provide: DOCUMENT_MODEL,
     useValue: Document,
+  },
+];
+
+export const eventProviders = [
+  {
+    provide: EVENT_MODEL,
+    useValue: Event,
   },
 ];

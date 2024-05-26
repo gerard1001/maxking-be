@@ -30,6 +30,7 @@ import { LikeModule } from './modules/like/like.module';
 import { TestimonialModule } from './modules/testimonial/testimonial.module';
 import { TweetModule } from './modules/tweet/tweet.module';
 import { DocumentModule } from './modules/document/document.module';
+import { EventModule } from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { DocumentModule } from './modules/document/document.module';
     TestimonialModule,
     TweetModule,
     DocumentModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

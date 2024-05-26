@@ -35,11 +35,6 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-          max: 500,
-          min: 1,
-        },
       },
       body: {
         type: Sequelize.TEXT,

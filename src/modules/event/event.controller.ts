@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  Patch,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
@@ -20,13 +21,14 @@ import { Event } from './model/event.model';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/core/upload/multer.config';
 import { EventService } from './event.service';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  // @UseGuards(UserAuthGuard, RoleGuard)
+  @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
     roles: [
@@ -52,6 +54,26 @@ export class EventController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<IResponse<Event>> {
     return this.eventService.findById(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: false,
+    roles: [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+      ENUM_ROLE_TYPE.MANAGER,
+    ],
+  })
+  @UseInterceptors(FileInterceptor('coverImage', multerOptions))
+  async update(
+    @Body() updateEventDto: UpdateEventDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+    @Param('id') id: string,
+  ): Promise<IResponse<Event>> {
+    return await this.eventService.update(id, updateEventDto, file, req);
   }
 
   @Delete(':id')

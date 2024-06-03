@@ -44,4 +44,12 @@ export class CreateUserDto {
   @IsBoolean()
   @IsOptional()
   readonly publicDisplay?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly approvalStatus?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly requestedMembership?: boolean;
 }

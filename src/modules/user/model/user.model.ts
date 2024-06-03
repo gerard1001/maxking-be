@@ -44,6 +44,12 @@ export class User extends Model<User> {
   @Column(DataType.BOOLEAN)
   publicDisplay: boolean;
 
+  @Column(DataType.STRING)
+  approvalStatus: string;
+
+  @Column(DataType.BOOLEAN)
+  requestedMembership: boolean;
+
   @HasOne(() => Profile)
   profile: Profile;
 

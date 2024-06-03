@@ -5,6 +5,7 @@ import { TestimonialRepository } from './providers/testimonial.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Testimonial } from './model/testimonial.model';
 import { UserRepository } from '../user/providers/user.repository';
+import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 
 @Injectable()
 export class TestimonialService {
@@ -25,7 +26,10 @@ export class TestimonialService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       console.log(user);
-      if (user.testimonial) {
+      if (
+        user.testimonial &&
+        user.roles[0].type !== ENUM_ROLE_TYPE.SUPER_ADMIN
+      ) {
         await this.testimonialRepo.deleteOne(user.testimonial.id);
       }
       const newTestimonial = await this.testimonialRepo.create({

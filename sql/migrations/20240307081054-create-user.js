@@ -42,6 +42,17 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      approvalStatus: {
+        type: Sequelize.ENUM,
+        values: ['approved', 'pending', 'rejected'],
+        allowNull: false,
+        defaultValue: 'pending',
+      },
+      requestedMembership: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

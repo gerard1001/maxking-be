@@ -7,6 +7,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ArticleModule } from '../article/article.module';
 import { CommentModule } from '../comment/comment.module';
 import { ReplyModule } from '../reply/reply.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ReplyModule } from '../reply/reply.module';
     forwardRef(() => ArticleModule),
     forwardRef(() => CommentModule),
     forwardRef(() => ReplyModule),
+    forwardRef(() => ProfileModule),
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository, ...userProviders],

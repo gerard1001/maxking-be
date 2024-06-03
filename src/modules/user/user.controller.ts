@@ -8,6 +8,7 @@ import {
   UseGuards,
   SetMetadata,
   Req,
+  Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,10 +18,18 @@ import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
 import { RoleGuard } from 'src/core/guards/role.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Post()
+  async requestMembership(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<IResponse<User>> {
+    return await this.userService.requestMembership(createUserDto);
+  }
 
   @Get()
   @UseGuards(UserAuthGuard, RoleGuard)
@@ -67,11 +76,11 @@ export class UserController {
     checkAccOwner: false,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
   })
-  updatePublicDisplay(
+  async updatePublicDisplay(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

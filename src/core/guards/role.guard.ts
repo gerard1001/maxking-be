@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
     const roles = metadata.roles;
     const accOwner = metadata.checkAccOwner;
     const request = context.switchToHttp().getRequest();
-    const user = await this.userRepository.findById(request.user.id);
+    const user = await this.userRepository.findById(request?.user?.id);
 
     if (!user) {
       throw new HttpException(

@@ -56,7 +56,7 @@ export class CourseService {
           HttpStatus.CONFLICT,
         );
       }
-      if ((!previewText && !previewVideo) || (previewText && previewVideo)) {
+      if (!previewText && !previewVideo) {
         throw new HttpException(
           'Either previewText or previewVideo should be provided',
           HttpStatus.BAD_REQUEST,

@@ -26,7 +26,7 @@ export class CategoryRepository {
             {
               model: Course,
               as: 'courses',
-              attributes: ['id'],
+              // attributes: ['id'],
             },
           ],
         },

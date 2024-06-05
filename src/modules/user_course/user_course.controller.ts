@@ -77,12 +77,14 @@ export class UserCourseController {
     return await this.userCourseService.deleteOne(id);
   }
 
-  @Delete()
+  @Delete(':userId/:courseId')
   async deleteByUserAndCourseId(
-    @Body() deleteUserCourseDto: CreateUserCourseDto,
+    @Param('userId') userId: string,
+    @Param('courseId') courseId: string,
   ): Promise<IResponse<ICount>> {
     return await this.userCourseService.deleteByUserAndCourseId(
-      deleteUserCourseDto,
+      userId,
+      courseId,
     );
   }
 }

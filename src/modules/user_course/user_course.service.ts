@@ -308,10 +308,10 @@ export class UserCourseService {
   }
 
   async deleteByUserAndCourseId(
-    deleteUserCourseDto: CreateUserCourseDto,
+    userId: string,
+    courseId: string,
   ): Promise<IResponse<ICount>> {
     try {
-      const { userId, courseId } = deleteUserCourseDto;
       const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);

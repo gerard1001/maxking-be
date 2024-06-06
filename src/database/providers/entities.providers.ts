@@ -2,6 +2,7 @@ import {
   ARTICLE_MODEL,
   ARTICLE_TAG_MODEL,
   CATEGORY_MODEL,
+  CERTIFICATE_MODEL,
   CHAPTER_MODEL,
   COMMENT_MODEL,
   COURSE_MODEL,
@@ -19,6 +20,7 @@ import {
   TESTIMONIAL_MODEL,
   TWEET_MODEL,
   USER_ARTICLE_MODEL,
+  USER_CERTIFICATE_MODEL,
   USER_COURSE_MODEL,
   USER_MODEL,
   USER_MODULE_MODEL,
@@ -27,6 +29,7 @@ import {
 import { Article } from 'src/modules/article/model/article.model';
 import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Category } from 'src/modules/category/model/category.model';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
@@ -45,6 +48,7 @@ import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { Tweet } from 'src/modules/tweet/model/tweet.model';
 import { User } from 'src/modules/user/model/user.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
+import { UserCertificate } from 'src/modules/user_certificate/model/user_certificate.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { UserModule } from 'src/modules/user_module/model/user_module.model';
 import { UserRole } from 'src/modules/user_role/models/user_role.model';
@@ -214,5 +218,19 @@ export const eventProviders = [
   {
     provide: EVENT_MODEL,
     useValue: Event,
+  },
+];
+
+export const certificateProviders = [
+  {
+    provide: CERTIFICATE_MODEL,
+    useValue: Certificate,
+  },
+];
+
+export const userCertificateProviders = [
+  {
+    provide: USER_CERTIFICATE_MODEL,
+    useValue: UserCertificate,
   },
 ];

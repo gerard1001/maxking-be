@@ -11,12 +11,14 @@ import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.func
 import { DeleteArticlesDto } from './dto/delete-article.dto';
 import { Article } from './model/article.model';
 import { FeatureArticlesDto } from './dto/feature-article.dto';
+import { CourseRepository } from '../course/providers/course.repository';
 
 @Injectable()
 export class ArticleService {
   constructor(
     private readonly articleRepo: ArticleRepository,
     private readonly tagRepo: TagRepository,
+    private readonly courseRepo: CourseRepository,
     private readonly articleTagRepo: ArticleTagRepository,
     private readonly userRepo: UserRepository,
     private readonly cloudinaryService: CloudinaryService,
@@ -222,6 +224,31 @@ export class ArticleService {
         articleId,
         articleTags,
       );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Articles retrieved successfully',
+        data: relatedArticles,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByRelatedCourseTags(
+    courseId: string,
+  ): Promise<IResponse<Article[]>> {
+    try {
+      const course = await this.courseRepo.findById(courseId);
+      if (!course) {
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      }
+      const courseTags = course.tags?.map((tag) => tag.id) || [];
+      const relatedArticles =
+        await this.articleRepo.findByRelatedCourseTags(courseTags);
 
       return {
         statusCode: HttpStatus.OK,

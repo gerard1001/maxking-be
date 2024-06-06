@@ -315,6 +315,64 @@ export class ArticleRepository {
     });
   }
 
+  async findByRelatedCourseTags(tagIds: string[]): Promise<Article[]> {
+    return await this.articleModel.findAll({
+      where: {
+        '$tags.id$': { [Op.in]: tagIds },
+      },
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          through: { attributes: [] },
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id', 'text', 'createdAt', 'updatedAt'],
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'createdAt',
+            'updatedAt',
+          ],
+          include: [
+            {
+              model: Profile,
+              as: 'profile',
+              attributes: ['picture', 'city', 'country'],
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: 'likes',
+          attributes: ['id', 'createdAt', 'updatedAt'],
+          include: [
+            {
+              model: User,
+              as: 'liker',
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+              include: [
+                {
+                  model: Profile,
+                  as: 'profile',
+                  attributes: ['picture', 'city', 'country'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
   async update(
     id: string,
     updateArticleDto: any,

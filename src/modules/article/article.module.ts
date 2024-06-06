@@ -10,6 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { CommentModule } from '../comment/comment.module';
 import { ReplyModule } from '../reply/reply.module';
+import { CourseModule } from '../course/course.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ReplyModule } from '../reply/reply.module';
     forwardRef(() => AuthModule),
     forwardRef(() => UserModule),
     forwardRef(() => CommentModule),
+    forwardRef(() => CourseModule),
     forwardRef(() => ReplyModule),
   ],
   controllers: [ArticleController],

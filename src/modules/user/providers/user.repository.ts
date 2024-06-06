@@ -78,7 +78,7 @@ export class UserRepository {
             {
               model: Module,
               as: 'modules',
-              attributes: ['id'],
+              // attributes: ['id'],
               include: [
                 {
                   model: Chapter,

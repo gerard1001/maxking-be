@@ -18,3 +18,9 @@ export interface Choice {
   choice: string;
   index?: number;
 }
+
+export interface Issuer {
+  name: string;
+  signature: string;
+  position: string;
+}

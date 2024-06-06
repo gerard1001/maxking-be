@@ -25,6 +25,8 @@ import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { Tweet } from 'src/modules/tweet/model/tweet.model';
 import { Document } from 'src/modules/document/model/document.model';
 import { Event } from 'src/modules/event/model/event.model';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
+import { UserCertificate } from 'src/modules/user_certificate/model/user_certificate.model';
 
 export const databaseProviders = [
   {
@@ -70,6 +72,8 @@ export const databaseProviders = [
         Tweet,
         Document,
         Event,
+        Certificate,
+        UserCertificate,
       ]);
       await sequelize.sync();
       return sequelize;

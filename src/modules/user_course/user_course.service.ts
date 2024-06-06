@@ -9,6 +9,7 @@ import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { UpdateUserCourseDto } from './dto/update-user_course.dto';
 import { UserModuleRepository } from '../user_module/providers/user_module.repository';
 import { ModuleRepository } from '../module/providers/module.repository';
+import { x } from 'joi';
 
 @Injectable()
 export class UserCourseService {
@@ -320,14 +321,21 @@ export class UserCourseService {
       if (!course) {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
       }
-      const count = await this.userCourseRepo.deleteByUserAndCourseId(
-        userId,
-        courseId,
-      );
+
+      const userModules = user.modules.filter((x) => x.courseId === courseId);
+
+      await this.userCourseRepo.deleteByUserAndCourseId(userId, courseId);
+      for (let i = 0; i < userModules.length; i++) {
+        await this.userModuleRepo.deleteByUserAndModuleId(
+          userId,
+          userModules[i].id,
+        );
+      }
+
       return {
         statusCode: HttpStatus.OK,
         message: 'User course deleted successfully',
-        data: { count },
+        // data: { count },
       };
     } catch (error) {
       throw new HttpException(

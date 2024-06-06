@@ -9,6 +9,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Article } from 'src/modules/article/model/article.model';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
 import { Module } from 'src/modules/module/model/module.model';
@@ -16,6 +17,7 @@ import { Profile } from 'src/modules/profile/model/profile.model';
 import { Role } from 'src/modules/role/model/role.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
 import { UserArticle } from 'src/modules/user_article/model/user_article.model';
+import { UserCertificate } from 'src/modules/user_certificate/model/user_certificate.model';
 import { UserCourse } from 'src/modules/user_course/model/user_course.model';
 import { UserModule } from 'src/modules/user_module/model/user_module.model';
 import { UserRole } from 'src/modules/user_role/models/user_role.model';
@@ -73,4 +75,7 @@ export class User extends Model<User> {
 
   @HasMany(() => Comment)
   comments: Comment[];
+
+  @BelongsToMany(() => Certificate, () => UserCertificate)
+  certificates: Certificate[];
 }

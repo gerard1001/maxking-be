@@ -4,9 +4,11 @@ import {
   Column,
   ForeignKey,
   HasMany,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Question } from 'src/modules/question/model/question.model';
@@ -68,4 +70,7 @@ export class Course extends Model<Course> {
 
   @BelongsToMany(() => Tag, () => CourseTag)
   tags: Tag[];
+
+  @HasOne(() => Certificate)
+  certificate: Certificate;
 }

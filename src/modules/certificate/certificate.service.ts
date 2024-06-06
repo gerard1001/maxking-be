@@ -1,19 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCertificateDto } from './dto/create-certificate.dto';
-import { UpdateCertificateDto } from './dto/update-certificate.dto';
-// import { CertificateRepository } from './providers/certificate.repository';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { Certificate } from './model/certificate.model';
-import { UserRepository } from '../user/providers/user.repository';
 import { CertificateRepository } from './providers/certificate.repository';
 import { CourseRepository } from '../course/providers/course.repository';
+import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
 
 @Injectable()
 export class CertificateService {
   constructor(
     private readonly certificateRepo: CertificateRepository,
-    private readonly userRepo: UserRepository,
     private readonly courseRepo: CourseRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(
@@ -29,18 +27,75 @@ export class CertificateService {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
       }
 
-      console.log(createCertificateDto);
-      console.log('*******************************');
-      console.log(images);
+      if (createCertificateDto.issuers.name.length < 1) {
+        throw new HttpException(
+          'At least one issuer is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (createCertificateDto.issuers.name.length > 2) {
+        throw new HttpException(
+          'Only two issuers are allowed',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (createCertificateDto.issuers.name.length !== images.length) {
+        throw new HttpException(
+          'Number of issuers and signatures do not match',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (
+        createCertificateDto.issuers.name.length !==
+        createCertificateDto.issuers.position.length
+      ) {
+        throw new HttpException(
+          'Number of issuers and positions do not match',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-      return;
+      const issuersArray = [];
 
-      // const newCertificate = await this.certificateRepo.create({});
-      // return {
-      //   statusCode: HttpStatus.CREATED,
-      //   message: 'Certificate added successfully',
-      //   data: newCertificate,
-      // };
+      for (let i = 0; i < createCertificateDto.issuers.name.length; i++) {
+        if (!createCertificateDto.issuers.name[i]) {
+          throw new HttpException(
+            'Issuer name is required',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (images.length < createCertificateDto.issuers.name.length) {
+          throw new HttpException(
+            'Issuer signature is required',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        const imageFile =
+          req['files'] &&
+          images.find((file) => file.fieldname === `signature[${i}]`);
+
+        const file =
+          imageFile &&
+          (await this.cloudinaryService.uploadImage(imageFile).catch((err) => {
+            throw new HttpException(err, HttpStatus.BAD_REQUEST);
+          }));
+
+        issuersArray.push({
+          name: createCertificateDto.issuers.name[i],
+          signature: file.secure_url,
+          position: createCertificateDto.issuers.position[i],
+        });
+      }
+      const newCertificate = await this.certificateRepo.create({
+        issuers: JSON.stringify(issuersArray),
+        courseId,
+      });
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Certificate added successfully',
+        data: newCertificate,
+      };
     } catch (error) {
       throw new HttpException(
         error.message || 'Server Error',

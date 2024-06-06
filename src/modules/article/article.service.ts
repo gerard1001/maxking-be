@@ -7,7 +7,7 @@ import { TagRepository } from '../tag/providers/tag.repository';
 import { ArticleTagRepository } from '../article_tag/providers/article_tag.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
-import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.functions';
+import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.function';
 import { DeleteArticlesDto } from './dto/delete-article.dto';
 import { Article } from './model/article.model';
 import { FeatureArticlesDto } from './dto/feature-article.dto';

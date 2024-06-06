@@ -33,6 +33,14 @@ export class UserCertificateRepository {
     });
   }
 
+  async findByUserCertificateId(
+    userCertificateId: string,
+  ): Promise<UserCertificate> {
+    return await this.userCertificateModel.findOne({
+      where: { userCertificateId },
+    });
+  }
+
   async deleteOne(id: string): Promise<number> {
     return await this.userCertificateModel.destroy({ where: { id } });
   }

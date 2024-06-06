@@ -20,7 +20,9 @@ export class CertificateRepository {
   }
 
   async findById(id: string) {
-    return await this.certificateModel.findByPk(id);
+    return await this.certificateModel.findByPk(id, {
+      include: [{ all: true }],
+    });
   }
 
   async findByCourseId(courseId: string): Promise<Certificate[]> {

@@ -32,6 +32,7 @@ import { TweetModule } from './modules/tweet/tweet.module';
 import { DocumentModule } from './modules/document/document.module';
 import { EventModule } from './modules/event/event.module';
 import { CertificateModule } from './modules/certificate/certificate.module';
+import { UserCertificateModule } from './modules/user_certificate/user_certificate.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { CertificateModule } from './modules/certificate/certificate.module';
     DocumentModule,
     EventModule,
     CertificateModule,
+    UserCertificateModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

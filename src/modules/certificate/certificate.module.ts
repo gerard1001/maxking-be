@@ -9,6 +9,7 @@ import { ReplyModule } from '../reply/reply.module';
 import { CertificateService } from './certificate.service';
 import { CertificateRepository } from './providers/certificate.repository';
 import { CourseModule } from '../course/course.module';
+import { CloudinaryModule } from 'src/core/upload/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CourseModule } from '../course/course.module';
     forwardRef(() => CommentModule),
     forwardRef(() => ReplyModule),
     forwardRef(() => CourseModule),
+    forwardRef(() => CloudinaryModule),
   ],
   controllers: [CertificateController],
   providers: [

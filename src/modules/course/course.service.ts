@@ -8,7 +8,7 @@ import { SubjectRepository } from '../subject/providers/subject.repository';
 import { UserCourseRepository } from '../user_course/providers/user_course.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { CloudinaryService } from 'src/core/upload/cloudinary/cloudinary.service';
-import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.functions';
+import { checkStringDuplicatesInArray } from 'src/core/functions/algorithms.function';
 import { TagRepository } from '../tag/providers/tag.repository';
 import { CourseTagRepository } from '../course_tag/providers/course_tag.repository';
 

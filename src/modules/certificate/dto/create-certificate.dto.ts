@@ -8,12 +8,13 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
+import { Issuer } from 'src/core/interfaces/response.interface';
 
 export class CreateCertificateDto {
   @IsArray()
   @IsDefined()
   @IsNotEmpty()
-  readonly issuers: string[];
+  readonly issuers: Issuer;
 
   // @IsString()
   // @IsDefined()

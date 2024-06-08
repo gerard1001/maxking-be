@@ -9,7 +9,6 @@ import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { UpdateUserCourseDto } from './dto/update-user_course.dto';
 import { UserModuleRepository } from '../user_module/providers/user_module.repository';
 import { ModuleRepository } from '../module/providers/module.repository';
-import { x } from 'joi';
 
 @Injectable()
 export class UserCourseService {
@@ -49,7 +48,7 @@ export class UserCourseService {
       const subject = 'Course Enrollment';
       const text = `You have successfully enrolled for the course: ${course.title}`;
       try {
-        await this.mailerHelper.sendEmail(email, subject, text);
+        // await this.mailerHelper.sendEmail(email, subject, text);
       } catch (error) {
         throw new HttpException(
           'Email delivery has failed, please check again your email address or try again later',

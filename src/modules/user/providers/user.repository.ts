@@ -9,6 +9,7 @@ import { Course } from 'src/modules/course/model/course.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
 
 @Injectable()
 export class UserRepository {
@@ -57,6 +58,12 @@ export class UserRepository {
           model: Role,
           as: 'roles',
           attributes: ['id', 'type'],
+          through: { attributes: [] },
+        },
+        {
+          model: Certificate,
+          as: 'certificates',
+          // attributes: ['id', 'type'],
           through: { attributes: [] },
         },
         { model: Profile, as: 'profile' },

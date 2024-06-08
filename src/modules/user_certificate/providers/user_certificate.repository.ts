@@ -17,11 +17,30 @@ export class UserCertificateRepository {
   }
 
   async findAll(): Promise<UserCertificate[]> {
-    return await this.userCertificateModel.findAll();
+    return await this.userCertificateModel.findAll({
+      attributes: [
+        'id',
+        'userId',
+        'certificateId',
+        'userCertificateId',
+        'updatedAt',
+        'createdAt',
+      ],
+    });
   }
 
   async findById(id: string): Promise<UserCertificate> {
-    return await this.userCertificateModel.findByPk(id);
+    return await this.userCertificateModel.findOne({
+      where: { id },
+      attributes: [
+        'id',
+        'userId',
+        'certificateId',
+        'userCertificateId',
+        'updatedAt',
+        'createdAt',
+      ],
+    });
   }
 
   async findByUserIdAndCertificateId(
@@ -30,6 +49,14 @@ export class UserCertificateRepository {
   ): Promise<UserCertificate> {
     return await this.userCertificateModel.findOne({
       where: { userId, certificateId },
+      attributes: [
+        'id',
+        'userId',
+        'certificateId',
+        'userCertificateId',
+        'updatedAt',
+        'createdAt',
+      ],
     });
   }
 

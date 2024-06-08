@@ -10,6 +10,7 @@ import { Chapter } from 'src/modules/chapter/model/chapter.model';
 import { Question } from 'src/modules/question/model/question.model';
 import { Subject } from 'src/modules/subject/model/subject.model';
 import { Category } from 'src/modules/category/model/category.model';
+import { Certificate } from 'src/modules/certificate/model/certificate.model';
 
 @Injectable()
 export class CourseRepository {
@@ -27,6 +28,16 @@ export class CourseRepository {
         {
           model: Module,
           as: 'modules',
+        },
+        {
+          model: Certificate,
+          as: 'certificate',
+          // include: [
+          //   {
+          //     model: Chapter,
+          //     as: 'chapters',
+          //   },
+          // ],
         },
         {
           model: User,
@@ -92,6 +103,16 @@ export class CourseRepository {
               as: 'chapters',
             },
           ],
+        },
+        {
+          model: Certificate,
+          as: 'certificate',
+          // include: [
+          //   {
+          //     model: Chapter,
+          //     as: 'chapters',
+          //   },
+          // ],
         },
         {
           model: Question,

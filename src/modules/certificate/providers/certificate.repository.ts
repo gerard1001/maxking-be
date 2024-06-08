@@ -25,8 +25,8 @@ export class CertificateRepository {
     });
   }
 
-  async findByCourseId(courseId: string): Promise<Certificate[]> {
-    return await this.certificateModel.findAll({ where: { courseId } });
+  async findByCourseId(courseId: string): Promise<Certificate> {
+    return await this.certificateModel.findOne({ where: { courseId } });
   }
 
   async update(

@@ -4,6 +4,7 @@ import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { CertificateRepository } from '../certificate/providers/certificate.repository';
 import { UserRepository } from '../user/providers/user.repository';
 import { UserCertificate } from './model/user_certificate.model';
+import { generateCertificateId } from 'src/core/functions/certificate.function';
 
 @Injectable()
 export class UserCertificateService {
@@ -20,10 +21,53 @@ export class UserCertificateService {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
+
       const certificate = await this.certificateRepo.findById(id);
       if (!certificate) {
         throw new HttpException('Certificate not found', HttpStatus.NOT_FOUND);
       }
+
+      if (user?.courses?.length === 0) {
+        throw new HttpException(
+          'User has not completed any course',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (
+        user?.courses?.find((course) => course.id === certificate.courseId) ===
+        undefined
+      ) {
+        throw new HttpException(
+          'User has not completed this course',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (
+        user?.courses?.find((course) => course.id === certificate.courseId)[
+          'user_course'
+        ]?.completed === false
+      ) {
+        throw new HttpException(
+          'User has not completed this course',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (
+        !user?.courses?.find((course) => course.id === certificate.courseId)[
+          'user_course'
+        ]?.rank ||
+        Number(
+          user?.courses?.find((course) => course.id === certificate.courseId)[
+            'user_course'
+          ]?.rank,
+        ) < 50
+      ) {
+        throw new HttpException(
+          'User does not have the required rank to earn this certificate',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const userCertificate =
         await this.userCertificateRepo.findByUserIdAndCertificateId(
           userId,
@@ -34,12 +78,6 @@ export class UserCertificateService {
           userCertificate.userId,
           userCertificate.certificateId,
         );
-
-        return {
-          statusCode: HttpStatus.OK,
-          message: 'User certificate deleted successfully',
-          data: userCertificate,
-        };
       }
       const newUserCertificate = await this.userCertificateRepo.create({
         userId,
@@ -103,6 +141,14 @@ export class UserCertificateService {
     certificateId: string,
   ): Promise<IResponse<UserCertificate>> {
     try {
+      const user = await this.userRepo.findById(userId);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const certificate = await this.certificateRepo.findById(certificateId);
+      if (!certificate) {
+        throw new HttpException('Certificate not found', HttpStatus.NOT_FOUND);
+      }
       const userCertificate =
         await this.userCertificateRepo.findByUserIdAndCertificateId(
           userId,
@@ -156,6 +202,14 @@ export class UserCertificateService {
 
   async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
+      const userCertificate = await this.userCertificateRepo.findById(id);
+      console.log(userCertificate);
+      if (!userCertificate) {
+        throw new HttpException(
+          'User certificate not found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       const count = await this.userCertificateRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,

@@ -27,13 +27,7 @@ export class UserCertificateController {
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: false,
-    roles: [
-      ENUM_ROLE_TYPE.SUPER_ADMIN,
-      ENUM_ROLE_TYPE.ADMIN,
-      ENUM_ROLE_TYPE.MANAGER,
-      ENUM_ROLE_TYPE.MENTOR,
-      ENUM_ROLE_TYPE.CLIENT,
-    ],
+    roles: [ENUM_ROLE_TYPE.CLIENT],
   })
   async create(
     @Param('id') id: string,
@@ -47,7 +41,7 @@ export class UserCertificateController {
     return await this.userCertificateService.findAll();
   }
 
-  @Get(':id')
+  @Get('find/:id')
   async findOne(@Param('id') id: string): Promise<IResponse<UserCertificate>> {
     return await this.userCertificateService.findById(id);
   }

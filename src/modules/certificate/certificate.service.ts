@@ -26,6 +26,19 @@ export class CertificateService {
       if (!course) {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
       }
+      if (course?.questions?.length === 0) {
+        throw new HttpException(
+          'Course has no assessment',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const certificate = await this.certificateRepo.findByCourseId(courseId);
+      if (certificate) {
+        throw new HttpException(
+          'Certificate for this course already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       if (createCertificateDto.issuers.name.length < 1) {
         throw new HttpException(
@@ -88,7 +101,7 @@ export class CertificateService {
         });
       }
       const newCertificate = await this.certificateRepo.create({
-        issuers: JSON.stringify(issuersArray),
+        issuers: issuersArray,
         courseId,
       });
       return {

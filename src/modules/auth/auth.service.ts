@@ -17,8 +17,11 @@ import { User } from '../user/model/user.model';
 import { ProfileRepository } from '../profile/providers/profile.repository';
 import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { ConfigService } from '@nestjs/config';
-// import { CACHE_MANAGER } from '@nestjs/cache-manager';
-// import { Cache } from 'cache-manager';
+import {
+  ChangePasswordDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto/forgot-pwd.dto';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +33,6 @@ export class AuthService {
     private readonly passwordHelper: PasswordHelper,
     private readonly authHelper: AuthHelper,
     private readonly mailerHelper: MailerHelper,
-    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly configService: ConfigService,
   ) {}
 
@@ -649,6 +651,188 @@ export class AuthService {
       params.delete('new_user');
       params.set('error', 'server_error');
       return res.redirect(`${frontendUrl}?${params}`);
+    }
+  }
+
+  async forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<IResponse<any>> {
+    try {
+      const { email } = forgotPasswordDto;
+      const user = await this.userRepo.findByEmail(email);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const token = await this.authHelper.generateJwtToken<{ email: string }>({
+        email,
+      });
+      const frontendUrl = this.configService.get('FRONTEND_URL');
+      const subject = 'MaxKing Password Reset';
+      const text = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <meta http-equiv="x-ua-compatible" content="ie=edge" />
+          <title>Password Reset</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <style type="text/css">
+            @media screen {
+              @font-face {
+                font-family: "Source Sans Pro";
+                font-style: normal;
+                font-weight: 400;
+                src: local("Source Sans Pro Regular"), local("SourceSansPro-Regular"),
+                  url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff)
+                    format("woff");
+              }
+              @font-face {
+                font-family: "Source Sans Pro";
+                font-style: normal;
+                font-weight: 700;
+                src: local("Source Sans Pro Bold"), local("SourceSansPro-Bold"),
+                  url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff)
+                    format("woff");
+              }
+              body {
+                font-family: "Source Sans Pro", Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+              }
+
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+
+              .header {
+                text-align: center;
+                margin-bottom: 20px;
+              }
+
+              .logo {
+                width: 100px;
+                height: auto;
+              }
+
+              .content {
+                background-color: #f5f5f5;
+                padding: 20px;
+                border-radius: 5px;
+              }
+
+              .footer {
+                text-align: center;
+                margin-top: 20px;
+              }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+              <div class="header">
+                <img src="https://res.cloudinary.com/rutagerard/image/upload/v1712586592/Important/logo_krcqtj.png" alt="Logo" class="logo" />
+              </div>
+              <div class="content">
+                <h2>Password Reset</h2>
+                <p>
+                  You have requested to reset your password. Please click the button
+                  below to reset your password.
+                </p>
+                <p>
+                  <a href="${frontendUrl}/reset-password?passwordToken=${token}" target="_blank"
+                >Reset Password</a
+                  >
+                </p>
+                <p>
+                  If you did not request a password reset, please ignore this email.
+                </p>
+              </div>
+              <div class="footer">
+                <p>&copy; 2022 MaxKing. All rights reserved.</p>
+              </div>
+                </div>
+              </body>
+            </html>
+      `;
+
+      await this.mailerHelper.sendEmail(user.email, subject, text);
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Password reset email sent successfully',
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async resetPassword(
+    token: string,
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<IResponse<any>> {
+    try {
+      const { password } = resetPasswordDto;
+      const decodedToken = await this.authHelper.decodeJwtToken(token);
+      if (!decodedToken) {
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      }
+      const user = await this.userRepo.findByEmail(decodedToken.email);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      console.log(user);
+      const newPassword = await this.passwordHelper.hashPassword(password);
+      const updatedUser = await this.userRepo.update(user.id, {
+        password: newPassword,
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Password reset successfully',
+        data: updatedUser[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async changePassword(
+    req: Request,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<IResponse<any>> {
+    try {
+      const { oldPassword, password } = changePasswordDto;
+      const user = await this.userRepo.findById(req['user']?.id);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const isCorrectPassword = await this.passwordHelper.comparePassword(
+        oldPassword,
+        user.password,
+      );
+      if (!isCorrectPassword) {
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      }
+      const newPassword = await this.passwordHelper.hashPassword(password);
+      const updatedUser = await this.userRepo.update(user.id, {
+        password: newPassword,
+      });
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Password updated successfully',
+        data: updatedUser[1][0],
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

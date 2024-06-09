@@ -203,7 +203,6 @@ export class UserCertificateService {
   async deleteOne(id: string): Promise<IResponse<ICount>> {
     try {
       const userCertificate = await this.userCertificateRepo.findById(id);
-      console.log(userCertificate);
       if (!userCertificate) {
         throw new HttpException(
           'User certificate not found',

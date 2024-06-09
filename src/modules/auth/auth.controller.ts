@@ -10,6 +10,8 @@ import {
   Req,
   UsePipes,
   SetMetadata,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -17,15 +19,21 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { IResponse, IToken } from 'src/core/interfaces/response.interface';
 import { User } from '../user/model/user.model';
 import { GoogleAuthGuard } from 'src/core/guards/google-auth.guard';
-import { Request } from 'express';
 import { ValidationPipe } from 'src/core/pipes/validation.pipe';
 import {
+  changePasswordValidation,
   createUserValidation,
+  resetPasswordValidation,
   userRegisterValidation,
 } from 'src/core/validations/user.validation';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
+import {
+  ChangePasswordDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto/forgot-pwd.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -93,5 +101,52 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
     return this.authService.googleLogin(req, res);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<IResponse<string>> {
+    try {
+      return this.authService.forgotPassword(forgotPasswordDto);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('reset-password/:token')
+  @UsePipes(new ValidationPipe(resetPasswordValidation))
+  async resetPassword(
+    @Param('token') token: string,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<IResponse<string>> {
+    try {
+      return this.authService.resetPassword(token, resetPasswordDto);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Patch('change-password')
+  @UseGuards(UserAuthGuard)
+  @UsePipes(new ValidationPipe(changePasswordValidation))
+  async changePassword(
+    @Req() req: Request,
+    @Body() changePasswordPasswordDto: ChangePasswordDto,
+  ): Promise<IResponse<string>> {
+    try {
+      return this.authService.changePassword(req, changePasswordPasswordDto);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

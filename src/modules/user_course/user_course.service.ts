@@ -9,6 +9,7 @@ import { MailerHelper } from 'src/core/helpers/mailer.helper';
 import { UpdateUserCourseDto } from './dto/update-user_course.dto';
 import { UserModuleRepository } from '../user_module/providers/user_module.repository';
 import { ModuleRepository } from '../module/providers/module.repository';
+import { UserCertificateRepository } from '../user_certificate/providers/user_certificate.repository';
 
 @Injectable()
 export class UserCourseService {
@@ -19,6 +20,7 @@ export class UserCourseService {
     private readonly moduleRepo: ModuleRepository,
     private readonly userModuleRepo: UserModuleRepository,
     private readonly mailerHelper: MailerHelper,
+    private readonly userCertificateRepo: UserCertificateRepository,
   ) {}
 
   async create(
@@ -254,11 +256,6 @@ export class UserCourseService {
         isPaid: true,
       });
 
-      console.log(
-        userCourse,
-        '**************************************************',
-      );
-
       return {
         statusCode: HttpStatus.OK,
         message: 'User course created successfully with payment',
@@ -283,7 +280,6 @@ export class UserCourseService {
         userCourse.courseId,
       );
       if (useCourseModules.length > 0) {
-        console.log(useCourseModules, '^^^^^^^^^');
         for (let i = 0; i < useCourseModules.length; i++) {
           const userModule = await this.userModuleRepo.findByUserAndModuleId(
             userCourse.userId,
@@ -293,6 +289,11 @@ export class UserCourseService {
           await this.userModuleRepo.deleteOne(userModule.id);
         }
       }
+      const course = await this.courseRepo.findById(userCourse.courseId);
+      await this.userCertificateRepo.deleteByUserAndCertificate(
+        userCourse.userId,
+        course.certificate.id,
+      );
       const count = await this.userCourseRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,
@@ -323,6 +324,10 @@ export class UserCourseService {
 
       const userModules = user.modules.filter((x) => x.courseId === courseId);
 
+      await this.userCertificateRepo.deleteByUserAndCertificate(
+        userId,
+        course.certificate.id,
+      );
       await this.userCourseRepo.deleteByUserAndCourseId(userId, courseId);
       for (let i = 0; i < userModules.length; i++) {
         await this.userModuleRepo.deleteByUserAndModuleId(

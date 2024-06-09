@@ -15,7 +15,7 @@ import { UserCertificate } from 'src/modules/user_certificate/model/user_certifi
 @Table({ tableName: 'Certificates', timestamps: true })
 export class Certificate extends Model<Certificate> {
   @Column({ type: DataType.JSONB })
-  issuers: Issuer[];
+  issuers: string;
 
   // @Column
   // issuerName1: string;

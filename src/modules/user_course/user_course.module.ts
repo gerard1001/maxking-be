@@ -11,6 +11,7 @@ import { UserModuleModule } from '../user_module/user_module.module';
 import { CommentModule } from '../comment/comment.module';
 import { ArticleModule } from '../article/article.module';
 import { ReplyModule } from '../reply/reply.module';
+import { UserCertificateModule } from '../user_certificate/user_certificate.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ReplyModule } from '../reply/reply.module';
     forwardRef(() => CommentModule),
     forwardRef(() => ReplyModule),
     forwardRef(() => UserModuleModule),
+    forwardRef(() => UserCertificateModule),
   ],
   controllers: [UserCourseController],
   providers: [UserCourseService, UserCourseRepository, ...userCourseProviders],

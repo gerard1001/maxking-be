@@ -22,6 +22,12 @@ export class CertificateService {
   ): Promise<IResponse<Certificate>> {
     try {
       const {} = createCertificateDto;
+
+      console.log(createCertificateDto, 'createCertificateDto');
+      console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$444');
+      console.log(images, 'images');
+
+      const certificate = await this.certificateRepo.findByCourseId(courseId);
       const course = await this.courseRepo.findById(courseId);
       if (!course) {
         throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
@@ -32,14 +38,6 @@ export class CertificateService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const certificate = await this.certificateRepo.findByCourseId(courseId);
-      if (certificate) {
-        throw new HttpException(
-          'Certificate for this course already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       if (createCertificateDto.issuers.name.length < 1) {
         throw new HttpException(
           'At least one issuer is required',
@@ -52,7 +50,10 @@ export class CertificateService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (createCertificateDto.issuers.name.length !== images.length) {
+      if (
+        createCertificateDto.issuers.name.length !== images.length &&
+        !certificate
+      ) {
         throw new HttpException(
           'Number of issuers and signatures do not match',
           HttpStatus.BAD_REQUEST,
@@ -77,7 +78,10 @@ export class CertificateService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        if (images.length < createCertificateDto.issuers.name.length) {
+        if (
+          images.length < createCertificateDto.issuers.name.length &&
+          !certificate
+        ) {
           throw new HttpException(
             'Issuer signature is required',
             HttpStatus.BAD_REQUEST,
@@ -94,11 +98,24 @@ export class CertificateService {
             throw new HttpException(err, HttpStatus.BAD_REQUEST);
           }));
 
+        console.log(certificate, '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7');
+
         issuersArray.push({
           name: createCertificateDto.issuers.name[i],
-          signature: file.secure_url,
+          signature:
+            certificate && !file
+              ? certificate?.issuers &&
+                JSON.parse(certificate?.issuers)[i].signature
+              : file.secure_url,
           position: createCertificateDto.issuers.position[i],
         });
+      }
+      if (certificate) {
+        await this.certificateRepo.deleteOne(certificate.id);
+        // throw new HttpException(
+        //   'Certificate for this course already exists',
+        //   HttpStatus.BAD_REQUEST,
+        // );
       }
       const newCertificate = await this.certificateRepo.create({
         issuers: issuersArray,

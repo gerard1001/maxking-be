@@ -10,7 +10,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserCertificateService } from './user_certificate.service';
-import { CreateUserCertificateDto } from './dto/create-user_certificate.dto';
 import { ICount, IResponse } from 'src/core/interfaces/response.interface';
 import { UserCertificate } from './model/user_certificate.model';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
@@ -54,6 +53,15 @@ export class UserCertificateController {
     return await this.userCertificateService.findByUserIdAndCertificateId(
       userId,
       certificateId,
+    );
+  }
+
+  @Get('userCertificateId/:userCertificateId')
+  async findByUserCertificateId(
+    @Param('userCertificateId') userCertificateId: string,
+  ): Promise<IResponse<UserCertificate>> {
+    return await this.userCertificateService.findByUserCertificateId(
+      userCertificateId,
     );
   }
 

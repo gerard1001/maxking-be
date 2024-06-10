@@ -4,6 +4,7 @@ import {
   CATEGORY_MODEL,
   CERTIFICATE_MODEL,
   CHAPTER_MODEL,
+  COLLABORATOR_MODEL,
   COMMENT_MODEL,
   COURSE_MODEL,
   COURSE_TAG_MODEL,
@@ -31,6 +32,7 @@ import { ArticleTag } from 'src/modules/article_tag/model/article_tag.model';
 import { Category } from 'src/modules/category/model/category.model';
 import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { Chapter } from 'src/modules/chapter/model/chapter.model';
+import { Collaborator } from 'src/modules/collaborator/model/collaborator.model';
 import { Comment } from 'src/modules/comment/model/comment.model';
 import { Course } from 'src/modules/course/model/course.model';
 import { CourseTag } from 'src/modules/course_tag/model/course_tag.model';
@@ -232,5 +234,12 @@ export const userCertificateProviders = [
   {
     provide: USER_CERTIFICATE_MODEL,
     useValue: UserCertificate,
+  },
+];
+
+export const collaboratorProviders = [
+  {
+    provide: COLLABORATOR_MODEL,
+    useValue: Collaborator,
   },
 ];

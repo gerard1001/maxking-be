@@ -17,7 +17,6 @@ import configuration from 'config/configuration';
 import { ReplyModule } from './modules/reply/reply.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './core/strategies/jwt.strategy';
-// import { CacheModule } from '@nestjs/cache-manager';
 import { CategoryModule } from './modules/category/category.module';
 import { SubjectModule } from './modules/subject/subject.module';
 import { CourseModule } from './modules/course/course.module';
@@ -33,6 +32,7 @@ import { DocumentModule } from './modules/document/document.module';
 import { EventModule } from './modules/event/event.module';
 import { CertificateModule } from './modules/certificate/certificate.module';
 import { UserCertificateModule } from './modules/user_certificate/user_certificate.module';
+import { CollaboratorModule } from './modules/collaborator/collaborator.module';
 
 @Module({
   imports: [
@@ -69,6 +69,7 @@ import { UserCertificateModule } from './modules/user_certificate/user_certifica
     EventModule,
     CertificateModule,
     UserCertificateModule,
+    CollaboratorModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

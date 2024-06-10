@@ -32,30 +32,6 @@ module.exports = {
           this.setDataValue('issuers', JSON.stringify(value));
         },
       },
-      // issuerName1: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false,
-      // },
-      // issuerSignature1: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false,
-      // },
-      // issuerPosition1: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false,
-      // },
-      // issuerName2: {
-      //   type: Sequelize.STRING,
-      //   allowNull: true,
-      // },
-      // issuerSignature2: {
-      //   type: Sequelize.STRING,
-      //   allowNull: true,
-      // },
-      // issuerPosition2: {
-      //   type: Sequelize.STRING,
-      //   allowNull: true,
-      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

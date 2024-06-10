@@ -27,6 +27,7 @@ import { Document } from 'src/modules/document/model/document.model';
 import { Event } from 'src/modules/event/model/event.model';
 import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { UserCertificate } from 'src/modules/user_certificate/model/user_certificate.model';
+import { Collaborator } from 'src/modules/collaborator/model/collaborator.model';
 
 export const databaseProviders = [
   {
@@ -74,6 +75,7 @@ export const databaseProviders = [
         Event,
         Certificate,
         UserCertificate,
+        Collaborator,
       ]);
       await sequelize.sync();
       return sequelize;

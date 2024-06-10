@@ -56,8 +56,8 @@ export class CertificateController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<IResponse<Certificate>> {
-    return this.certificateService.findById(id);
+  async findOne(@Param('id') id: string): Promise<IResponse<Certificate>> {
+    return await this.certificateService.findById(id);
   }
 
   @Delete(':id')

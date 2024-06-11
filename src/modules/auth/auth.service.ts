@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserRepository } from '../user/providers/user.repository';
@@ -22,6 +16,7 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
 } from './dto/forgot-pwd.dto';
+import { generateRdmPassword } from 'src/core/functions/algorithms.function';
 
 @Injectable()
 export class AuthService {
@@ -439,7 +434,7 @@ export class AuthService {
   async createUser(createUserDto: CreateUserDto): Promise<IResponse<User>> {
     try {
       const { firstName, lastName, email, roleId } = createUserDto;
-      const password = 'Maxking1001';
+      const password = generateRdmPassword();
       const user = await this.userRepo.findByEmail(email);
       if (user) {
         throw new HttpException(
@@ -459,6 +454,256 @@ export class AuthService {
         password: await this.passwordHelper.hashPassword(password),
         isVerified: true,
       });
+
+      const frontendUrl = this.configService.get('FRONTEND_URL');
+      const subject = 'You were added to MaxKing';
+      const text = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <meta http-equiv="x-ua-compatible" content="ie=edge" />
+          <title>Email Confirmation</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <style type="text/css">
+            @media screen {
+              @font-face {
+                font-family: "Source Sans Pro";
+                font-style: normal;
+                font-weight: 400;
+                src: local("Source Sans Pro Regular"), local("SourceSansPro-Regular"),
+                  url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff)
+                    format("woff");
+              }
+              @font-face {
+                font-family: "Source Sans Pro";
+                font-style: normal;
+                font-weight: 700;
+                src: local("Source Sans Pro Bold"), local("SourceSansPro-Bold"),
+                  url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff)
+                    format("woff");
+              }
+            }
+          
+            body,
+            table,
+            td,
+            a {
+              -ms-text-size-adjust: 100%;
+              -webkit-text-size-adjust: 100%; 
+            }
+            table,
+            td {
+              mso-table-rspace: 0pt;
+              mso-table-lspace: 0pt;
+            }
+            img {
+              -ms-interpolation-mode: bicubic;
+            }
+            a[x-apple-data-detectors] {
+              font-family: inherit !important;
+              font-size: inherit !important;
+              font-weight: inherit !important;
+              line-height: inherit !important;
+              color: inherit !important;
+              text-decoration: none !important;
+            }
+            div[style*="margin: 16px 0;"] {
+              margin: 0 !important;
+            }
+            body {
+              width: 100% !important;
+              height: 100% !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+            table {
+              border-collapse: collapse !important;
+            }
+            a {
+              color: #1a82e2;
+            }
+            img {
+              height: auto;
+              line-height: 100%;
+              text-decoration: none;
+              border: 0;
+              outline: none;
+            }
+          </style>
+        </head>
+        <body style="background-color: #e9ecef">
+          <div
+            class="preheader"
+            style="
+              display: none;
+              max-width: 0;
+              max-height: 0;
+              overflow: hidden;
+              font-size: 1px;
+              line-height: 1px;
+              color: #fff;
+              opacity: 0;
+            "
+          >
+            Hi ${lastName}, your email was added to Max King's Institute.
+          </div>
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+              <td align="center" bgcolor="#e9ecef">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="max-width: 600px"
+                >
+                  <tr>
+                    <td align="center" valign="top" style="padding: 36px 24px 0px">
+                      <a
+                        href="${frontendUrl}"
+                        target="_blank"
+                        style="display: inline-block"
+                      >
+                        <img
+                          src="https://res.cloudinary.com/rutagerard/image/upload/v1712586592/Important/logo_krcqtj.png"
+                          alt="Logo"
+                          border="0"
+                          width="100"
+                          style="
+                            display: block;
+                            width: 80px;
+                            max-width: 80px;
+                            min-width: 80px;
+                          "
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" bgcolor="#e9ecef">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="max-width: 600px"
+                >
+                  <tr>
+                    <td
+                      align="left"
+                      bgcolor="#ffffff"
+                      style="
+                        padding: 24px;
+                        padding-bottom: 0px;
+                        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                        font-size: 16px;
+                        line-height: 24px;
+                      "
+                    >
+                      <p style="text-align: center">
+                        We sent this email to confirm your account creation on Max
+                        King's app, and to confirm the email address that was added
+                      </p>
+                      <p style="font-size: 14px; text-align: center">
+                        You can login with your email (${email}) and password: <span style="font-size: 16px; text-align: center; font-weight: 600;">${password}</span>
+                      </p>
+                    </td>
+                  </tr>            
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" bgcolor="#e9ecef" style="padding: 24px">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="max-width: 600px"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      bgcolor="#e9ecef"
+                      style="
+                        padding: 12px 24px;
+                        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                        font-size: 14px;
+                        line-height: 20px;
+                        color: #666;
+                      "
+                    >
+                      <p style="margin: 0">
+                        You received this email because your email was registered by an admin on Max King. Please ignore it if you do not know anything about the mention platform.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      align="center"
+                      bgcolor="#e9ecef"
+                      style="
+                        padding: 12px 24px;
+                        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+                        font-size: 14px;
+                        line-height: 20px;
+                        color: #666;
+                      "
+                    >
+                      <p style="margin: 0">
+                        To stop receiving these emails, press:
+                        <a href="${frontendUrl}" target="_blank"
+                        >unsubscribe</a
+                        >
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                    align="center"
+                    bgcolor="#e9ecef"
+                    >
+                      <a
+                href="https://twitter.com/maxkinginstitut"
+                target="_blank"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  padding: 6px;
+                  align-items: center;
+                  justify-items: center;
+                  border-radius: 50%;
+                  background-color: #242e8f;
+                  width: 14px;
+                  height: 14px;
+                "
+              >
+                <img
+                  src="https://res.cloudinary.com/rutagerard/image/upload/v1712658322/Important/1690643777twitter-x_logo-png-white_ivtglr.png"
+                  alt=""
+                  style="width: 100%; height: 100%"
+                />
+              </a></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+        </body>
+      </html>
+`;
+
+      try {
+        await this.mailerHelper.sendEmail(email, subject, text);
+      } catch (error) {
+        throw new HttpException(
+          'Email delivery has failed, please check again your email address or try again later',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       try {
         await this.profileRepo.create({
@@ -731,7 +976,13 @@ export class AuthService {
               <body>
                 <div class="container">
               <div class="header">
-                <img src="https://res.cloudinary.com/rutagerard/image/upload/v1712586592/Important/logo_krcqtj.png" alt="Logo" class="logo" />
+                <img src="https://res.cloudinary.com/rutagerard/image/upload/v1712586592/Important/logo_krcqtj.png" alt="Logo" class="logo" 
+                style="
+                      display: block;
+                      width: 80px;
+                      max-width: 80px;
+                      min-width: 80px;
+                "/>
               </div>
               <div class="content">
                 <h2>Password Reset</h2>

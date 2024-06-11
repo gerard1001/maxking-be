@@ -22,3 +22,17 @@ export const checkStringDuplicatesInArray = (
 export const compareRoles = (allowedRoles: string[], userRole: string[]) => {
   return allowedRoles.some((elementA) => userRole.includes(elementA));
 };
+
+export const generateRdmPassword = (): string => {
+  var length = 8,
+    charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    numset = '0123456789',
+    retVal = '';
+  for (var i = 0, n = charset.length; i < length - 3; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  for (var i = 0, n = numset.length; i < length - 5; ++i) {
+    retVal += numset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+};

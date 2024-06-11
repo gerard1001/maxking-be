@@ -4,10 +4,10 @@ if [ -z "$DB_HOST" ] || [ "$DB_HOST" = "127.0.0.1" ] || [ "$DB_HOST" = "localhos
 then
 
     # If the DEV_DB_* variables are not set, we will use the default values
-    if [ -z "$DB_NAME_PROD" ]
+    if [ -z "$DB_NAME_DEV" ]
     then
-        export DB_NAME_PROD="agcera"
-        echo "DB_NAME_PROD is not set. Using default value: $DB_NAME_PROD"
+        export DB_NAME_DEV="mki"
+        echo "DB_NAME_DEV is not set. Using default value: $DB_NAME_DEV"
     fi
     if [ -z "$DB_USER" ]
     then
@@ -23,9 +23,9 @@ then
     service postgresql start
     service postgresql status
 
-    su - postgres -c "createdb $DB_NAME_PROD"
+    su - postgres -c "createdb $DB_NAME_DEV"
     su - postgres -c "psql -c \"ALTER USER $DB_USER PASSWORD '$DB_PASSWORD';\""
 fi
 
 npm run migrate:all
-npm start
+npm run start:node

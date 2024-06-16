@@ -28,6 +28,8 @@ import { Event } from 'src/modules/event/model/event.model';
 import { Certificate } from 'src/modules/certificate/model/certificate.model';
 import { UserCertificate } from 'src/modules/user_certificate/model/user_certificate.model';
 import { Collaborator } from 'src/modules/collaborator/model/collaborator.model';
+import { Service } from 'src/modules/services/model/service.model';
+import { Program } from 'src/modules/program/model/program.model';
 
 export const databaseProviders = [
   {
@@ -76,6 +78,8 @@ export const databaseProviders = [
         Certificate,
         UserCertificate,
         Collaborator,
+        Service,
+        Program,
       ]);
       await sequelize.sync();
       return sequelize;

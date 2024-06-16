@@ -33,6 +33,8 @@ import { EventModule } from './modules/event/event.module';
 import { CertificateModule } from './modules/certificate/certificate.module';
 import { UserCertificateModule } from './modules/user_certificate/user_certificate.module';
 import { CollaboratorModule } from './modules/collaborator/collaborator.module';
+import { ServiceModule } from './modules/services/service.module';
+import { ProgramModule } from './modules/program/program.module';
 
 @Module({
   imports: [
@@ -70,6 +72,8 @@ import { CollaboratorModule } from './modules/collaborator/collaborator.module';
     CertificateModule,
     UserCertificateModule,
     CollaboratorModule,
+    ServiceModule,
+    ProgramModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

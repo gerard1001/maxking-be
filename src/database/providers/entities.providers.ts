@@ -13,9 +13,11 @@ import {
   LIKE_MODEL,
   MODULE_MODEL,
   PROFILE_MODEL,
+  PROGRAM_MODEL,
   QUESTION_MODEL,
   REPLY_MODEL,
   ROLE_MODEL,
+  SERVICE_MODEL,
   SUBJECT_MODEL,
   TAG_MODEL,
   TESTIMONIAL_MODEL,
@@ -41,9 +43,11 @@ import { Event } from 'src/modules/event/model/event.model';
 import { Like } from 'src/modules/like/model/like.model';
 import { Module } from 'src/modules/module/model/module.model';
 import { Profile } from 'src/modules/profile/model/profile.model';
+import { Program } from 'src/modules/program/model/program.model';
 import { Question } from 'src/modules/question/model/question.model';
 import { Reply } from 'src/modules/reply/model/reply.model';
 import { Role } from 'src/modules/role/model/role.model';
+import { Service } from 'src/modules/services/model/service.model';
 import { Subject } from 'src/modules/subject/model/subject.model';
 import { Tag } from 'src/modules/tag/model/tag.model';
 import { Testimonial } from 'src/modules/testimonial/model/testimonial.model';
@@ -241,5 +245,19 @@ export const collaboratorProviders = [
   {
     provide: COLLABORATOR_MODEL,
     useValue: Collaborator,
+  },
+];
+
+export const serviceProviders = [
+  {
+    provide: SERVICE_MODEL,
+    useValue: Service,
+  },
+];
+
+export const programProviders = [
+  {
+    provide: PROGRAM_MODEL,
+    useValue: Program,
   },
 ];

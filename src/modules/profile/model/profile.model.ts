@@ -45,6 +45,9 @@ export class Profile extends Model<Profile> {
   @Column
   bio: string;
 
+  @Column
+  coverLetter: string;
+
   @BelongsTo(() => User)
   user: User;
 }

@@ -10,11 +10,15 @@ import {
   UseInterceptors,
   UseGuards,
   SetMetadata,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { multerOptions } from 'src/core/upload/multer.config';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { RoleGuard } from 'src/core/guards/role.guard';
 import { UserAuthGuard } from 'src/core/guards/auth.guard';
 import { ENUM_ROLE_TYPE } from 'src/core/constants/role.constants';
@@ -57,13 +61,39 @@ export class ProfileController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('picture', multerOptions))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'coverLetter', maxCount: 1 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
-    @UploadedFile() picture: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      picture?: Express.Multer.File[];
+      coverLetter?: Express.Multer.File[];
+    },
     @Req() req: Request,
   ): Promise<IResponse<Profile>> {
-    return await this.profileService.update(id, updateProfileDto, picture, req);
+    return await this.profileService.update(
+      id,
+      updateProfileDto,
+      files.picture,
+      files.coverLetter,
+      req,
+    );
+  }
+
+  @Patch(':id')
+  uploadFile(
+    @UploadedFiles()
+    files: {
+      picture?: Express.Multer.File[];
+      coverLetter?: Express.Multer.File[];
+    },
+  ) {
+    console.log(files);
   }
 }

@@ -84,13 +84,13 @@ export class UserController {
   }
 
   @Delete(':id')
-  @UseGuards(UserAuthGuard, RoleGuard)
+  // @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {
     checkAccOwner: true,
     roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
   })
-  deleteOne(@Param('id') id: string): Promise<IResponse<ICount>> {
-    return this.userService.deleteOne(id);
+  async deleteOne(@Param('id') id: string): Promise<IResponse<ICount>> {
+    return await this.userService.deleteOne(id);
   }
 
   @Delete()

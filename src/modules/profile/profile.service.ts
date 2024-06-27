@@ -94,23 +94,35 @@ export class ProfileService {
   async update(
     id: string,
     updateProfileDto: UpdateProfileDto,
-    picture: Express.Multer.File,
+    picture: Express.Multer.File[],
+    coverLetter: Express.Multer.File[],
     req: Request,
   ): Promise<IResponse<Profile>> {
     try {
+      console.log(picture);
+      console.log(coverLetter);
       const profile = await this.profileRepo.findById(id);
       if (!profile) {
         throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
       }
       const file =
-        req['file'] &&
-        (await this.cloudinaryService.uploadImage(picture).catch((err) => {
+        picture[0] &&
+        (await this.cloudinaryService.uploadImage(picture[0]).catch((err) => {
           throw new HttpException(err, HttpStatus.BAD_REQUEST);
         }));
 
+      const letterFile =
+        coverLetter[0] &&
+        (await this.cloudinaryService
+          .uploadImage(coverLetter[0])
+          .catch((err) => {
+            throw new HttpException(err, HttpStatus.BAD_REQUEST);
+          }));
+
       const updatedProfile = await this.profileRepo.update(id, {
         ...updateProfileDto,
-        picture: req['file'] ? file?.secure_url : profile.picture,
+        picture: picture ? file?.secure_url : profile.picture,
+        coverLetter: coverLetter ? letterFile.secure_url : profile.coverLetter,
       });
       return {
         statusCode: HttpStatus.OK,

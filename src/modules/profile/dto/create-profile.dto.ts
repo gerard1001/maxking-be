@@ -47,4 +47,8 @@ export class CreateProfileDto {
   @IsString()
   @IsOptional()
   readonly bio?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly coverLetter?: string;
 }

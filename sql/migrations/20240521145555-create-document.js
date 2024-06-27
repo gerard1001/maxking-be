@@ -40,7 +40,7 @@ module.exports = {
       currency: {
         type: Sequelize.ENUM('USD', 'EUR', 'GBP', 'RWF'),
         allowNull: true,
-        defaultValue: 'USD',
+        defaultValue: 'RWF',
       },
       publishedOn: {
         allowNull: true,

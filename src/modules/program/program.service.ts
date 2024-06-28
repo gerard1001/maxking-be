@@ -20,7 +20,7 @@ export class ProgramService {
   ): Promise<IResponse<Program>> {
     try {
       const { title, short, description } = createProgramDto;
-      const programExists = await this.programRepo.findByTitle(title.trim());
+      const programExists = await this.programRepo.findByShort(short.trim());
       if (programExists) {
         throw new HttpException(
           'This program title already exists',
@@ -36,7 +36,7 @@ export class ProgramService {
       const newProgram = await this.programRepo.create({
         coverImage: req['file'] && file?.secure_url,
         title: title.trim(),
-        short,
+        short: short.trim().split(' ').join('-').toLowerCase(),
         description,
       });
 
@@ -72,6 +72,30 @@ export class ProgramService {
   async findOne(id: string): Promise<IResponse<Program>> {
     try {
       const program = await this.programRepo.findById(id);
+      if (!program) {
+        throw new HttpException('Program not found', HttpStatus.NOT_FOUND);
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Program retrieved successfully',
+        data: program,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByShort(short: string): Promise<IResponse<Program>> {
+    try {
+      const program = await this.programRepo.findByShort(short);
+      if (!program) {
+        throw new HttpException('Program not found', HttpStatus.NOT_FOUND);
+      }
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Program retrieved successfully',
@@ -126,7 +150,7 @@ export class ProgramService {
       const count = await this.programRepo.deleteOne(id);
       return {
         statusCode: HttpStatus.OK,
-        message: 'Service deleted successfully',
+        message: 'Program deleted successfully',
         data: { count },
       };
     } catch (error) {

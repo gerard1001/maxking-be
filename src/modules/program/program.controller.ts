@@ -61,6 +61,13 @@ export class ProgramController {
     return await this.programProgram.findOne(id);
   }
 
+  @Get('short/:short')
+  async findByShort(
+    @Param('short') short: string,
+  ): Promise<IResponse<Program>> {
+    return await this.programProgram.findByShort(short);
+  }
+
   @Patch(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

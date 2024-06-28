@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PROGRAM_MODEL } from 'src/core/constants';
 import { Program } from '../model/program.model';
 import { CreateProgramDto } from '../dto/create-program.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProgramRepository {
@@ -21,8 +22,10 @@ export class ProgramRepository {
     return await this.programModel.findByPk(id);
   }
 
-  async findByTitle(title: string) {
-    return await this.programModel.findOne({ where: { title } });
+  async findByShort(short: string) {
+    return await this.programModel.findOne({
+      where: { short: { [Op.iLike]: `%${short}` } },
+    });
   }
 
   async update(

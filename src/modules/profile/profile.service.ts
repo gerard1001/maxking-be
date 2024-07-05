@@ -99,8 +99,6 @@ export class ProfileService {
     req: Request,
   ): Promise<IResponse<Profile>> {
     try {
-      console.log(picture);
-      console.log(coverLetter);
       const profile = await this.profileRepo.findById(id);
       if (!profile) {
         throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);

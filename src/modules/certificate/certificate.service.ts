@@ -23,10 +23,6 @@ export class CertificateService {
     try {
       const {} = createCertificateDto;
 
-      console.log(createCertificateDto, 'createCertificateDto');
-      console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$444');
-      console.log(images, 'images');
-
       const certificate = await this.certificateRepo.findByCourseId(courseId);
       const course = await this.courseRepo.findById(courseId);
       if (!course) {
@@ -97,8 +93,6 @@ export class CertificateService {
           (await this.cloudinaryService.uploadImage(imageFile).catch((err) => {
             throw new HttpException(err, HttpStatus.BAD_REQUEST);
           }));
-
-        console.log(certificate, '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7');
 
         issuersArray.push({
           name: createCertificateDto.issuers.name[i],

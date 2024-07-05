@@ -1035,7 +1035,6 @@ export class AuthService {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      console.log(user);
       const newPassword = await this.passwordHelper.hashPassword(password);
       const updatedUser = await this.userRepo.update(user.id, {
         password: newPassword,

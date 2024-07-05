@@ -25,7 +25,6 @@ export class TestimonialService {
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      console.log(user);
       if (
         user.testimonial &&
         user.roles[0].type !== ENUM_ROLE_TYPE.SUPER_ADMIN

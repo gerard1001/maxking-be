@@ -85,15 +85,4 @@ export class ProfileController {
       req,
     );
   }
-
-  @Patch(':id')
-  uploadFile(
-    @UploadedFiles()
-    files: {
-      picture?: Express.Multer.File[];
-      coverLetter?: Express.Multer.File[];
-    },
-  ) {
-    console.log(files);
-  }
 }

@@ -77,7 +77,7 @@ export class TagController {
       ENUM_ROLE_TYPE.MANAGER,
     ],
   })
-  remove(@Param('id') id: string): Promise<IResponse<ICount>> {
-    return this.tagService.deleteOne(id);
+  async remove(@Param('id') id: string): Promise<IResponse<ICount>> {
+    return await this.tagService.deleteOne(id);
   }
 }

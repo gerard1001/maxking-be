@@ -104,13 +104,14 @@ export class ProfileService {
         throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
       }
       const file =
-        picture[0] &&
-        (await this.cloudinaryService.uploadImage(picture[0]).catch((err) => {
-          throw new HttpException(err, HttpStatus.BAD_REQUEST);
-        }));
-
+      picture &&
+      (await this.cloudinaryService.uploadImage(picture[0]).catch((err) => {
+        throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      }));
+      
+      console.log(file)
       const letterFile =
-        coverLetter[0] &&
+      coverLetter &&
         (await this.cloudinaryService
           .uploadImage(coverLetter[0])
           .catch((err) => {
@@ -122,6 +123,8 @@ export class ProfileService {
         picture: picture ? file?.secure_url : profile.picture,
         coverLetter: coverLetter ? letterFile.secure_url : profile.coverLetter,
       });
+      
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Profile updated successfully',

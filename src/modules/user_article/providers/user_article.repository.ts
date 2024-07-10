@@ -17,7 +17,9 @@ export class UserArticleRepository {
   }
 
   async findAll(): Promise<UserArticle[]> {
-    return await this.userArticleModel.findAll();
+    return await this.userArticleModel.findAll({
+      attributes: ['id', 'userId', 'articleId', 'createdAt', 'updatedAt'],
+    });
   }
 
   async findById(id: string): Promise<UserArticle> {

@@ -15,7 +15,9 @@ export class ArticleTagRepository {
   }
 
   async findAll(): Promise<ArticleTag[]> {
-    return await this.articleTagModel.findAll();
+    return await this.articleTagModel.findAll({
+      attributes: ['id', 'articleId', 'tagId', 'createdAt', 'updatedAt'],
+    });
   }
 
   async findById(id: string): Promise<ArticleTag> {

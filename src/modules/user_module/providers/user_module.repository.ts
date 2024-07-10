@@ -15,7 +15,17 @@ export class UserModuleRepository {
   }
 
   async findAll(): Promise<UserModule[]> {
-    return await this.userModuleModel.findAll();
+    return await this.userModuleModel.findAll({
+      attributes: [
+        'id',
+        'userId',
+        'moduleId',
+        'currentChapter',
+        'rank',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
   }
 
   async findById(id: string): Promise<UserModule> {

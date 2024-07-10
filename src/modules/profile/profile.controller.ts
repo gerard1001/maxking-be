@@ -40,6 +40,16 @@ export class ProfileController {
     return await this.profileService.create(createProfileDto, picture, req);
   }
 
+  @Get()
+  @UseGuards(UserAuthGuard, RoleGuard)
+  @SetMetadata('metadata', {
+    checkAccOwner: true,
+    roles: [ENUM_ROLE_TYPE.SUPER_ADMIN, ENUM_ROLE_TYPE.ADMIN],
+  })
+  async findAll(): Promise<IResponse<Profile[]>> {
+    return await this.profileService.findAll();
+  }
+
   @Get(':id')
   @UseGuards(UserAuthGuard, RoleGuard)
   @SetMetadata('metadata', {

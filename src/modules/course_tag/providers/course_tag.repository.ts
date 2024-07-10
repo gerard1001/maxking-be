@@ -15,7 +15,9 @@ export class CourseTagRepository {
   }
 
   async findAll(): Promise<CourseTag[]> {
-    return await this.courseTagModel.findAll();
+    return await this.courseTagModel.findAll({
+      attributes: ['id', 'courseId', 'tagId', 'createdAt', 'updatedAt'],
+    });
   }
 
   async findById(id: string): Promise<CourseTag> {

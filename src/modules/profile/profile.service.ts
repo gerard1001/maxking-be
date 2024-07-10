@@ -53,6 +53,22 @@ export class ProfileService {
     }
   }
 
+  async findAll(): Promise<IResponse<Profile[]>> {
+    try {
+      const profiles = await this.profileRepo.findAll();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Profile retrieved successfully',
+        data: profiles,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Server Error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findById(id: string): Promise<IResponse<Profile>> {
     try {
       const profile = await this.profileRepo.findById(id);
@@ -104,14 +120,14 @@ export class ProfileService {
         throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
       }
       const file =
-      picture &&
-      (await this.cloudinaryService.uploadImage(picture[0]).catch((err) => {
-        throw new HttpException(err, HttpStatus.BAD_REQUEST);
-      }));
-      
-      console.log(file)
+        picture &&
+        (await this.cloudinaryService.uploadImage(picture[0]).catch((err) => {
+          throw new HttpException(err, HttpStatus.BAD_REQUEST);
+        }));
+
+      console.log(file);
       const letterFile =
-      coverLetter &&
+        coverLetter &&
         (await this.cloudinaryService
           .uploadImage(coverLetter[0])
           .catch((err) => {
@@ -123,7 +139,6 @@ export class ProfileService {
         picture: picture ? file?.secure_url : profile.picture,
         coverLetter: coverLetter ? letterFile.secure_url : profile.coverLetter,
       });
-      
 
       return {
         statusCode: HttpStatus.OK,

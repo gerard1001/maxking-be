@@ -16,7 +16,19 @@ export class UserCourseRepository {
   }
 
   async findAll(): Promise<UserCourse[]> {
-    return await this.userCourseModel.findAll();
+    return await this.userCourseModel.findAll({
+      attributes: [
+        'id',
+        'userId',
+        'courseId',
+        'userType',
+        'currentModule',
+        'rank',
+        'completed',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
   }
 
   async findById(id: string): Promise<UserCourse> {

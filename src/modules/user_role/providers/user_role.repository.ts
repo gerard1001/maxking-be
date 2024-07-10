@@ -16,7 +16,9 @@ export class UserRoleRepository {
   }
 
   async findAll(): Promise<UserRole[]> {
-    return await this.userRoleModel.findAll();
+    return await this.userRoleModel.findAll({
+      attributes: ['id', 'roleId', 'userId', 'createdAt', 'updatedAt'],
+    });
   }
 
   async findById(id: number) {

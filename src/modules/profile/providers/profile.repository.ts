@@ -13,6 +13,10 @@ export class ProfileRepository {
     return await this.profileModel.create(data);
   }
 
+  async findAll(): Promise<Profile[]> {
+    return await this.profileModel.findAll();
+  }
+
   async findById(id: string): Promise<Profile> {
     return await this.profileModel.findByPk(id, {
       include: [

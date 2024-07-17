@@ -13,12 +13,16 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
   const logger = new Logger();
 
-  app.use(
-    cors({
-      origin: true,
-      credentials: true,
-    }),
-  );
+  // app.use(
+  //   cors({
+  //     origin: true,
+  //     credentials: true,
+  //   }),
+  // );
+  app.enableCors({
+    origin: 'https://maxkinginstitute.org',
+    credentials: true,
+  });
   app.use(
     session({
       secret: configService.get<string>('SESSION_SECRET'),

@@ -8,7 +8,7 @@ import { Logger } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.get(ConfigService);
   const version = configService.get<string>('API_VERSION');
   const port = configService.get<number>('PORT');
@@ -22,10 +22,10 @@ async function bootstrap() {
   // );
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-  app.enableCors({
-    origin: 'https://maxkinginstitute.org',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: 'https://maxkinginstitute.org',
+  //   credentials: true,
+  // });
   app.use(
     session({
       secret: configService.get<string>('SESSION_SECRET'),

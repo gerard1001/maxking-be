@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import * as cors from 'cors';
+import * as cors from 'cors';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ConfigService } from '@nestjs/config';
@@ -14,12 +14,12 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
   const logger = new Logger();
 
-  // app.use(
-  //   cors({
-  //     origin: true,
-  //     credentials: true,
-  //   }),
-  // );
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   // app.enableCors({

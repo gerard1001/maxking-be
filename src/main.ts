@@ -6,9 +6,10 @@ import * as passport from 'passport';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const version = configService.get<string>('API_VERSION');
   const port = configService.get<number>('PORT');
@@ -20,8 +21,9 @@ async function bootstrap() {
   //     credentials: true,
   //   }),
   // );
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  // app.use(bodyParser.json({ limit: '50mb' }));
+  // app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.useBodyParser('json', { limit: '50mb' });
   app.enableCors({
     origin: 'https://maxkinginstitute.org',
     credentials: true,
